@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  OnboardingView.swift
 //  
 //
 //  Created by Liviu Bosbiciu on 04.04.2022.
@@ -11,11 +11,11 @@ import SwiftUI
 @available(iOS 13.0, *)
 struct OnboardingView: View {
     
-    var title: String
-    var hintTextTitle: String
-    var hintTexts: [String]
-    var startRecordingButtonLabel: String
-    var skipRecordingButtonLabel: String
+    @State var title: String
+    @State var hintTextTitle: String
+    @State var hintTexts: [String]
+    @State var startRecordingButtonLabel: String
+    @State var skipRecordingButtonLabel: String
     
     public init(
         title: String = "Podemos iniciar a biometria por voz ?",
