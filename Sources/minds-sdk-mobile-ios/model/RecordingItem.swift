@@ -8,7 +8,7 @@
 import Foundation
 
 public struct RecordingItem: Identifiable, Codable, Hashable {
-    var id: String = UUID().uuidString
-    var key: String
-    var value: String
+    public var id: String = UUID().uuidString
+    public var key: String
+    public var value: String
 }
