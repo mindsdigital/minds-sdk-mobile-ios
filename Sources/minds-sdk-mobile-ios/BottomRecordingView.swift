@@ -9,20 +9,20 @@ import SwiftUI
 
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
-struct BottomRecordingView: View {
+public struct BottomRecordingView: View {
     
     @State var instructionTextForRecording: String
     @State var recordingIndicativeText: String
     @State var recording: Bool = false
     
-    init(instructionTextForRecording: String,
+    public init(instructionTextForRecording: String,
          recordingIndicativeText: String)
     {
         self.instructionTextForRecording = instructionTextForRecording
         self.recordingIndicativeText = recordingIndicativeText
     }
     
-    var body: some View {
+    public var body: some View {
         VStack {
             Text(recording ? recordingIndicativeText : instructionTextForRecording)
             Button(action: {

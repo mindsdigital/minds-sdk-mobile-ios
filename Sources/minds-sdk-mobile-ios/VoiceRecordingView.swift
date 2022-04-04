@@ -9,7 +9,7 @@ import SwiftUI
 
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
-struct VoiceRecordingView: View {
+public struct VoiceRecordingView: View {
     
     @State var recordingItems: [RecordingItem]
     @State var instructionTextForRecording: String = "Press record" // todo: change this

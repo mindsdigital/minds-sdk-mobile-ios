@@ -9,7 +9,7 @@ import SwiftUI
 
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
-struct OnboardingView: View {
+public struct OnboardingView: View {
     
     @State var title: String
     @State var hintTextTitle: String
