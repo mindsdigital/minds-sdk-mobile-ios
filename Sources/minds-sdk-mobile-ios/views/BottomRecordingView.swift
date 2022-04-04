@@ -10,7 +10,7 @@ import SwiftUI
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
 public struct BottomRecordingView: View {
-    @EnvironmentObject var uiMessagesSdk: MindsSDKUIMessages
+    @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @State var recording: Bool = false
     
     public init() {
@@ -33,7 +33,7 @@ public struct BottomRecordingView: View {
 @available(iOS 13.0, *)
 struct BottomRecordingView_Previews: PreviewProvider {
     static var previews: some View {
-        let uiMessagesSdk = MindsSDKUIMessages()
+        let uiMessagesSdk = MindsSDKUIMessages.shared
         uiMessagesSdk.recordingIndicativeText = "Gravando... Leia o texto acima"
         uiMessagesSdk.instructionTextForRecording = "Aperte e solte o botão abaixo para iniciar a gravação"
         return BottomRecordingView()

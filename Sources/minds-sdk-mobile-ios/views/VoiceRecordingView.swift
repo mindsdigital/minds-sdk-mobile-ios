@@ -10,7 +10,7 @@ import SwiftUI
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
 public struct VoiceRecordingView: View {
-    @EnvironmentObject var uiMessagesSdk: MindsSDKUIMessages
+    @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     
     public init() {
         
@@ -40,7 +40,7 @@ public struct VoiceRecordingView: View {
 @available(iOS 13.0, *)
 struct VoiceRecordingView_Previews: PreviewProvider {
     static var previews: some View {
-        let uiMessagesSdk = MindsSDKUIMessages()
+        let uiMessagesSdk = MindsSDKUIMessages.shared
         var recordingItems: [RecordingItem] = []
         recordingItems.append(RecordingItem(key: "NOME COMPLETO",
                                             value: "Divino Borges de Oliveira Filho"))

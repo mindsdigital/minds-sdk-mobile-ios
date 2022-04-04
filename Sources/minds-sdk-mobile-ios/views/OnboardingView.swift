@@ -10,7 +10,7 @@ import SwiftUI
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
 public struct OnboardingView: View {
-    @EnvironmentObject var uiMessagesSdk: MindsSDKUIMessages
+    @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     
     public init() {
         
@@ -58,7 +58,7 @@ public struct OnboardingView: View {
 @available(iOS 13.0, *)
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
-        let uiMessagesSdk = MindsSDKUIMessages()
+        let uiMessagesSdk = MindsSDKUIMessages.shared
         uiMessagesSdk.onboardingTitle = "Podemos iniciar a biometria por voz ?"
         uiMessagesSdk.hintTextTitle = "Dicas"
         uiMessagesSdk.hintTexts = [

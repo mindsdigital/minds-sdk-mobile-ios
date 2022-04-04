@@ -10,6 +10,7 @@ import Foundation
 @available(macOS 10.15, *)
 @available(iOS 13.0, *)
 public class MindsSDKUIMessages: ObservableObject {
+    static public let shared = MindsSDKUIMessages()
     
     public init() {
         
