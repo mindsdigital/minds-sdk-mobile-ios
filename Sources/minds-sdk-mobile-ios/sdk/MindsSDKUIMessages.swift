@@ -15,28 +15,28 @@ public class MindsSDKUIMessages: ObservableObject {
         
     }
     
-    @Published var onboardingTitle: String = ""
-    @Published var hintTextTitle: String = ""
-    @Published var hintTexts: [String] = []
-    @Published var startRecordingButtonLabel: String = ""
-    @Published var skipRecordingButtonLabel: String = ""
-    @Published var instructionTextForRecording: String = ""
-    @Published var recordingIndicativeText: String = ""
-    @Published var confirmationMessageTitle: String = ""
-    @Published var confirmationMessageBody: String = ""
-    @Published var deleteMessageTitle: String = ""
-    @Published var deleteMessageBody: String = ""
-    @Published var confirmDeleteButtonLabel: String = ""
-    @Published var dismissDeleteButtonLabel: String = ""
-    @Published var sendAudioButtonLabel: String = ""
-    @Published var confirmAudioButtonLabel: String = ""
-    @Published var dismissAudioButtonLabel: String = ""
-    @Published var genericErrorMessageTitle: String = ""
-    @Published var genericErrorMessageBody: String = ""
-    @Published var genericErrorButtonLabel: String = ""
-    @Published var successMessageTitle: String = ""
-    @Published var successMessageBody: String = ""
-    @Published var successButtonLabel: String = ""
-    @Published var loadingIndicativeTexts: [String] = []
-    @Published var recordingItems: [RecordingItem] = []
+    @Published public var onboardingTitle: String = ""
+    @Published public var hintTextTitle: String = ""
+    @Published public var hintTexts: [String] = []
+    @Published public var startRecordingButtonLabel: String = ""
+    @Published public var skipRecordingButtonLabel: String = ""
+    @Published public var instructionTextForRecording: String = ""
+    @Published public var recordingIndicativeText: String = ""
+    @Published public var confirmationMessageTitle: String = ""
+    @Published public var confirmationMessageBody: String = ""
+    @Published public var deleteMessageTitle: String = ""
+    @Published public var deleteMessageBody: String = ""
+    @Published public var confirmDeleteButtonLabel: String = ""
+    @Published public var dismissDeleteButtonLabel: String = ""
+    @Published public var sendAudioButtonLabel: String = ""
+    @Published public var confirmAudioButtonLabel: String = ""
+    @Published public var dismissAudioButtonLabel: String = ""
+    @Published public var genericErrorMessageTitle: String = ""
+    @Published public var genericErrorMessageBody: String = ""
+    @Published public var genericErrorButtonLabel: String = ""
+    @Published public var successMessageTitle: String = ""
+    @Published public var successMessageBody: String = ""
+    @Published public var successButtonLabel: String = ""
+    @Published public var loadingIndicativeTexts: [String] = []
+    @Published public var recordingItems: [RecordingItem] = []
 }
