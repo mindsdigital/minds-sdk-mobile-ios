@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 @available(iOS 13.0, *)
 public struct OnboardingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
@@ -54,7 +54,7 @@ public struct OnboardingView: View {
     }
 }
 
-@available(macOS 10.15, *)
+@available(macOS 11, *)
 @available(iOS 13.0, *)
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
