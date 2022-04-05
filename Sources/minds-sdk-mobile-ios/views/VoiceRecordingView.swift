@@ -11,6 +11,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
+    @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @State var showActionSheet: Bool = false
     
     public init() {
@@ -23,7 +24,9 @@ public struct VoiceRecordingView: View {
                 VStack(alignment: .leading) {
                     ForEach(uiMessagesSdk.recordingItems, id: \.self) { recordingItem in
                         Text(recordingItem.key)
+                            .foregroundColor(uiConfigSdk.textColor)
                         Text(recordingItem.value)
+                            .foregroundColor(uiConfigSdk.textColor)
                         RecordingItemView(onDeleteAction: {
                             self.showActionSheet = true
                         })

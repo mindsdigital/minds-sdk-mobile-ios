@@ -11,6 +11,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 public struct OnboardingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
+    @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @Environment(\.presentationMode) var presentation
     
     public init() {
@@ -21,14 +22,17 @@ public struct OnboardingView: View {
         ZStack {
             VStack(alignment: .leading) {
                 Text(uiMessagesSdk.onboardingTitle)
+                    .foregroundColor(uiConfigSdk.textColor)
                     .font(.title)
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, 20)
                 Text(uiMessagesSdk.hintTextTitle)
+                    .foregroundColor(uiConfigSdk.textColor)
                     .padding(.bottom, 5)
                 VStack(alignment: .leading) {
                     ForEach(uiMessagesSdk.hintTexts, id: \.self) { hintText in
                         Text(hintText)
+                            .foregroundColor(uiConfigSdk.textColor)
                     }
                 }
             }
@@ -37,6 +41,7 @@ public struct OnboardingView: View {
             VStack {
                 NavigationLink(destination: VoiceRecordingView()) {
                     Text(uiMessagesSdk.startRecordingButtonLabel)
+                        .foregroundColor(Color.white)
                         .frame(maxWidth: .infinity, maxHeight: 40)
                 }
                 .fillButtonStyle(backgroundColor: Color(.systemBlue))
@@ -45,9 +50,10 @@ public struct OnboardingView: View {
                     presentation.wrappedValue.dismiss()
                 }) {
                     Text(uiMessagesSdk.skipRecordingButtonLabel)
+                        .foregroundColor(uiConfigSdk.textColor)
                         .frame(maxWidth: .infinity, maxHeight: 40)
                 }
-                .outlinedButtonStyle(outlineColor: Color(.black))
+                .outlinedButtonStyle(outlineColor: uiConfigSdk.textColor)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }

@@ -11,6 +11,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 public struct LoadingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
+    @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     
     public init() {
         
@@ -22,6 +23,7 @@ public struct LoadingView: View {
             Image(uiImage: UIImage(named: "robot", in: .module, with: nil)!)
             ForEach(uiMessagesSdk.loadingIndicativeTexts, id: \.self) { loadingIndicativeText in
                 Text(loadingIndicativeText)
+                    .foregroundColor(uiConfigSdk.textColor)
             }
             Spacer()
         }

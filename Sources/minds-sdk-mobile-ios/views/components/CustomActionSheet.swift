@@ -11,6 +11,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 struct CustomActionSheet : View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
+    @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @State var count = 0
     
     var body : some View{
@@ -18,8 +19,10 @@ struct CustomActionSheet : View {
         VStack(spacing: 15) {
             
             Text(uiMessagesSdk.deleteMessageTitle)
+                .foregroundColor(uiConfigSdk.textColor)
             
             Text(uiMessagesSdk.deleteMessageBody)
+                .foregroundColor(uiConfigSdk.textColor)
             
             Button(action: {
                 
@@ -38,9 +41,9 @@ struct CustomActionSheet : View {
             .foregroundColor(Color(.black))
             
         }.padding(.bottom, 10)
-        .padding(.horizontal)
-        .padding(.top,20)
-        .cornerRadius(25)
+            .padding(.horizontal)
+            .padding(.top,20)
+            .cornerRadius(25)
         
     }
 }

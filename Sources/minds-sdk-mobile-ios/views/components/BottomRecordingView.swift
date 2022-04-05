@@ -11,6 +11,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 public struct BottomRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
+    @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @State var recording: Bool = false
     
     public init() {
@@ -20,6 +21,7 @@ public struct BottomRecordingView: View {
     public var body: some View {
         VStack {
             Text(recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
+                .foregroundColor(uiConfigSdk.textColor)
             Button(action: {
                 recording.toggle()
             }) {
