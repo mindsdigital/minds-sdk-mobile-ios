@@ -20,7 +20,10 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "minds-sdk-mobile-ios",
-            dependencies: []),
+            dependencies: [],
+            resources: [
+                .process("resources/Assets.xcassets")
+            ]),
         .testTarget(
             name: "minds-sdk-mobile-iosTests",
             dependencies: ["minds-sdk-mobile-ios"]),
