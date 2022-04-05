@@ -37,16 +37,16 @@ public struct OnboardingView: View {
                 NavigationLink(destination: VoiceRecordingView()) {
                     Text(uiMessagesSdk.startRecordingButtonLabel)
                         .frame(maxWidth: .infinity, maxHeight: 40)
-                        .cornerRadius(50)
                 }
+                .fillButtonStyle(backgroundColor: Color(.systemBlue))
                 
                 Button(action: {
                     
                 }) {
                     Text(uiMessagesSdk.skipRecordingButtonLabel)
                         .frame(maxWidth: .infinity, maxHeight: 40)
-                        .cornerRadius(50)
                 }
+                .outlinedButtonStyle(outlineColor: Color(.black))
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }

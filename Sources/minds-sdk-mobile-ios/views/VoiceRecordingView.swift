@@ -12,6 +12,10 @@ import SwiftUI
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     
+#if !os(macOS)
+    @State var offset : CGFloat = UIScreen.main.bounds.height
+#endif
+    
     public init() {
         
     }
@@ -23,7 +27,11 @@ public struct VoiceRecordingView: View {
                     ForEach(uiMessagesSdk.recordingItems, id: \.self) { recordingItem in
                         Text(recordingItem.key)
                         Text(recordingItem.value)
-                        RecordingItemView()
+                        RecordingItemView(onDeleteAction: {
+#if !os(macOS)
+                            self.offset = 0
+#endif
+                        })
                     }
                 }
             }
@@ -32,6 +40,49 @@ public struct VoiceRecordingView: View {
             BottomRecordingView()
                 .frame(maxHeight: .infinity, alignment: .bottom)
             
+            VStack{
+                
+                Spacer()
+#if !os(macOS)
+                CustomActionSheet()
+
+                    .offset(y: self.offset)
+
+                    .gesture(DragGesture()
+                             
+                                .onChanged({ (value) in
+                        
+                        if value.translation.height > 0{
+                            
+                            self.offset = value.location.y
+                            
+                        }
+                    })
+                                .onEnded({ (value) in
+                        
+                        if self.offset > 100{
+                            
+                            self.offset = UIScreen.main.bounds.height
+                        }
+                        else{
+                            
+                            self.offset = 0
+                        }
+                    })
+                    )
+#endif
+                
+            }
+#if !os(macOS)
+            .background((self.offset <= 100 ? Color(UIColor.label).opacity(0.3) : Color.clear).edgesIgnoringSafeArea(.all)
+                            .onTapGesture {
+                
+                self.offset = 0
+                
+            })
+#endif
+            
+                .edgesIgnoringSafeArea(.bottom)
         }
     }
 }

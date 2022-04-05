@@ -13,8 +13,9 @@ public struct RecordingItemView: View {
     @State var isPlaying: Bool = false
     @State var duration: Float = 20
     @State var currentTime: Float = 0
+    var onDeleteAction: () -> Void = {}
     
-    public init() {
+    public init(onDeleteAction: @escaping () -> Void) {
         
     }
     
@@ -42,6 +43,8 @@ public struct RecordingItemView: View {
 @available(iOS 13.0, *)
 struct RecordingItemView_Previews: PreviewProvider {
     static var previews: some View {
-        RecordingItemView()
+        RecordingItemView(onDeleteAction: {
+            
+        })
     }
 }
