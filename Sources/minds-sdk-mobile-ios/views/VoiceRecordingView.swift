@@ -72,6 +72,5 @@ struct VoiceRecordingView_Previews: PreviewProvider {
         uiMessagesSdk.dismissDeleteButtonLabel = "Não, não excluir"
         
         return VoiceRecordingView()
-            .environmentObject(uiMessagesSdk)
     }
 }

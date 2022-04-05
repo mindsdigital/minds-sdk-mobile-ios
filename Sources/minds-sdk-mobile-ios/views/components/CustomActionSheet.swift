@@ -47,7 +47,7 @@ struct CustomActionSheet : View {
 
 @available(macOS 11, *)
 @available(iOS 13.0, *)
-struct SwiftUIView_Previews: PreviewProvider {
+struct CustomActionSheet_Previews: PreviewProvider {
     static var previews: some View {
         let uiMessagesSdk = MindsSDKUIMessages.shared
         uiMessagesSdk.deleteMessageTitle = "Exclusão de áudio"

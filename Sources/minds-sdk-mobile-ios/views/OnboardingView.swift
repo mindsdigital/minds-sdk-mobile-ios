@@ -71,6 +71,5 @@ struct OnboardingView_Previews: PreviewProvider {
         uiMessagesSdk.skipRecordingButtonLabel = "Não, pular biometria por voz"
         
         return OnboardingView()
-            .environmentObject(uiMessagesSdk)
     }
 }

@@ -47,6 +47,5 @@ struct BottomRecordingView_Previews: PreviewProvider {
         uiMessagesSdk.recordingIndicativeText = "Gravando... Leia o texto acima"
         uiMessagesSdk.instructionTextForRecording = "Aperte e solte o botão abaixo para iniciar a gravação"
         return BottomRecordingView()
-            .environmentObject(uiMessagesSdk)
     }
 }
