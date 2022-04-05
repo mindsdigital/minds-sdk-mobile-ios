@@ -16,7 +16,7 @@ public struct RecordingItemView: View {
     var onDeleteAction: () -> Void = {}
     
     public init(onDeleteAction: @escaping () -> Void) {
-        
+        self.onDeleteAction = onDeleteAction
     }
     
     public var body: some View {
@@ -31,7 +31,7 @@ public struct RecordingItemView: View {
             })
             
             Button(action: {
-                isPlaying.toggle()
+                onDeleteAction()
             }) {
                 Image(systemName: "trash.fill")
             }

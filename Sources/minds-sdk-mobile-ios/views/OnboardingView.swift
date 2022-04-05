@@ -11,6 +11,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 public struct OnboardingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
+    @Environment(\.presentationMode) var presentation
     
     public init() {
         
@@ -41,7 +42,7 @@ public struct OnboardingView: View {
                 .fillButtonStyle(backgroundColor: Color(.systemBlue))
                 
                 Button(action: {
-                    
+                    presentation.wrappedValue.dismiss()
                 }) {
                     Text(uiMessagesSdk.skipRecordingButtonLabel)
                         .frame(maxWidth: .infinity, maxHeight: 40)

@@ -11,10 +11,7 @@ import SwiftUI
 @available(iOS 13.0, *)
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
-    
-#if !os(macOS)
-    @State var offset : CGFloat = UIScreen.main.bounds.height
-#endif
+    @State var showActionSheet: Bool = false
     
     public init() {
         
@@ -28,9 +25,7 @@ public struct VoiceRecordingView: View {
                         Text(recordingItem.key)
                         Text(recordingItem.value)
                         RecordingItemView(onDeleteAction: {
-#if !os(macOS)
-                            self.offset = 0
-#endif
+                            self.showActionSheet = true
                         })
                     }
                 }
@@ -39,50 +34,21 @@ public struct VoiceRecordingView: View {
             
             BottomRecordingView()
                 .frame(maxHeight: .infinity, alignment: .bottom)
-            
-            VStack{
-                
-                Spacer()
-#if !os(macOS)
-                CustomActionSheet()
-
-                    .offset(y: self.offset)
-
-                    .gesture(DragGesture()
-                             
-                                .onChanged({ (value) in
-                        
-                        if value.translation.height > 0{
-                            
-                            self.offset = value.location.y
-                            
-                        }
-                    })
-                                .onEnded({ (value) in
-                        
-                        if self.offset > 100{
-                            
-                            self.offset = UIScreen.main.bounds.height
-                        }
-                        else{
-                            
-                            self.offset = 0
-                        }
-                    })
-                    )
-#endif
-                
-            }
-#if !os(macOS)
-            .background((self.offset <= 100 ? Color(UIColor.label).opacity(0.3) : Color.clear).edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                
-                self.offset = 0
-                
-            })
-#endif
-            
-                .edgesIgnoringSafeArea(.bottom)
+        }
+        .padding()
+        .actionSheet(isPresented: $showActionSheet) {
+            ActionSheet(title: Text(uiMessagesSdk.deleteMessageTitle),
+                        message: Text(uiMessagesSdk.deleteMessageBody),
+                        buttons: [
+                            .cancel(
+                                Text(uiMessagesSdk.dismissDeleteButtonLabel)),
+                            .destructive(
+                                Text(uiMessagesSdk.confirmDeleteButtonLabel),
+                                action: {
+                                }
+                            )
+                        ]
+            )
         }
     }
 }
@@ -100,6 +66,10 @@ struct VoiceRecordingView_Previews: PreviewProvider {
         uiMessagesSdk.recordingItems = recordingItems
         uiMessagesSdk.recordingIndicativeText = "Gravando... Leia o texto acima"
         uiMessagesSdk.instructionTextForRecording = "Aperte e solte o botão abaixo para iniciar a gravação"
+        uiMessagesSdk.deleteMessageTitle = "Exclusão de áudio"
+        uiMessagesSdk.deleteMessageBody = "Tem certeza que deseja excluir a sua gravação? Você terá que gravar novamente"
+        uiMessagesSdk.confirmDeleteButtonLabel = "Sim, excluir áudio"
+        uiMessagesSdk.dismissDeleteButtonLabel = "Não, não excluir"
         
         return VoiceRecordingView()
             .environmentObject(uiMessagesSdk)

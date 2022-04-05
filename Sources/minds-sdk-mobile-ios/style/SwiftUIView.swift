@@ -30,7 +30,7 @@ struct OutlinedButtonStyleModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundColor(Color(.black))
-            .overlay(RoundedRectangle(cornerRadius: 10)
+            .overlay(RoundedRectangle(cornerRadius: 100)
                         .stroke(lineWidth: 0.5)
                         .foregroundColor(outlineColor))
     }
