@@ -20,7 +20,12 @@ public struct LoadingView: View {
     public var body: some View {
         VStack {
             Spacer()
-            Image(uiImage: UIImage(named: "robot", in: .module, with: nil)!)
+            if (uiConfigSdk.loadingImage.isEmpty) {
+                Image(uiImage: UIImage(named: "robot", in: .module, with: nil) ?? UIImage())
+            } else {
+                Image(uiConfigSdk.loadingImage)
+            }
+            
             ForEach(uiMessagesSdk.loadingIndicativeTexts, id: \.self) { loadingIndicativeText in
                 Text(loadingIndicativeText)
                     .foregroundColor(uiConfigSdk.textColor)
