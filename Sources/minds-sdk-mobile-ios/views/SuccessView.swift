@@ -23,11 +23,10 @@ public struct SuccessView: View {
                 Spacer()
                 Text(uiMessagesSdk.successMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-//                    .font(uiConfigSdk.fontFamily.isEmpty ?
-//                            .custom(size: uiConfigSdk.)
-//                          : .custom("Georgia", size: 24, relativeTo: .title))
+                    .font(.title)
                 Text(uiMessagesSdk.successMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
+                    .font(.title3)
                 Spacer()
             }
             

@@ -26,6 +26,7 @@ public struct ErrorView: View {
                     .font(.title)
                 Text(uiMessagesSdk.genericErrorMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
+                    .font(.title3)
                 Spacer()
             }
             

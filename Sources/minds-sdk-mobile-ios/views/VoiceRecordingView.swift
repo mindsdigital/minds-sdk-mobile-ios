@@ -25,8 +25,10 @@ public struct VoiceRecordingView: View {
                     ForEach(uiMessagesSdk.recordingItems, id: \.self) { recordingItem in
                         Text(recordingItem.key)
                             .foregroundColor(uiConfigSdk.textColor)
+                            .font(.headline)
                         Text(recordingItem.value)
                             .foregroundColor(uiConfigSdk.textColor)
+                            .font(.title2)
                         RecordingItemView(onDeleteAction: {
                             self.showActionSheet = true
                         })
@@ -34,11 +36,11 @@ public struct VoiceRecordingView: View {
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
+            .padding()
             
             BottomRecordingView()
                 .frame(maxHeight: .infinity, alignment: .bottom)
         }
-        .padding()
         .actionSheet(isPresented: $showActionSheet) {
             ActionSheet(title: Text(uiMessagesSdk.deleteMessageTitle),
                         message: Text(uiMessagesSdk.deleteMessageBody),

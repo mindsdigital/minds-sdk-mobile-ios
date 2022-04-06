@@ -20,23 +20,28 @@ public struct BottomRecordingView: View {
     
     public var body: some View {
         VStack {
-            Text(recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
-                .foregroundColor(uiConfigSdk.textColor)
-            Button(action: {
-                recording.toggle()
-            }) {
-                ZStack {
-                    Circle()
-                        .background(Color.black)
-                        .frame(width: 56, height: 56)
-                    Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                    
+            Divider()
+            Group {
+                Text(recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
+                    .foregroundColor(uiConfigSdk.textColor)
+                    .padding(.top, 5)
+                Button(action: {
+                    recording.toggle()
+                }) {
+                    ZStack {
+                        Circle()
+                            .background(Color.black)
+                            .frame(width: 56, height: 56)
+                        Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                        
+                    }
                 }
+                .buttonStyle(.plain)
+                .cornerRadius(100)
             }
-            .buttonStyle(.plain)
-            .cornerRadius(100)
+            .padding(.horizontal)
         }
     }
 }
