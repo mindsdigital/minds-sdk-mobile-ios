@@ -46,14 +46,16 @@ public struct OnboardingView: View {
                 }
                 .fillButtonStyle(backgroundColor: Color(.systemBlue))
                 
-                Button(action: {
-                    presentation.wrappedValue.dismiss()
-                }) {
-                    Text(uiMessagesSdk.skipRecordingButtonLabel)
-                        .foregroundColor(uiConfigSdk.textColor)
-                        .frame(maxWidth: .infinity, maxHeight: 40)
+                if (uiConfigSdk.showBiometricsSkipButton) {
+                    Button(action: {
+                        presentation.wrappedValue.dismiss()
+                    }) {
+                        Text(uiMessagesSdk.skipRecordingButtonLabel)
+                            .foregroundColor(uiConfigSdk.textColor)
+                            .frame(maxWidth: .infinity, maxHeight: 40)
+                    }
+                    .outlinedButtonStyle(outlineColor: uiConfigSdk.textColor)
                 }
-                .outlinedButtonStyle(outlineColor: uiConfigSdk.textColor)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }

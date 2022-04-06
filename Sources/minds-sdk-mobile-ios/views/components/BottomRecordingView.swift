@@ -28,17 +28,12 @@ public struct BottomRecordingView: View {
                 Button(action: {
                     recording.toggle()
                 }) {
-                    ZStack {
-                        Circle()
-                            .background(Color.black)
-                            .frame(width: 56, height: 56)
-                        Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                        
-                    }
+                    Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
+                        .resizable()
+                        .frame(width: 24, height: 24)
                 }
-                .buttonStyle(.plain)
+                .frame(width: 56, height: 56)
+                .background(Color(.systemBlue))
                 .cornerRadius(100)
             }
             .padding(.horizontal)

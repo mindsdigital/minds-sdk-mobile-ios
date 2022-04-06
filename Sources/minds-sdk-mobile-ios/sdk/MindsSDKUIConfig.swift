@@ -18,9 +18,7 @@ public class MindsSDKUIConfig: ObservableObject {
     }
     
     // @Published public var colorSwatch: String = "" // todo: change this accordingly
-    @Published public var errorButtonColor: Color = Color(.systemRed) // todo: unused for now
     @Published public var textColor: Color = Color(.label)
-    @Published public var baseFontSize: Int = 14
     @Published public var showThankYouScreen: Bool = true // todo: unused for now
     @Published public var showBiometricsSkipButton: Bool = true
     @Published public var fontFamily: String = ""
