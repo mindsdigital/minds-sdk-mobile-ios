@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct CustomActionSheet : View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
@@ -49,7 +49,7 @@ struct CustomActionSheet : View {
 }
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct CustomActionSheet_Previews: PreviewProvider {
     static var previews: some View {
         let uiMessagesSdk = MindsSDKUIMessages.shared

@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public struct ErrorView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
@@ -23,9 +23,7 @@ public struct ErrorView: View {
                 Spacer()
                 Text(uiMessagesSdk.genericErrorMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-//                    .font(uiConfigSdk.fontFamily.isEmpty ?
-//                            .custom(size: uiConfigSdk.)
-//                          : .custom("Georgia", size: 24, relativeTo: .title))
+                    .font(.title)
                 Text(uiMessagesSdk.genericErrorMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
                 Spacer()
@@ -45,7 +43,7 @@ public struct ErrorView: View {
 }
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct ErrorView_Previews: PreviewProvider {
     static var previews: some View {
         let uiMessagesSdk = MindsSDKUIMessages.shared

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public class MindsSDKUIConfig: ObservableObject {
     static public let shared = MindsSDKUIConfig()
     
@@ -20,7 +20,7 @@ public class MindsSDKUIConfig: ObservableObject {
     // @Published public var colorSwatch: String = "" // todo: change this accordingly
     @Published public var errorButtonColor: Color = Color(.systemRed) // todo: unused for now
     @Published public var textColor: Color = Color(.label)
-    // @Published public var typographyScale: String // todo: change this accordingly
+    @Published public var baseFontSize: Int = 14
     @Published public var showThankYouScreen: Bool = true // todo: unused for now
     @Published public var showBiometricsSkipButton: Bool = true
     @Published public var fontFamily: String = ""

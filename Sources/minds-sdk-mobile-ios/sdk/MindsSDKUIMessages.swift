@@ -8,7 +8,7 @@
 import Foundation
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public class MindsSDKUIMessages: ObservableObject {
     static public let shared = MindsSDKUIMessages()
     

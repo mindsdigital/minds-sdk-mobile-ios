@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public struct RecordingItemView: View {
     @State var isPlaying: Bool = false
     @State var duration: Float = 20
@@ -40,7 +40,7 @@ public struct RecordingItemView: View {
 }
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct RecordingItemView_Previews: PreviewProvider {
     static var previews: some View {
         RecordingItemView(onDeleteAction: {

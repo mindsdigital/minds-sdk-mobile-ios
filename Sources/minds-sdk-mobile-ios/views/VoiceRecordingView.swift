@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
@@ -57,7 +57,7 @@ public struct VoiceRecordingView: View {
 }
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct VoiceRecordingView_Previews: PreviewProvider {
     static var previews: some View {
         let uiMessagesSdk = MindsSDKUIMessages.shared

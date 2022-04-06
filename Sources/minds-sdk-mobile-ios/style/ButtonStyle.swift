@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct FillButtonStyleModifier: ViewModifier {
     @Environment(\.isEnabled) private var isEnabled
     var backgroundColor: Color
@@ -23,7 +23,7 @@ struct FillButtonStyleModifier: ViewModifier {
 }
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 struct OutlinedButtonStyleModifier: ViewModifier {
     var outlineColor: Color
     
@@ -37,7 +37,7 @@ struct OutlinedButtonStyleModifier: ViewModifier {
 }
 
 @available(macOS 11, *)
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 extension View {
     func fillButtonStyle(backgroundColor: Color) -> some View {
         self.modifier(FillButtonStyleModifier(backgroundColor: backgroundColor))
