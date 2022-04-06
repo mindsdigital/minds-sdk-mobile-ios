@@ -25,10 +25,14 @@ public struct VoiceRecordingView: View {
                     ForEach(uiMessagesSdk.recordingItems, id: \.self) { recordingItem in
                         Text(recordingItem.key)
                             .foregroundColor(uiConfigSdk.textColor)
-                            .font(.headline)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                    .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
+                            )
                         Text(recordingItem.value)
                             .foregroundColor(uiConfigSdk.textColor)
-                            .font(.title2)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                    .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
+                            )
                         RecordingItemView(onDeleteAction: {
                             self.showActionSheet = true
                         })

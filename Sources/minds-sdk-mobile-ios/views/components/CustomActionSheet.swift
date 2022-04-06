@@ -20,14 +20,23 @@ struct CustomActionSheet : View {
             
             Text(uiMessagesSdk.deleteMessageTitle)
                 .foregroundColor(uiConfigSdk.textColor)
+                .font(uiConfigSdk.fontFamily.isEmpty ?
+                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                )
             
             Text(uiMessagesSdk.deleteMessageBody)
                 .foregroundColor(uiConfigSdk.textColor)
+                .font(uiConfigSdk.fontFamily.isEmpty ?
+                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                )
             
             Button(action: {
                 
             }) {
                 Text(uiMessagesSdk.dismissDeleteButtonLabel)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                    )
                     .frame(maxWidth: .infinity, maxHeight: 40)
             }
             .fillButtonStyle(backgroundColor: Color(.systemRed))
@@ -36,6 +45,9 @@ struct CustomActionSheet : View {
                 
             }) {
                 Text(uiMessagesSdk.dismissAudioButtonLabel)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                    )
                     .frame(maxWidth: .infinity, maxHeight: 40)
             }
             .foregroundColor(Color(.black))

@@ -23,10 +23,14 @@ public struct SuccessView: View {
                 Spacer()
                 Text(uiMessagesSdk.successMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(.title)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
+                    )
                 Text(uiMessagesSdk.successMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(.title3)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .title3 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title3)
+                    )
                 Spacer()
             }
             
@@ -34,6 +38,9 @@ public struct SuccessView: View {
                 
             }) {
                 Text(uiMessagesSdk.successButtonLabel)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                    )
                     .frame(maxWidth: .infinity, maxHeight: 40)
             }
             .fillButtonStyle(backgroundColor: Color(.systemRed))

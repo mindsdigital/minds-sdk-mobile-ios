@@ -24,6 +24,9 @@ public struct LoadingView: View {
             ForEach(uiMessagesSdk.loadingIndicativeTexts, id: \.self) { loadingIndicativeText in
                 Text(loadingIndicativeText)
                     .foregroundColor(uiConfigSdk.textColor)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                    )
             }
             Spacer()
         }

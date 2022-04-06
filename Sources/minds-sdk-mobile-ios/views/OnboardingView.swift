@@ -19,20 +19,28 @@ public struct OnboardingView: View {
     }
     
     public var body: some View {
-        ZStack {
+        ZStack(alignment: .leading) {
             VStack(alignment: .leading) {
                 Text(uiMessagesSdk.onboardingTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(.title)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
+                    )
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, 20)
                 Text(uiMessagesSdk.hintTextTitle)
                     .foregroundColor(uiConfigSdk.textColor)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                    )
                     .padding(.bottom, 5)
                 VStack(alignment: .leading) {
                     ForEach(uiMessagesSdk.hintTexts, id: \.self) { hintText in
-                        Text(hintText)
+                        Text("• " + hintText)
                             .foregroundColor(uiConfigSdk.textColor)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                            )
                     }
                 }
             }
@@ -42,6 +50,9 @@ public struct OnboardingView: View {
                 NavigationLink(destination: VoiceRecordingView()) {
                     Text(uiMessagesSdk.startRecordingButtonLabel)
                         .foregroundColor(Color.white)
+                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                        )
                         .frame(maxWidth: .infinity, maxHeight: 40)
                 }
                 .fillButtonStyle(backgroundColor: Color(.systemBlue))
@@ -52,6 +63,9 @@ public struct OnboardingView: View {
                     }) {
                         Text(uiMessagesSdk.skipRecordingButtonLabel)
                             .foregroundColor(uiConfigSdk.textColor)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                            )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
                     .outlinedButtonStyle(outlineColor: uiConfigSdk.textColor)

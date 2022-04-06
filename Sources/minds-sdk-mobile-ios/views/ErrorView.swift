@@ -23,10 +23,14 @@ public struct ErrorView: View {
                 Spacer()
                 Text(uiMessagesSdk.genericErrorMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(.title)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
+                    )
                 Text(uiMessagesSdk.genericErrorMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(.title3)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .title3 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title3)
+                    )
                 Spacer()
             }
             
@@ -34,6 +38,9 @@ public struct ErrorView: View {
                 
             }) {
                 Text(uiMessagesSdk.genericErrorButtonLabel)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                    )
                     .frame(maxWidth: .infinity, maxHeight: 40)
             }
             .fillButtonStyle(backgroundColor: Color(.systemRed))

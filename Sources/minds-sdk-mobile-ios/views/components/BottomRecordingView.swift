@@ -24,6 +24,9 @@ public struct BottomRecordingView: View {
             Group {
                 Text(recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
                     .foregroundColor(uiConfigSdk.textColor)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                    )
                     .padding(.top, 5)
                 Button(action: {
                     recording.toggle()
