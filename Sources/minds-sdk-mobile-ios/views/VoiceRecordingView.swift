@@ -13,6 +13,7 @@ public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @State var showActionSheet: Bool = false
+    @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     
     public init() {
         
@@ -22,6 +23,7 @@ public struct VoiceRecordingView: View {
         VStack {
             ScrollView {
                 VStack(alignment: .leading) {
+
                     ForEach(uiMessagesSdk.recordingItems, id: \.self) { recordingItem in
                         Text(recordingItem.key)
                             .foregroundColor(uiConfigSdk.textColor)
@@ -33,16 +35,20 @@ public struct VoiceRecordingView: View {
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                     .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
                             )
-                        RecordingItemView(onDeleteAction: {
-                            self.showActionSheet = true
-                        })
+                        ForEach(audioRecorder.recordings, id: \.createdAt) { recording in
+                            RecordingItemView(audioURL: recording.fileURL,
+                                              onDeleteAction: {
+                                self.showActionSheet = true
+                            })
+                        }
+                        
                     }
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
             .padding()
             
-            BottomRecordingView()
+            BottomRecordingView(audioRecorder: audioRecorder)
                 .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .actionSheet(isPresented: $showActionSheet) {

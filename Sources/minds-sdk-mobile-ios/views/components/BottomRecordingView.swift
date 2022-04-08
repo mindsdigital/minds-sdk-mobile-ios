@@ -12,32 +12,46 @@ import SwiftUI
 public struct BottomRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
-    @State var recording: Bool = false
+    @ObservedObject var audioRecorder: AudioRecorder
     
-    public init() {
-        
+    init(audioRecorder: AudioRecorder) {
+        self.audioRecorder = audioRecorder
     }
     
     public var body: some View {
         VStack {
             Divider()
             Group {
-                Text(recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
+                Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
                     .foregroundColor(uiConfigSdk.textColor)
                     .font(uiConfigSdk.fontFamily.isEmpty ?
                             .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                     )
                     .padding(.top, 5)
-                Button(action: {
-                    recording.toggle()
-                }) {
-                    Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
-                        .resizable()
-                        .frame(width: 24, height: 24)
+                
+                if audioRecorder.recording {
+                    Button(action: {
+                        self.audioRecorder.stopRecording()
+                    }) {
+                        Image(systemName: "pause.fill")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .frame(width: 56, height: 56)
+                    .background(Color(.systemBlue))
+                    .cornerRadius(100)
+                } else {
+                    Button(action: {
+                        self.audioRecorder.startRecording()
+                    }) {
+                        Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .frame(width: 56, height: 56)
+                    .background(Color(.systemBlue))
+                    .cornerRadius(100)
                 }
-                .frame(width: 56, height: 56)
-                .background(Color(.systemBlue))
-                .cornerRadius(100)
             }
             .padding(.horizontal)
         }
@@ -51,6 +65,6 @@ struct BottomRecordingView_Previews: PreviewProvider {
         let uiMessagesSdk = MindsSDKUIMessages.shared
         uiMessagesSdk.recordingIndicativeText = "Gravando... Leia o texto acima"
         uiMessagesSdk.instructionTextForRecording = "Aperte e solte o botão abaixo para iniciar a gravação"
-        return BottomRecordingView()
+        return BottomRecordingView(audioRecorder: AudioRecorder())
     }
 }

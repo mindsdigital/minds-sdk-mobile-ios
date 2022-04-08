@@ -17,3 +17,10 @@ public struct RecordingItem: Identifiable, Codable, Hashable {
     public var key: String
     public var value: String
 }
+
+@available(macOS 11, *)
+@available(iOS 14.0, *)
+public struct Recording {
+    public let fileURL: URL
+    public let createdAt: Date
+}
