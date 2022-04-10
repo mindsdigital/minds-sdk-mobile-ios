@@ -34,8 +34,7 @@ public struct BottomRecordingView: View {
                         self.audioRecorder.stopRecording()
                     }) {
                         Image(systemName: "pause.fill")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                            .foregroundColor(Color.white)
                     }
                     .frame(width: 56, height: 56)
                     .background(Color(.systemBlue))

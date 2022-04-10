@@ -23,7 +23,7 @@ public struct VoiceRecordingView: View {
         VStack {
             ScrollView {
                 VStack(alignment: .leading) {
-
+                    
                     ForEach(uiMessagesSdk.recordingItems, id: \.self) { recordingItem in
                         Text(recordingItem.key)
                             .foregroundColor(uiConfigSdk.textColor)
@@ -41,15 +41,12 @@ public struct VoiceRecordingView: View {
                                 self.showActionSheet = true
                             })
                         }
-                        
                     }
                 }
             }
-            .frame(maxHeight: .infinity, alignment: .top)
             .padding()
             
             BottomRecordingView(audioRecorder: audioRecorder)
-                .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .actionSheet(isPresented: $showActionSheet) {
             ActionSheet(title: Text(uiMessagesSdk.deleteMessageTitle),

@@ -28,6 +28,8 @@ class AudioRecorder: NSObject, ObservableObject {
         fetchRecordings()
     }
     
+    @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
+    
     let objectWillChange = PassthroughSubject<AudioRecorder, Never>()
     
     var audioRecorder: AVAudioRecorder!
@@ -51,13 +53,14 @@ class AudioRecorder: NSObject, ObservableObject {
         }
         
         let currentDate = Date()
-        let documentPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let documentPath = FileManager.default.temporaryDirectory
         let audioFilename = documentPath.appendingPathComponent("\(currentDate.toString(dateFormat: "dd-MM-YY_'at'_HH:mm:ss")).m4a")
         
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: 12000,
+            AVSampleRateKey: uiConfigSdk.sampleRate,
             AVNumberOfChannelsKey: 1,
+            AVLinearPCMBitDepthKey: uiConfigSdk.linearPCMBitDepthKey,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
         ]
         
@@ -82,7 +85,7 @@ class AudioRecorder: NSObject, ObservableObject {
         recordings.removeAll()
         
         let fileManager = FileManager.default
-        let documentDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let documentDirectory = fileManager.temporaryDirectory
         let directoryContents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil)
         for audio in directoryContents {
             let recording = Recording(fileURL: audio, createdAt: getCreationDate(for: audio))

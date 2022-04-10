@@ -24,4 +24,8 @@ public class MindsSDKUIConfig: ObservableObject {
     @Published public var baseFontSize: CGFloat = 16
     @Published public var fontFamily: String = ""
     @Published public var loadingImage: String = ""
+    
+    @Published public var sampleRate: Int = 16000
+    @Published public var channelConfig: String = "" // todo: unused for now
+    @Published public var linearPCMBitDepthKey: Int = 16
 }
