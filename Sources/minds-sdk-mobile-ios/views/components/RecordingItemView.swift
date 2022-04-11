@@ -11,13 +11,16 @@ import SwiftUI
 @available(iOS 14.0, *)
 public struct RecordingItemView: View {
     var audioURL: URL
+    var displayRemoveButton: Bool
     var onDeleteAction: () -> Void = {}
     @ObservedObject var audioPlayer: AudioPlayer
     
     public init(audioURL: URL,
+                displayRemoveButton: Bool,
                 onDeleteAction: @escaping () -> Void) {
         self.audioPlayer = AudioPlayer(audio: audioURL)
         self.audioURL = audioURL
+        self.displayRemoveButton = displayRemoveButton
         self.onDeleteAction = onDeleteAction
     }
     
@@ -37,10 +40,12 @@ public struct RecordingItemView: View {
             Slider(value: $audioPlayer.currentTime, in: 0...max(0, audioPlayer.audioPlayer.currentItem!.duration.seconds), onEditingChanged: { isEditing in
             })
             
-            Button(action: {
-                onDeleteAction()
-            }) {
-                Image(systemName: "trash.fill")
+            if (displayRemoveButton) {
+                Button(action: {
+                    onDeleteAction()
+                }) {
+                    Image(systemName: "trash.fill")
+                }
             }
         }
     }

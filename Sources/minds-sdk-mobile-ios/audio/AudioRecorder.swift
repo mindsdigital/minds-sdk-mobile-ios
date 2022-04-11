@@ -10,23 +10,9 @@ import SwiftUI
 import AVFoundation
 import Combine
 
-func getCreationDate(for file: URL) -> Date {
-    if let attributes = try? FileManager.default.attributesOfItem(atPath: file.path) as [FileAttributeKey: Any],
-        let creationDate = attributes[FileAttributeKey.creationDate] as? Date {
-        return creationDate
-    } else {
-        return Date()
-    }
-}
-
 @available(macOS 11, *)
 @available(iOS 14.0, *)
 class AudioRecorder: NSObject, ObservableObject {
-    
-    override init() {
-        super.init()
-        fetchRecordings()
-    }
     
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     
@@ -34,7 +20,7 @@ class AudioRecorder: NSObject, ObservableObject {
     
     var audioRecorder: AVAudioRecorder!
     
-    var recordings = [Recording]()
+    @Published var recordingsCount: Int = 0
     
     var recording = false {
         didSet {
@@ -42,7 +28,7 @@ class AudioRecorder: NSObject, ObservableObject {
         }
     }
     
-    func startRecording() {
+    func startRecording(key: String) {
         let recordingSession = AVAudioSession.sharedInstance()
         
         do {
@@ -52,9 +38,8 @@ class AudioRecorder: NSObject, ObservableObject {
             print("Failed to set up recording session")
         }
         
-        let currentDate = Date()
         let documentPath = FileManager.default.temporaryDirectory
-        let audioFilename = documentPath.appendingPathComponent("\(currentDate.toString(dateFormat: "dd-MM-YY_'at'_HH:mm:ss")).m4a")
+        let audioFilename = documentPath.appendingPathComponent("\(key).m4a")
         
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -67,7 +52,7 @@ class AudioRecorder: NSObject, ObservableObject {
         do {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder.record()
-
+            
             recording = true
         } catch {
             print("Could not start recording")
@@ -77,38 +62,33 @@ class AudioRecorder: NSObject, ObservableObject {
     func stopRecording() {
         audioRecorder.stop()
         recording = false
-        
-        fetchRecordings()
     }
     
-    func fetchRecordings() {
-        recordings.removeAll()
-        
-        let fileManager = FileManager.default
-        let documentDirectory = fileManager.temporaryDirectory
-        let directoryContents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil)
-        for audio in directoryContents {
-            let recording = Recording(fileURL: audio, createdAt: getCreationDate(for: audio))
-            recordings.append(recording)
-        }
-        
-        recordings.sort(by: { $0.createdAt.compare($1.createdAt) == .orderedAscending})
-        
-        objectWillChange.send(self)
-    }
+    //    func fetchRecording(key: String) -> URL {
+    //        let fileManager = FileManager.default
+    //        let documentDirectory = fileManager.temporaryDirectory
+    //        let directoryContents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil)
+    //        for audio in directoryContents {
+    //            let recording = Recording(fileURL: audio, createdAt: getCreationDate(for: audio))
+    //            recordings.append(recording)
+    //        }
+    //
+    //        recordings.sort(by: { $0.createdAt.compare($1.createdAt) == .orderedAscending})
+    //
+    //        objectWillChange.send(self)
+    //    }
     
     func deleteRecording(urlsToDelete: [URL]) {
         
         for url in urlsToDelete {
             print(url)
             do {
-               try FileManager.default.removeItem(at: url)
+                try FileManager.default.removeItem(at: url)
+                recordingsCount -= 1
             } catch {
                 print("File could not be deleted!")
             }
         }
-        
-        fetchRecordings()
     }
     
 }

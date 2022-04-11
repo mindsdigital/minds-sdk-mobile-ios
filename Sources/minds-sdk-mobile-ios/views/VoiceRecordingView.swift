@@ -13,40 +13,96 @@ public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @State var showActionSheet: Bool = false
+    @State var selectedRecording: RecordingItem? = nil
+    @State var selectedRecordingIndex: Int = 0
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     
     public init() {
         
     }
     
+    func fetchRecording(key: String) -> URL? {
+        let fileManager = FileManager.default
+        let documentDirectory = fileManager.temporaryDirectory
+        let directoryContents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil)
+        for audio in directoryContents {
+            if (audio.lastPathComponent.starts(with: key)) {
+                return audio
+            }
+        }
+        return nil
+    }
+    
     public var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             ScrollView {
                 VStack(alignment: .leading) {
-                    
-                    ForEach(uiMessagesSdk.recordingItems, id: \.self) { recordingItem in
-                        Text(recordingItem.key)
-                            .foregroundColor(uiConfigSdk.textColor)
+                    ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
+                        Text(uiMessagesSdk.recordingItems[i].key)
+                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.textColor)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                     .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
                             )
-                        Text(recordingItem.value)
-                            .foregroundColor(uiConfigSdk.textColor)
+                        Text(uiMessagesSdk.recordingItems[i].value)
+                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.textColor)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                     .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
                             )
-                        ForEach(audioRecorder.recordings, id: \.createdAt) { recording in
-                            RecordingItemView(audioURL: recording.fileURL,
+                        if (uiMessagesSdk.recordingItems[i].recording != nil) {
+                            RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
+                                              displayRemoveButton: i == audioRecorder.recordingsCount - 1,
                                               onDeleteAction: {
+                                selectedRecording = uiMessagesSdk.recordingItems[i]
+                                selectedRecordingIndex = i
                                 self.showActionSheet = true
                             })
                         }
                     }
                 }
+                .padding(.horizontal)
             }
-            .padding()
             
-            BottomRecordingView(audioRecorder: audioRecorder)
+            // Bottom Recording View
+            VStack {
+                Divider()
+                Group {
+                    Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
+                        .foregroundColor(uiConfigSdk.textColor)
+                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                        )
+                        .padding(.top, 5)
+                    
+                    if audioRecorder.recording {
+                        Button(action: {
+                            self.audioRecorder.stopRecording()
+                            let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
+                            uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording = audio
+                            audioRecorder.recordingsCount += 1
+                        }) {
+                            Image(systemName: "pause.fill")
+                                .foregroundColor(Color.white)
+                        }
+                        .frame(width: 56, height: 56)
+                        .background(Color(.systemBlue))
+                        .cornerRadius(100)
+                    } else {
+                        Button(action: {
+                            if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
+                                self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
+                            }
+                        }) {
+                            Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                        }
+                        .frame(width: 56, height: 56)
+                        .background(Color(.systemBlue))
+                        .cornerRadius(100)
+                    }
+                }
+                .padding(.horizontal)
+            }
         }
         .actionSheet(isPresented: $showActionSheet) {
             ActionSheet(title: Text(uiMessagesSdk.deleteMessageTitle),
@@ -57,6 +113,12 @@ public struct VoiceRecordingView: View {
                             .destructive(
                                 Text(uiMessagesSdk.confirmDeleteButtonLabel),
                                 action: {
+                                    if (selectedRecording != nil && selectedRecording!.recording != nil) {
+                                        audioRecorder.deleteRecording(urlsToDelete: [
+                                            selectedRecording!.recording!
+                                        ])
+                                        uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
+                                    }
                                 }
                             )
                         ]
