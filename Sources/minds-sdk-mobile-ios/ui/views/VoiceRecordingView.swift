@@ -39,12 +39,12 @@ public struct VoiceRecordingView: View {
                 VStack(alignment: .leading) {
                     ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
                         Text(uiMessagesSdk.recordingItems[i].key)
-                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.textColor)
+                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                     .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
                             )
                         Text(uiMessagesSdk.recordingItems[i].value)
-                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.textColor)
+                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                     .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
                             )
@@ -81,10 +81,11 @@ public struct VoiceRecordingView: View {
                             audioRecorder.recordingsCount += 1
                         }) {
                             Image(systemName: "pause.fill")
+                                .font(.system(size: 24))
                                 .foregroundColor(Color.white)
                         }
                         .frame(width: 56, height: 56)
-                        .background(Color(.systemBlue))
+                        .background(uiConfigSdk.hexVariant400)
                         .cornerRadius(100)
                     } else {
                         Button(action: {
@@ -95,9 +96,10 @@ public struct VoiceRecordingView: View {
                             Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
                                 .resizable()
                                 .frame(width: 24, height: 24)
+                                .foregroundColor(uiConfigSdk.hexVariant400)
                         }
                         .frame(width: 56, height: 56)
-                        .background(Color(.systemBlue))
+                        .background(uiConfigSdk.hexVariant400)
                         .cornerRadius(100)
                     }
                 }

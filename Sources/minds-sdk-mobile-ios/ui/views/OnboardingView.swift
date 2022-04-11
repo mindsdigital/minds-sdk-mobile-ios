@@ -55,20 +55,20 @@ public struct OnboardingView: View {
                         )
                         .frame(maxWidth: .infinity, maxHeight: 40)
                 }
-                .fillButtonStyle(backgroundColor: Color(.systemBlue))
+                .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
                 
                 if (uiConfigSdk.showBiometricsSkipButton) {
                     Button(action: {
                         presentation.wrappedValue.dismiss()
                     }) {
                         Text(uiMessagesSdk.skipRecordingButtonLabel)
-                            .foregroundColor(uiConfigSdk.textColor)
+                            .foregroundColor(uiConfigSdk.hexVariant400)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                     .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                             )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
-                    .outlinedButtonStyle(outlineColor: uiConfigSdk.textColor)
+                    .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
                 }
             }
             .frame(maxHeight: .infinity, alignment: .bottom)

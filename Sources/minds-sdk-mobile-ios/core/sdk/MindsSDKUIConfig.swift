@@ -17,6 +17,30 @@ public class MindsSDKUIConfig: ObservableObject {
         
     }
     
+    public func setColorSwatch(
+        hexVariant50: Color,
+        hexVariant100: Color,
+        hexVariant200: Color,
+        hexVariant300: Color,
+        hexVariant400: Color,
+        hexVariant500: Color,
+        hexVariant600: Color,
+        hexVariant700: Color,
+        hexVariant800: Color,
+        hexVariant900: Color
+    ) {
+        self.hexVariant50 = hexVariant50
+        self.hexVariant100 = hexVariant100
+        self.hexVariant200 = hexVariant200
+        self.hexVariant300 = hexVariant300
+        self.hexVariant400 = hexVariant400
+        self.hexVariant500 = hexVariant500
+        self.hexVariant600 = hexVariant600
+        self.hexVariant700 = hexVariant700
+        self.hexVariant800 = hexVariant800
+        self.hexVariant900 = hexVariant900
+    }
+    
     // @Published public var colorSwatch: String = "" // todo: change this accordingly
     @Published public var textColor: Color = Color(.label)
     @Published public var showThankYouScreen: Bool = true // todo: unused for now
@@ -28,4 +52,15 @@ public class MindsSDKUIConfig: ObservableObject {
     @Published public var sampleRate: Int = 16000
     @Published public var channelConfig: String = "" // todo: unused for now
     @Published public var linearPCMBitDepthKey: Int = 16
+
+    @Published public var hexVariant50: Color = Color(hex: "fff7e0")
+    @Published public var hexVariant100: Color = Color(hex: "ffe9b0")
+    @Published public var hexVariant200: Color = Color(hex: "feda7e")
+    @Published public var hexVariant300: Color = Color(hex: "fdcd49")
+    @Published public var hexVariant400: Color = Color(hex: "fcc11f")
+    @Published public var hexVariant500: Color = Color(hex: "fbb700")
+    @Published public var hexVariant600: Color = Color(hex: "fba900")
+    @Published public var hexVariant700: Color = Color(hex: "fb9600")
+    @Published public var hexVariant800: Color = Color(hex: "fb8500")
+    @Published public var hexVariant900: Color = Color(hex: "fa6400")
 }

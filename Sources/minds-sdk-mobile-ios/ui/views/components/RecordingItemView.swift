@@ -14,6 +14,7 @@ public struct RecordingItemView: View {
     var displayRemoveButton: Bool
     var onDeleteAction: () -> Void = {}
     @ObservedObject var audioPlayer: AudioPlayer
+    @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     
     public init(audioURL: URL,
                 displayRemoveButton: Bool,
@@ -35,16 +36,19 @@ public struct RecordingItemView: View {
                 
             }) {
                 Image(systemName: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
+                    .foregroundColor(uiConfigSdk.hexVariant400)
             }
             
             Slider(value: $audioPlayer.currentTime, in: 0...max(0, audioPlayer.audioPlayer.currentItem!.duration.seconds), onEditingChanged: { isEditing in
             })
+                .accentColor(uiConfigSdk.hexVariant400)
             
             if (displayRemoveButton) {
                 Button(action: {
                     onDeleteAction()
                 }) {
                     Image(systemName: "trash.fill")
+                        .foregroundColor(uiConfigSdk.hexVariant400)
                 }
             }
         }
