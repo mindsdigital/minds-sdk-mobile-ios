@@ -8,6 +8,13 @@
 import SwiftUI
 import Alamofire
 
+enum Screen {
+    case main
+    case loading
+    case error
+    case thankYou
+}
+
 @available(macOS 11, *)
 @available(iOS 14.0, *)
 public struct VoiceRecordingView: View {
@@ -17,6 +24,8 @@ public struct VoiceRecordingView: View {
     @State var showActionSheet: Bool = false
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
+    @State var hideBackButton: Bool = false
+    @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     
     public init() {
@@ -36,138 +45,178 @@ public struct VoiceRecordingView: View {
     }
     
     public var body: some View {
-        VStack(alignment: .leading) {
-            ScrollView {
+        Group {
+            if currentScreen == Screen.main {
                 VStack(alignment: .leading) {
-                    ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
-                        Text(uiMessagesSdk.recordingItems[i].key)
-                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                    .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
-                            )
-                        Text(uiMessagesSdk.recordingItems[i].value)
-                            .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                    .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
-                            )
-                        if (uiMessagesSdk.recordingItems[i].recording != nil) {
-                            RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
-                                              displayRemoveButton: i == audioRecorder.recordingsCount - 1,
-                                              onDeleteAction: {
-                                selectedRecording = uiMessagesSdk.recordingItems[i]
-                                selectedRecordingIndex = i
-                                self.showActionSheet = true
-                            })
-                        }
-                    }
-                }
-                .padding(.horizontal)
-            }
-            
-            // Bottom Recording View
-            VStack {
-                Divider()
-                Group {
-                    Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
-                        .foregroundColor(uiConfigSdk.textColor)
-                        .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                        )
-                        .padding(.top, 5)
-                    
-                    if audioRecorder.recording {
-                        Button(action: {
-                            self.audioRecorder.stopRecording()
-                            let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
-                            uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording = audio
-                            audioRecorder.recordingsCount += 1
-                        }) {
-                            Image(systemName: "pause.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(Color.white)
-                        }
-                        .frame(width: 56, height: 56)
-                        .background(uiConfigSdk.hexVariant400)
-                        .cornerRadius(100)
-                    } else {
-                        Button(action: {
-                            if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
-                                self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
-                            } else {
-                                do {
-                                    // array of dictionaries
-                                    var audios: [[String: String]] = []
-                                    for recordingItem in uiMessagesSdk.recordingItems {
-                                        let data = try Data(contentsOf: recordingItem.recording!) // todo: change
-                                        let encodedString = data.base64EncodedString()
-                                        let audio: [String: String] = [
-                                            "extension": "wav",
-                                            "content": encodedString,
-                                            "rate": "8K", // todo: change this
-                                        ]
-                                        audios.append(audio)
-                                    }
-                                    
-                                    // todo: move this code
-                                    let debugHost = "https://staging-speaker-api.minds.digital/v1.0/speaker/enrollment/multi-audio"
-                                    
-                                    let parameters: [String: Any] = [
-                                        "cpf" : sdk.cpf,
-                                        "external_id" : sdk.externalId,
-                                        "phone_number" : sdk.phoneNumber,
-                                        "audios" : audios,
-                                    ]
-                                    let headers: HTTPHeaders = [
-                                        "authorization": "Bearer " + sdk.token
-                                    ]
-                                    AF.request(debugHost,
-                                               method: .post,
-                                               parameters: parameters,
-                                               encoding: JSONEncoding.default,
-                                               headers: headers)
-                                        .responseJSON { response in
-                                            debugPrint(response)
-                                        }
-                                    
-                                } catch {
-                                    print("Unable to load data: \(error)")
+                    ScrollView {
+                        VStack(alignment: .leading) {
+                            ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
+                                Text(uiMessagesSdk.recordingItems[i].key)
+                                    .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
+                                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                                            .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
+                                    )
+                                Text(uiMessagesSdk.recordingItems[i].value)
+                                    .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
+                                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                                            .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
+                                    )
+                                if (uiMessagesSdk.recordingItems[i].recording != nil) {
+                                    RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
+                                                      displayRemoveButton: i == audioRecorder.recordingsCount - 1,
+                                                      onDeleteAction: {
+                                        selectedRecording = uiMessagesSdk.recordingItems[i]
+                                        selectedRecordingIndex = i
+                                        self.showActionSheet = true
+                                    })
                                 }
                             }
-                            
-                        }) {
-                            Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(uiConfigSdk.hexVariant400)
                         }
-                        .frame(width: 56, height: 56)
-                        .background(uiConfigSdk.hexVariant400)
-                        .cornerRadius(100)
+                        .padding(.horizontal)
+                    }
+                    
+                    // Bottom Recording View
+                    VStack {
+                        Divider()
+                        Group {
+                            if (audioRecorder.recordingsCount == uiMessagesSdk.recordingItems.count) {
+                                Button(action: {
+                                    do {
+                                        // array of dictionaries
+                                        var audios: [[String: String]] = []
+                                        for recordingItem in uiMessagesSdk.recordingItems {
+                                            let data = try Data(contentsOf: recordingItem.recording!) // todo: change
+                                            let encodedString = data.base64EncodedString()
+                                            let audio: [String: String] = [
+                                                "extension": "wav",
+                                                "content": encodedString,
+                                                "rate": "8K", // todo: change this
+                                            ]
+                                            audios.append(audio)
+                                        }
+                                        
+                                        // todo: move this code
+                                        let debugHost = "https://staging-speaker-api.minds.digital/v1.0/speaker/enrollment/multi-audio"
+                                        
+                                        let parameters: [String: Any] = [
+                                            "cpf" : sdk.cpf,
+                                            "external_id" : sdk.externalId,
+                                            "phone_number" : sdk.phoneNumber,
+                                            "audios" : audios,
+                                        ]
+                                        let headers: HTTPHeaders = [
+                                            "authorization": "Bearer " + sdk.token
+                                        ]
+                                        hideBackButton = true
+                                        currentScreen = Screen.loading
+                                        AF.request(debugHost,
+                                                   method: .post,
+                                                   parameters: parameters,
+                                                   encoding: JSONEncoding.default,
+                                                   headers: headers)
+                                            .responseJSON { response in
+                                                if (response.response == nil) {
+                                                    print("Empty response")
+                                                    return;
+                                                }
+                                                if (response.response!.statusCode == 200) {
+                                                    currentScreen = Screen.thankYou
+                                                } else {
+                                                    currentScreen = Screen.error
+                                                }
+                                            }
+                                        
+                                    } catch {
+                                        print("Unable to load data: \(error)")
+                                    }
+                                }) {
+                                    Text("Enviar gravações")
+                                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                        )
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                }
+                                .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
+                            } else {
+                                
+                                Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
+                                    .foregroundColor(uiConfigSdk.textColor)
+                                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                    )
+                                    .padding(.top, 5)
+                                
+                                if audioRecorder.recording {
+                                    Button(action: {
+                                        self.audioRecorder.stopRecording()
+                                        let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
+                                        uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording = audio
+                                        audioRecorder.recordingsCount += 1
+                                    }) {
+                                        Image(systemName: "pause.fill")
+                                            .font(.system(size: 24))
+                                            .foregroundColor(Color.white)
+                                    }
+                                    .frame(width: 56, height: 56)
+                                    .background(uiConfigSdk.hexVariant400)
+                                    .cornerRadius(100)
+                                } else {
+                                    Button(action: {
+                                        if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
+                                            self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
+                                        }
+                                    }) {
+                                        Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundColor(uiConfigSdk.hexVariant400)
+                                    }
+                                    .frame(width: 56, height: 56)
+                                    .background(uiConfigSdk.hexVariant400)
+                                    .cornerRadius(100)
+                                }
+                                
+                            }
+                        }
+                        .padding(.horizontal)
                     }
                 }
-                .padding(.horizontal)
+                .actionSheet(isPresented: $showActionSheet) {
+                    ActionSheet(title: Text(uiMessagesSdk.deleteMessageTitle),
+                                message: Text(uiMessagesSdk.deleteMessageBody),
+                                buttons: [
+                                    .cancel(
+                                        Text(uiMessagesSdk.dismissDeleteButtonLabel)),
+                                    .destructive(
+                                        Text(uiMessagesSdk.confirmDeleteButtonLabel),
+                                        action: {
+                                            if (selectedRecording != nil && selectedRecording!.recording != nil) {
+                                                audioRecorder.deleteRecording(urlsToDelete: [
+                                                    selectedRecording!.recording!
+                                                ])
+                                                uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
+                                            }
+                                        }
+                                    )
+                                ]
+                    )
+                }
+            } else if (currentScreen == Screen.loading) {
+                LoadingView()
+            } else if (currentScreen == Screen.error) {
+                ErrorView(action: {
+                    currentScreen = Screen.main
+                    hideBackButton = false
+                })
+            } else if (currentScreen == Screen.thankYou) {
+                SuccessView(action: {
+                    // todo
+                    hideBackButton = false
+                })
             }
         }
-        .actionSheet(isPresented: $showActionSheet) {
-            ActionSheet(title: Text(uiMessagesSdk.deleteMessageTitle),
-                        message: Text(uiMessagesSdk.deleteMessageBody),
-                        buttons: [
-                            .cancel(
-                                Text(uiMessagesSdk.dismissDeleteButtonLabel)),
-                            .destructive(
-                                Text(uiMessagesSdk.confirmDeleteButtonLabel),
-                                action: {
-                                    if (selectedRecording != nil && selectedRecording!.recording != nil) {
-                                        audioRecorder.deleteRecording(urlsToDelete: [
-                                            selectedRecording!.recording!
-                                        ])
-                                        uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
-                                    }
-                                }
-                            )
-                        ]
-            )
-        }
+        .navigationBarBackButtonHidden(hideBackButton)
+        
     }
 }
 

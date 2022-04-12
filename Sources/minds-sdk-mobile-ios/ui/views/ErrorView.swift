@@ -12,9 +12,10 @@ import SwiftUI
 public struct ErrorView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
+    var action: () -> Void = {}
     
-    public init() {
-        
+    public init(action: @escaping () -> Void) {
+        self.action = action
     }
     
     public var body: some View {
@@ -35,7 +36,7 @@ public struct ErrorView: View {
             }
             
             Button(action: {
-                
+                action()
             }) {
                 Text(uiMessagesSdk.genericErrorButtonLabel)
                     .font(uiConfigSdk.fontFamily.isEmpty ?
@@ -58,6 +59,8 @@ struct ErrorView_Previews: PreviewProvider {
         uiMessagesSdk.genericErrorMessageTitle = "Algo deu errado"
         uiMessagesSdk.genericErrorMessageBody = "Ocorreu um erro de conexão entre nossos servidores. Por favor, tente novamente."
         uiMessagesSdk.genericErrorButtonLabel = "Tentar novamente"
-        return ErrorView()
+        return ErrorView(action: {
+            
+        })
     }
 }

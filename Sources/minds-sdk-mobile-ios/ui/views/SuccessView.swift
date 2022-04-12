@@ -12,9 +12,10 @@ import SwiftUI
 public struct SuccessView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
+    var action: () -> Void = {}
     
-    public init() {
-        
+    public init(action: @escaping () -> Void) {
+        self.action = action
     }
     
     public var body: some View {
@@ -35,7 +36,7 @@ public struct SuccessView: View {
             }
             
             Button(action: {
-                
+                action()
             }) {
                 Text(uiMessagesSdk.successButtonLabel)
                     .font(uiConfigSdk.fontFamily.isEmpty ?
@@ -58,6 +59,8 @@ struct SuccessView_Previews: PreviewProvider {
         uiMessagesSdk.successMessageTitle = "Tudo certo!"
         uiMessagesSdk.successMessageBody = "Biometria por voz registrada com sucesso."
         uiMessagesSdk.successButtonLabel = "Continuar"
-        return SuccessView()
+        return SuccessView(action: {
+            
+        })
     }
 }
