@@ -15,6 +15,7 @@ import Combine
 class AudioRecorder: NSObject, ObservableObject {
     
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
+    @ObservedObject var sdk = MindsSDK.shared
     
     let objectWillChange = PassthroughSubject<AudioRecorder, Never>()
     
@@ -39,13 +40,13 @@ class AudioRecorder: NSObject, ObservableObject {
         }
         
         let documentPath = FileManager.default.temporaryDirectory
-        let audioFilename = documentPath.appendingPathComponent("\(key).m4a")
+        let audioFilename = documentPath.appendingPathComponent("\(key).wav")
         
         let settings = [
-            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-            AVSampleRateKey: uiConfigSdk.sampleRate,
+            AVFormatIDKey: Int(kAudioFormatLinearPCM),
+            AVSampleRateKey: sdk.sampleRate,
             AVNumberOfChannelsKey: 1,
-            AVLinearPCMBitDepthKey: uiConfigSdk.linearPCMBitDepthKey,
+            AVLinearPCMBitDepthKey: sdk.linearPCMBitDepthKey,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
         ]
         

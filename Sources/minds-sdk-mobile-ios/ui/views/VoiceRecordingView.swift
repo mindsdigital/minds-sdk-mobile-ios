@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Alamofire
 
 @available(macOS 11, *)
 @available(iOS 14.0, *)
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
+    @ObservedObject var sdk = MindsSDK.shared
     @State var showActionSheet: Bool = false
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
@@ -91,7 +93,47 @@ public struct VoiceRecordingView: View {
                         Button(action: {
                             if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
                                 self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
+                            } else {
+                                do {
+                                    // array of dictionaries
+                                    var audios: [[String: String]] = []
+                                    for recordingItem in uiMessagesSdk.recordingItems {
+                                        let data = try Data(contentsOf: recordingItem.recording!) // todo: change
+                                        let encodedString = data.base64EncodedString()
+                                        let audio: [String: String] = [
+                                            "extension": "wav",
+                                            "content": encodedString,
+                                            "rate": "8K", // todo: change this
+                                        ]
+                                        audios.append(audio)
+                                    }
+                                    
+                                    // todo: move this code
+                                    let debugHost = "https://staging-speaker-api.minds.digital/v1.0/speaker/enrollment/multi-audio"
+                                    
+                                    let parameters: [String: Any] = [
+                                        "cpf" : sdk.cpf,
+                                        "external_id" : sdk.externalId,
+                                        "phone_number" : sdk.phoneNumber,
+                                        "audios" : audios,
+                                    ]
+                                    let headers: HTTPHeaders = [
+                                        "authorization": "Bearer " + sdk.token
+                                    ]
+                                    AF.request(debugHost,
+                                               method: .post,
+                                               parameters: parameters,
+                                               encoding: JSONEncoding.default,
+                                               headers: headers)
+                                        .responseJSON { response in
+                                            debugPrint(response)
+                                        }
+                                    
+                                } catch {
+                                    print("Unable to load data: \(error)")
+                                }
                             }
+                            
                         }) {
                             Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
                                 .resizable()
