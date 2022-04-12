@@ -14,6 +14,8 @@ public struct OnboardingView: View {
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @Environment(\.presentationMode) var presentation
     
+    @State var showActionSheet: Bool = false
+    
     public init() {
     }
     
@@ -58,7 +60,7 @@ public struct OnboardingView: View {
                 
                 if (uiConfigSdk.showBiometricsSkipButton) {
                     Button(action: {
-                        presentation.wrappedValue.dismiss()
+                        self.showActionSheet = true
                     }) {
                         Text(uiMessagesSdk.skipRecordingButtonLabel)
                             .foregroundColor(uiConfigSdk.hexVariant400)
@@ -73,6 +75,21 @@ public struct OnboardingView: View {
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding()
+        .actionSheet(isPresented: $showActionSheet) {
+            ActionSheet(title: Text(uiMessagesSdk.skipRecordingMessageTitle),
+                        message: Text(uiMessagesSdk.skipRecordingMessageBody),
+                        buttons: [
+                            .cancel(
+                                Text(uiMessagesSdk.skiprecordingDismissLabel)),
+                            .default(
+                                Text(uiMessagesSdk.skipRecordingConfirmLabel),
+                                action: {
+                                    presentation.wrappedValue.dismiss()
+                                }
+                            )
+                        ]
+            )
+        }
         .onAppear {
             for i in 0..<uiMessagesSdk.recordingItems.count {
                 uiMessagesSdk.recordingItems[i].recording = nil

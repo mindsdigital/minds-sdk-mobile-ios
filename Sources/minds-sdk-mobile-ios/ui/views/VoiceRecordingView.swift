@@ -130,7 +130,7 @@ public struct VoiceRecordingView: View {
                                         print("Unable to load data: \(error)")
                                     }
                                 }) {
-                                    Text("Enviar gravações")
+                                    Text(uiMessagesSdk.sendAudioButtonLabel)
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
                                                 .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                                         )
