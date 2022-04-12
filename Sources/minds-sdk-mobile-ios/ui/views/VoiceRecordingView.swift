@@ -153,7 +153,7 @@ public struct VoiceRecordingView: View {
                                         uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording = audio
                                         audioRecorder.recordingsCount += 1
                                     }) {
-                                        Image(systemName: "pause.fill")
+                                        Image(systemName: "stop.fill")
                                             .font(.system(size: 24))
                                             .foregroundColor(Color.white)
                                     }

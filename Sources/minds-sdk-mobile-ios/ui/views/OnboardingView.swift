@@ -15,7 +15,6 @@ public struct OnboardingView: View {
     @Environment(\.presentationMode) var presentation
     
     public init() {
-        
     }
     
     public var body: some View {
@@ -74,6 +73,11 @@ public struct OnboardingView: View {
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding()
+        .onAppear {
+            for i in 0..<uiMessagesSdk.recordingItems.count {
+                uiMessagesSdk.recordingItems[i].recording = nil
+            }
+        }
     }
 }
 

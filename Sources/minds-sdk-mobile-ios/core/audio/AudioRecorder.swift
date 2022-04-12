@@ -23,6 +23,10 @@ class AudioRecorder: NSObject, ObservableObject {
     
     @Published var recordingsCount: Int = 0
     
+    override init() {
+        recordingsCount = 0
+    }
+    
     var recording = false {
         didSet {
             objectWillChange.send(self)
