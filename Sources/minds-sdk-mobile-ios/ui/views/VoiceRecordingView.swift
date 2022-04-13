@@ -45,10 +45,11 @@ public struct VoiceRecordingView: View {
     }
     
     public var body: some View {
-        Group {
+        VStack {
             if currentScreen == Screen.main {
                 VStack(alignment: .leading) {
                     ScrollView {
+                        ScrollViewReader { reader in
                         VStack(alignment: .leading) {
                             ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
                                 Text(uiMessagesSdk.recordingItems[i].key)
@@ -61,6 +62,7 @@ public struct VoiceRecordingView: View {
                                     .font(uiConfigSdk.fontFamily.isEmpty ?
                                             .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
                                     )
+                                    .id(uiMessagesSdk.recordingItems[i].key)
                                 if (uiMessagesSdk.recordingItems[i].recording != nil) {
                                     RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
                                                       displayRemoveButton: i == audioRecorder.recordingsCount - 1,
@@ -69,10 +71,21 @@ public struct VoiceRecordingView: View {
                                         selectedRecordingIndex = i
                                         self.showActionSheet = true
                                     })
+                                        .id(uiMessagesSdk.recordingItems[i].key + "recording")
                                 }
                             }
                         }
                         .padding(.horizontal)
+                        .id("main")
+                        .onChange(of: audioRecorder.recordingsCount) { count in
+                            if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count && uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording != nil) {
+                                reader.scrollTo(uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key + "recording")
+                            } else {
+                                reader.scrollTo(uiMessagesSdk.recordingItems[min(uiMessagesSdk.recordingItems.count - 1, count)].key)
+                            }
+                        }
+                        
+                    }
                     }
                     
                     // Bottom Recording View
@@ -82,20 +95,24 @@ public struct VoiceRecordingView: View {
                             if (audioRecorder.recordingsCount == uiMessagesSdk.recordingItems.count) {
                                 Button(action: {
                                     do {
+                                        var rate = "8K"
+                                        if sdk.linearPCMBitDepthKey != 8 {
+                                            rate = "16K"
+                                        }
                                         // array of dictionaries
                                         var audios: [[String: String]] = []
                                         for recordingItem in uiMessagesSdk.recordingItems {
-                                            let data = try Data(contentsOf: recordingItem.recording!) // todo: change
+                                            let data = try Data(contentsOf: recordingItem.recording!)
                                             let encodedString = data.base64EncodedString()
                                             let audio: [String: String] = [
                                                 "extension": "wav",
                                                 "content": encodedString,
-                                                "rate": "8K", // todo: change this
+                                                "rate": rate,
                                             ]
                                             audios.append(audio)
                                         }
                                         
-                                        // todo: move this code
+                                        // todo: change host depending on env manually
                                         let debugHost = "https://staging-speaker-api.minds.digital/v1.0/speaker/enrollment/multi-audio"
                                         
                                         let parameters: [String: Any] = [
