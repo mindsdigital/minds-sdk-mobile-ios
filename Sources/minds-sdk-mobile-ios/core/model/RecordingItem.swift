@@ -9,6 +9,12 @@ import Foundation
 
 public struct RecordingItem: Identifiable, Codable, Hashable {
     public init(key: String, value: String, recording: URL? = nil) {
+        guard key.count > 0 && key.count <= 30 else {
+            preconditionFailure("Invalid recording key length")
+        }
+        guard value.count >= 0 && value.count <= 300 else {
+            preconditionFailure("Invalid recording value length")
+        }
         self.key = key
         self.value = value
         self.recording = recording
