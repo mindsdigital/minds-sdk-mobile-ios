@@ -21,29 +21,32 @@ public struct OnboardingView: View {
     
     public var body: some View {
         ZStack(alignment: .leading) {
-            VStack(alignment: .leading) {
-                Text(uiMessagesSdk.onboardingTitle)
-                    .foregroundColor(uiConfigSdk.textColor)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
-                    )
-                    .multilineTextAlignment(.leading)
-                    .padding(.bottom, 20)
-                Text(uiMessagesSdk.hintTextTitle)
-                    .foregroundColor(uiConfigSdk.textColor)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                    )
-                    .padding(.bottom, 5)
+            ScrollView {
                 VStack(alignment: .leading) {
-                    ForEach(uiMessagesSdk.hintTexts, id: \.self) { hintText in
-                        Text("• " + hintText)
-                            .foregroundColor(uiConfigSdk.textColor)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                            )
+                    Text(uiMessagesSdk.onboardingTitle)
+                        .foregroundColor(uiConfigSdk.textColor)
+                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
+                        )
+                        .multilineTextAlignment(.leading)
+                        .padding(.bottom, 20)
+                    Text(uiMessagesSdk.hintTextTitle)
+                        .foregroundColor(uiConfigSdk.textColor)
+                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                        )
+                        .padding(.bottom, 5)
+                    VStack(alignment: .leading) {
+                        ForEach(uiMessagesSdk.hintTexts, id: \.self) { hintText in
+                            Text("• " + hintText)
+                                .foregroundColor(uiConfigSdk.textColor)
+                                .font(uiConfigSdk.fontFamily.isEmpty ?
+                                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                )
+                        }
                     }
                 }
+                .padding(.bottom, 90)
             }
             .frame(maxHeight: .infinity, alignment: .top)
             
