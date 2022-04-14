@@ -15,8 +15,10 @@ public struct OnboardingView: View {
     @Environment(\.presentationMode) var presentation
     
     @State var showActionSheet: Bool = false
+    @Binding var voiceRecordingFlowActive: Bool
     
-    public init() {
+    public init(voiceRecordingFlowActive: Binding<Bool>) {
+        self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
     
     public var body: some View {
@@ -59,7 +61,7 @@ public struct OnboardingView: View {
                     .ignoresSafeArea()
                     .frame(maxWidth: .infinity, maxHeight: 90)
                 VStack {
-                    NavigationLink(destination: VoiceRecordingView()) {
+                    NavigationLink(destination: VoiceRecordingView(voiceRecordingFlowActive: $voiceRecordingFlowActive)) {
                         Text(uiMessagesSdk.startRecordingButtonLabel)
                             .foregroundColor(Color.white)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
@@ -67,6 +69,7 @@ public struct OnboardingView: View {
                             )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
+                    .isDetailLink(false)
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
                     
                     if (uiConfigSdk.showBiometricsSkipButton) {
@@ -107,24 +110,5 @@ public struct OnboardingView: View {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
         }
-    }
-}
-
-@available(macOS 11, *)
-@available(iOS 14.0, *)
-struct OnboardingView_Previews: PreviewProvider {
-    static var previews: some View {
-        let uiMessagesSdk = MindsSDKUIMessages.shared
-        uiMessagesSdk.onboardingTitle = "Podemos iniciar a biometria por voz ?"
-        uiMessagesSdk.hintTextTitle = "Dicas"
-        uiMessagesSdk.hintTexts = [
-            "Não peça para outra pessoa gravar",
-            "Esteja em um ambiente sem barulho",
-            "Fale próximo ao seu telefone",
-        ]
-        uiMessagesSdk.startRecordingButtonLabel = "Sim, iniciar gravações"
-        uiMessagesSdk.skipRecordingButtonLabel = "Não, pular biometria por voz"
-        
-        return OnboardingView()
     }
 }

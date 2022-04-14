@@ -27,9 +27,10 @@ public struct VoiceRecordingView: View {
     @State var hideBackButton: Bool = false
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
+    @Binding var voiceRecordingFlowActive: Bool
     
-    public init() {
-        
+    public init(voiceRecordingFlowActive: Binding<Bool>) {
+        self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
     
     func fetchRecording(key: String) -> URL? {
@@ -228,34 +229,12 @@ public struct VoiceRecordingView: View {
                 })
             } else if (currentScreen == Screen.thankYou) {
                 SuccessView(action: {
-                    // todo
                     hideBackButton = false
+                    voiceRecordingFlowActive = false
                 })
             }
         }
         .navigationBarBackButtonHidden(hideBackButton)
         
-    }
-}
-
-@available(macOS 11, *)
-@available(iOS 14.0, *)
-struct VoiceRecordingView_Previews: PreviewProvider {
-    static var previews: some View {
-        let uiMessagesSdk = MindsSDKUIMessages.shared
-        var recordingItems: [RecordingItem] = []
-        recordingItems.append(RecordingItem(key: "NOME COMPLETO",
-                                            value: "Divino Borges de Oliveira Filho"))
-        recordingItems.append(RecordingItem(key: "DATA DE NASCIMENTO",
-                                            value: "18/09/1967"))
-        uiMessagesSdk.recordingItems = recordingItems
-        uiMessagesSdk.recordingIndicativeText = "Gravando... Leia o texto acima"
-        uiMessagesSdk.instructionTextForRecording = "Aperte e solte o botão abaixo para iniciar a gravação"
-        uiMessagesSdk.deleteMessageTitle = "Exclusão de áudio"
-        uiMessagesSdk.deleteMessageBody = "Tem certeza que deseja excluir a sua gravação? Você terá que gravar novamente"
-        uiMessagesSdk.confirmDeleteButtonLabel = "Sim, excluir áudio"
-        uiMessagesSdk.dismissDeleteButtonLabel = "Não, não excluir"
-        
-        return VoiceRecordingView()
     }
 }
