@@ -52,6 +52,7 @@ public struct RecordingItemView: View {
                         
                         if self.current >= audioPlayer.audioPlayer.currentItem!.duration.seconds {
                             self.audioPlayer.changeSliderValue(0.0)
+                            self.current = 0.0
                         }
                     }
 //                    else {
