@@ -44,7 +44,7 @@ public struct SuccessView: View {
                     )
                     .frame(maxWidth: .infinity, maxHeight: 40)
             }
-            .fillButtonStyle(backgroundColor: Color(.systemRed))
+            .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding()
