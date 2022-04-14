@@ -22,6 +22,7 @@ public struct OnboardingView: View {
     public var body: some View {
         ZStack(alignment: .leading) {
             ScrollView {
+                HStack {
                 VStack(alignment: .leading) {
                     Text(uiMessagesSdk.onboardingTitle)
                         .foregroundColor(uiConfigSdk.textColor)
@@ -46,38 +47,46 @@ public struct OnboardingView: View {
                         }
                     }
                 }
+                .padding(.horizontal)
                 .padding(.bottom, 90)
-            }
-            .frame(maxHeight: .infinity, alignment: .top)
-            
-            VStack {
-                NavigationLink(destination: VoiceRecordingView()) {
-                    Text(uiMessagesSdk.startRecordingButtonLabel)
-                        .foregroundColor(Color.white)
-                        .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                        )
-                        .frame(maxWidth: .infinity, maxHeight: 40)
+                    Spacer()
                 }
-                .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
-                
-                if (uiConfigSdk.showBiometricsSkipButton) {
-                    Button(action: {
-                        self.showActionSheet = true
-                    }) {
-                        Text(uiMessagesSdk.skipRecordingButtonLabel)
-                            .foregroundColor(uiConfigSdk.hexVariant400)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            
+            ZStack {
+                Color(UIColor.systemBackground)
+                    .ignoresSafeArea()
+                    .frame(maxWidth: .infinity, maxHeight: 90)
+                VStack {
+                    NavigationLink(destination: VoiceRecordingView()) {
+                        Text(uiMessagesSdk.startRecordingButtonLabel)
+                            .foregroundColor(Color.white)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                     .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                             )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
-                    .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
+                    .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
+                    
+                    if (uiConfigSdk.showBiometricsSkipButton) {
+                        Button(action: {
+                            self.showActionSheet = true
+                        }) {
+                            Text(uiMessagesSdk.skipRecordingButtonLabel)
+                                .foregroundColor(uiConfigSdk.hexVariant400)
+                                .font(uiConfigSdk.fontFamily.isEmpty ?
+                                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: 40)
+                        }
+                        .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
+                    }
                 }
+                .padding(.horizontal)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
-        .padding()
         .actionSheet(isPresented: $showActionSheet) {
             ActionSheet(title: Text(uiMessagesSdk.skipRecordingMessageTitle),
                         message: Text(uiMessagesSdk.skipRecordingMessageBody),
