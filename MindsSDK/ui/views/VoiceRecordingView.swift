@@ -184,7 +184,7 @@ public struct VoiceRecordingView: View {
                                             self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
                                         }
                                     }) {
-                                        Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
+                                        Image(uiImage: ImageProvider.image(named: "voice")!)
                                             .resizable()
                                             .frame(width: 24, height: 24)
                                             .foregroundColor(uiConfigSdk.hexVariant400)

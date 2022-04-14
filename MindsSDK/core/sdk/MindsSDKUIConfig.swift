@@ -41,8 +41,9 @@ public class MindsSDKUIConfig: ObservableObject {
         self.hexVariant900 = hexVariant900
     }
     
+    // @Published public var colorSwatch: String = "" // todo: change this accordingly
     @Published public var textColor: Color = Color(.label)
-    @Published public var showThankYouScreen: Bool = true
+    @Published public var showThankYouScreen: Bool = true // todo: unused for now
     @Published public var showBiometricsSkipButton: Bool = true
     @Published public var baseFontSize: CGFloat = 16
     @Published public var fontFamily: String = ""

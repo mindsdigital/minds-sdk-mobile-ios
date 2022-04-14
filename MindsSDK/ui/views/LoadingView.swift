@@ -21,7 +21,7 @@ public struct LoadingView: View {
         VStack {
             Spacer()
             if (uiConfigSdk.loadingImage.isEmpty) {
-                Image(uiImage: UIImage(named: "robot", in: .module, with: nil) ?? UIImage())
+                Image(uiImage: ImageProvider.image(named: "robot")!)
             } else {
                 Image(uiConfigSdk.loadingImage)
             }
