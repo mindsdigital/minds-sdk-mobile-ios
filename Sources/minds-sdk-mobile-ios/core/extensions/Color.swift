@@ -10,8 +10,8 @@ import SwiftUI
 
 @available(macOS 11, *)
 @available(iOS 14.0, *)
-extension Color {
-    init(hex string: String) {
+public extension Color {
+    public init(hex string: String) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if string.hasPrefix("#") {
             _ = string.removeFirst()

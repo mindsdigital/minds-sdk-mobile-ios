@@ -62,7 +62,7 @@ public struct VoiceRecordingView: View {
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
                                                 .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
                                         )
-                                        .id(uiMessagesSdk.recordingItems[i].key)
+                                        .id(uiMessagesSdk.recordingItems[i].id)
                                     if (uiMessagesSdk.recordingItems[i].recording != nil) {
                                         RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
                                                           displayRemoveButton: i == audioRecorder.recordingsCount - 1,
@@ -71,7 +71,7 @@ public struct VoiceRecordingView: View {
                                             selectedRecordingIndex = i
                                             self.showActionSheet = true
                                         })
-                                            .id(uiMessagesSdk.recordingItems[i].key + "recording")
+                                            .id(uiMessagesSdk.recordingItems[i].id + "recording")
                                     }
                                 }
                             }
@@ -79,9 +79,9 @@ public struct VoiceRecordingView: View {
                             .id("main")
                             .onChange(of: audioRecorder.recordingsCount) { count in
                                 if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count && uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording != nil) {
-                                    reader.scrollTo(uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key + "recording")
+                                    reader.scrollTo(uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id + "recording")
                                 } else {
-                                    reader.scrollTo(uiMessagesSdk.recordingItems[min(uiMessagesSdk.recordingItems.count - 1, count)].key)
+                                    reader.scrollTo(uiMessagesSdk.recordingItems[min(uiMessagesSdk.recordingItems.count - 1, count)].id)
                                 }
                             }
                             
@@ -167,7 +167,7 @@ public struct VoiceRecordingView: View {
                                 if audioRecorder.recording {
                                     Button(action: {
                                         self.audioRecorder.stopRecording()
-                                        let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
+                                        let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
                                         uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording = audio
                                         audioRecorder.recordingsCount += 1
                                     }) {
@@ -181,7 +181,7 @@ public struct VoiceRecordingView: View {
                                 } else {
                                     Button(action: {
                                         if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
-                                            self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key)
+                                            self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
                                         }
                                     }) {
                                         Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
