@@ -9,8 +9,8 @@ import Foundation
 
 @available(macOS 11, *)
 @available(iOS 14.0, *)
-public class MindsSDK: ObservableObject {
-    static public let shared = MindsSDK()
+public class MindsSDKConfig: ObservableObject {
+    static public let shared = MindsSDKConfig()
     
     public init() {
         
@@ -22,5 +22,6 @@ public class MindsSDK: ObservableObject {
     @Published public var phoneNumber: String = ""
     
     @Published public var sampleRate: Int = 16000
+    @Published public var channelConfig: String = "" // todo: unused for now
     @Published public var linearPCMBitDepthKey: Int = 16
 }

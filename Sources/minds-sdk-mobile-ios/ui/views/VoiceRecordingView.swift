@@ -20,7 +20,7 @@ enum Screen {
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
-    @ObservedObject var sdk = MindsSDK.shared
+    @ObservedObject var sdk = MindsSDKConfig.shared
     @State var showActionSheet: Bool = false
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
@@ -50,48 +50,48 @@ public struct VoiceRecordingView: View {
                 VStack(alignment: .leading) {
                     ScrollView {
                         ScrollViewReader { reader in
-                        VStack(alignment: .leading) {
-                            ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
-                                Text(uiMessagesSdk.recordingItems[i].key)
-                                    .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
-                                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                                            .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
-                                    )
-                                Text(uiMessagesSdk.recordingItems[i].value)
-                                    .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
-                                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                                            .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
-                                    )
-                                    .id(uiMessagesSdk.recordingItems[i].key)
-                                if (uiMessagesSdk.recordingItems[i].recording != nil) {
-                                    RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
-                                                      displayRemoveButton: i == audioRecorder.recordingsCount - 1,
-                                                      onDeleteAction: {
-                                        selectedRecording = uiMessagesSdk.recordingItems[i]
-                                        selectedRecordingIndex = i
-                                        self.showActionSheet = true
-                                    })
-                                        .id(uiMessagesSdk.recordingItems[i].key + "recording")
+                            VStack(alignment: .leading) {
+                                ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
+                                    Text(uiMessagesSdk.recordingItems[i].key)
+                                        .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
+                                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                                .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
+                                        )
+                                    Text(uiMessagesSdk.recordingItems[i].value)
+                                        .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
+                                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                                .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
+                                        )
+                                        .id(uiMessagesSdk.recordingItems[i].key)
+                                    if (uiMessagesSdk.recordingItems[i].recording != nil) {
+                                        RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
+                                                          displayRemoveButton: i == audioRecorder.recordingsCount - 1,
+                                                          onDeleteAction: {
+                                            selectedRecording = uiMessagesSdk.recordingItems[i]
+                                            selectedRecordingIndex = i
+                                            self.showActionSheet = true
+                                        })
+                                            .id(uiMessagesSdk.recordingItems[i].key + "recording")
+                                    }
                                 }
                             }
-                        }
-                        .padding(.horizontal)
-                        .id("main")
-                        .onChange(of: audioRecorder.recordingsCount) { count in
-                            if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count && uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording != nil) {
-                                reader.scrollTo(uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key + "recording")
-                            } else {
-                                reader.scrollTo(uiMessagesSdk.recordingItems[min(uiMessagesSdk.recordingItems.count - 1, count)].key)
+                            .padding(.horizontal)
+                            .id("main")
+                            .onChange(of: audioRecorder.recordingsCount) { count in
+                                if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count && uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording != nil) {
+                                    reader.scrollTo(uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].key + "recording")
+                                } else {
+                                    reader.scrollTo(uiMessagesSdk.recordingItems[min(uiMessagesSdk.recordingItems.count - 1, count)].key)
+                                }
                             }
+                            
                         }
-                        
-                    }
                     }
                     
                     // Bottom Recording View
                     VStack {
                         Divider()
-                        Group {
+                        VStack {
                             if (audioRecorder.recordingsCount == uiMessagesSdk.recordingItems.count) {
                                 Button(action: {
                                     do {
@@ -132,6 +132,7 @@ public struct VoiceRecordingView: View {
                                                    encoding: JSONEncoding.default,
                                                    headers: headers)
                                             .responseJSON { response in
+                                                debugPrint(response)
                                                 if (response.response == nil) {
                                                     print("Empty response")
                                                     return;
