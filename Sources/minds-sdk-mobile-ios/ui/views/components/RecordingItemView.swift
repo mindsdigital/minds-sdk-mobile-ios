@@ -5,6 +5,8 @@
 //  Created by Liviu Bosbiciu on 04.04.2022.
 //
 
+import Foundation
+import AVFoundation
 import SwiftUI
 
 @available(macOS 11, *)
@@ -15,6 +17,7 @@ public struct RecordingItemView: View {
     var onDeleteAction: () -> Void = {}
     @ObservedObject var audioPlayer: AudioPlayer
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
+    @State var current: TimeInterval = 0.0
     
     public init(audioURL: URL,
                 displayRemoveButton: Bool,
@@ -29,9 +32,9 @@ public struct RecordingItemView: View {
         HStack {
             Button(action: {
                 if audioPlayer.isPlaying {
-                    self.audioPlayer.stopPlayback() // todo: change "stop" with pause
+                    self.audioPlayer.pausePlayback()
                 } else {
-                    self.audioPlayer.startPlayback(audio: self.audioURL) // todo: add another parameter for start time
+                    self.audioPlayer.startPlayback(audio: self.audioURL)
                 }
                 
             }) {
@@ -39,9 +42,23 @@ public struct RecordingItemView: View {
                     .foregroundColor(uiConfigSdk.hexVariant400)
             }
             
-            Slider(value: $audioPlayer.currentTime, in: 0...max(0, audioPlayer.audioPlayer.currentItem!.duration.seconds), onEditingChanged: { isEditing in
+            Slider(value: $current, in: 0...max(0, audioPlayer.audioPlayer.currentItem!.duration.seconds), onEditingChanged: { isEditing in
+                self.audioPlayer.changeSliderValue(current)
             })
                 .accentColor(uiConfigSdk.hexVariant400)
+                .onReceive(audioPlayer.timer) { _ in
+                    if self.audioPlayer.isPlaying {
+                        self.current = Double(CMTimeGetSeconds(audioPlayer.audioPlayer.currentTime()))
+                        
+                        if self.current >= audioPlayer.audioPlayer.currentItem!.duration.seconds {
+                            self.audioPlayer.changeSliderValue(0.0)
+                        }
+                    }
+//                    else {
+//                        self.audioPlayer.isPlaying = false
+//                        self.audioPlayer.timer.upstream.connect().cancel()
+//                    }
+                }
             
             if (displayRemoveButton) {
                 Button(action: {

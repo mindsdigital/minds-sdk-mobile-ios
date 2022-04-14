@@ -27,10 +27,18 @@ public class AudioPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
         }
     }
     
-    @Published var currentTime: TimeInterval = 0
+    @Published var currentTime: TimeInterval = 0.0
+    
+    var timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
     
     var audioPlayer: AVPlayer!
     var timeObserverToken: Any?
+    
+    func changeSliderValue(_ timeInterval: TimeInterval) {
+        audioPlayer.pause()
+        isPlaying = false
+        currentTime = timeInterval
+    }
     
     func startPlayback (audio: URL) {
         let playbackSession = AVAudioSession.sharedInstance()
@@ -41,31 +49,15 @@ public class AudioPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
             print("Playing over the device's speakers failed")
         }
         
+        audioPlayer.seek(to: CMTime(seconds: currentTime, preferredTimescale: 1000000))
         audioPlayer.play()
         isPlaying = true
-        
-        let timeScale = CMTimeScale(NSEC_PER_SEC)
-        let time = CMTime(seconds: 0.1, preferredTimescale: timeScale)
-        timeObserverToken = audioPlayer.addPeriodicTimeObserver(forInterval: time,
-                                                                queue: .main) {
-            [weak self] time in
-            print("setting currentTime")
-            self?.currentTime = time.seconds
-            print("current seconds: ", time.seconds)
-            print("current duration: ", self!.audioPlayer.currentItem!.duration.seconds)
-            if (self!.currentTime > self!.audioPlayer.currentItem!.duration.seconds) {
-                self?.stopPlayback()
-                if let timeObserverToken = self?.timeObserverToken {
-                    self?.audioPlayer.removeTimeObserver(timeObserverToken)
-                    self?.timeObserverToken = nil
-                }
-            }
-        }
     }
     
-    func stopPlayback() {
+    func pausePlayback() {
         audioPlayer.pause()
         isPlaying = false
+        currentTime = Double(CMTimeGetSeconds(audioPlayer.currentTime()))
     }
     
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
