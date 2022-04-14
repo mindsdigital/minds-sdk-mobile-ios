@@ -28,8 +28,5 @@ let package = Package(
             resources: [
                 .process("resources/Assets.xcassets")
             ]),
-        .testTarget(
-            name: "minds-sdk-mobile-iosTests",
-            dependencies: ["minds-sdk-mobile-ios"]),
     ]
 )
