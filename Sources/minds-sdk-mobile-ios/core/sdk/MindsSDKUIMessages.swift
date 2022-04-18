@@ -48,10 +48,5 @@ public class MindsSDKUIMessages: ObservableObject {
         "Enviando gravações...",
         "Analisando formato do áudio...",
     ]
-    @Published public var recordingItems: [RecordingItem] = [
-        RecordingItem(key: "NOME COMPLETO",
-                      value: "Divino Borges de Oliveira Filho"),
-        RecordingItem(key: "DATA DE NASCIMENTO",
-                      value: "18/09/1967")
-    ]
+    @Published public var recordingItems: [RecordingItem] = []
 }
