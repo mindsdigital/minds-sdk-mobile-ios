@@ -28,7 +28,8 @@ public struct VoiceRecordingView: View {
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
-    
+    @Environment(\.presentationMode) var presentation
+
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
@@ -139,6 +140,10 @@ public struct VoiceRecordingView: View {
                                                     return;
                                                 }
                                                 if (response.response!.statusCode == 200) {
+                                                    guard uiConfigSdk.showThankYouScreen else {
+                                                        presentation.wrappedValue.dismiss()
+                                                        return
+                                                    }
                                                     currentScreen = Screen.thankYou
                                                 } else {
                                                     currentScreen = Screen.error
