@@ -13,7 +13,7 @@ public class MindsSDKConfig: ObservableObject {
     static public let shared = MindsSDKConfig()
     
     public init() {
-        
+        print(#function)
     }
     
     @Published public var token: String = ""
