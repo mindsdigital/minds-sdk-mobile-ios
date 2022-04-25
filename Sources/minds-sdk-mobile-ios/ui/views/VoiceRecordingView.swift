@@ -20,7 +20,7 @@ enum Screen {
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
-    @ObservedObject var sdk = MindsSDKConfig.shared
+    @ObservedObject var sdk = MindsSDK.shared
     @State var showActionSheet: Bool = false
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
