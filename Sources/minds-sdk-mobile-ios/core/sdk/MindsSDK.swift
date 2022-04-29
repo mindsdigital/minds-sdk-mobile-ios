@@ -12,9 +12,7 @@ import Foundation
 public class MindsSDK: ObservableObject {
     static public let shared = MindsSDK()
     
-    public init() {
-        
-    }
+    public init() { }
     
     @Published public var token: String = ""
     @Published public var cpf: String = ""
@@ -22,5 +20,6 @@ public class MindsSDK: ObservableObject {
     @Published public var phoneNumber: String = ""
     
     @Published public var sampleRate: Int = 16000
+    @Published public var channelConfig: String = "" // todo: unused for now
     @Published public var linearPCMBitDepthKey: Int = 16
 }

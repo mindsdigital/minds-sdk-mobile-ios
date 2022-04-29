@@ -20,7 +20,7 @@ enum Screen {
 public struct VoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
-    @ObservedObject var sdk = MindsSDKConfig.shared
+    @ObservedObject var sdk = MindsSDK.shared
     @State var showActionSheet: Bool = false
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
@@ -28,7 +28,7 @@ public struct VoiceRecordingView: View {
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
-    
+
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
@@ -139,6 +139,11 @@ public struct VoiceRecordingView: View {
                                                     return;
                                                 }
                                                 if (response.response!.statusCode == 200) {
+                                                    guard uiConfigSdk.showThankYouScreen else {
+                                                        hideBackButton = false
+                                                        voiceRecordingFlowActive = false
+                                                        return
+                                                    }
                                                     currentScreen = Screen.thankYou
                                                 } else {
                                                     currentScreen = Screen.error

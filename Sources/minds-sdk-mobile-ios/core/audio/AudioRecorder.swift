@@ -15,7 +15,7 @@ import Combine
 class AudioRecorder: NSObject, ObservableObject {
     
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
-    @ObservedObject var sdk = MindsSDKConfig.shared
+    @ObservedObject var sdk = MindsSDK.shared
     
     let objectWillChange = PassthroughSubject<AudioRecorder, Never>()
     
