@@ -141,7 +141,7 @@ public struct VoiceRecordingView: View {
                                                 }
                                                 if (response.response!.statusCode == 200) {
                                                     guard uiConfigSdk.showThankYouScreen else {
-                                                        presentation.wrappedValue.dismiss()
+                                                        NavigationUtil.popToRootView()
                                                         return
                                                     }
                                                     currentScreen = Screen.thankYou
