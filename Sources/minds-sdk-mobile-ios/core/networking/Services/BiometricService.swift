@@ -32,7 +32,7 @@ struct AudioRequest: Codable {
     let cpf: String
     let phoneNumber: String
     let externalCostumerID: String
-    let audioFiles: [Audio]
+    let audioFiles: [AudioFile]
     
     enum CodingKeys: String, CodingKey {
         case cpf
@@ -42,7 +42,7 @@ struct AudioRequest: Codable {
     }
 }
 
-struct Audio: Codable {
+struct AudioFile: Codable {
     let fileExtension: String
     let content: String
     let rate: String

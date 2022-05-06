@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Alamofire
+import Combine
 
 enum Screen {
     case main
@@ -28,7 +29,7 @@ public struct VoiceRecordingView: View {
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
-
+    
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
@@ -101,55 +102,77 @@ public struct VoiceRecordingView: View {
                                             rate = "16K"
                                         }
                                         // array of dictionaries
-                                        var audios: [[String: String]] = []
+                                        var audios: [AudioFile] = []
                                         for recordingItem in uiMessagesSdk.recordingItems {
                                             let data = try Data(contentsOf: recordingItem.recording!)
                                             let encodedString = data.base64EncodedString()
-                                            let audio: [String: String] = [
-                                                "extension": "wav",
-                                                "content": encodedString,
-                                                "rate": rate,
-                                            ]
+                                            let audio = AudioFile(
+                                                fileExtension: "wav",
+                                                content: encodedString,
+                                                rate: rate
+                                            )
                                             audios.append(audio)
                                         }
                                         
-                                        // todo: change host depending on env manually
-                                        let debugHost = "https://staging-speaker-api.minds.digital/v1.0/speaker/enrollment/multi-audio"
-                                        
-                                        let parameters: [String: Any] = [
-                                            "cpf" : sdk.cpf,
-                                            "external_id" : sdk.externalId,
-                                            "phone_number" : sdk.phoneNumber,
-                                            "audios" : audios,
-                                        ]
+                                        let request = AudioRequest(
+                                            cpf: sdk.cpf,
+                                            phoneNumber: sdk.phoneNumber,
+                                            externalCostumerID: sdk.externalId,
+                                            audioFiles: audios
+                                        )
+                                    
                                         let headers: HTTPHeaders = [
                                             "authorization": "Bearer " + sdk.token
                                         ]
                                         hideBackButton = true
                                         currentScreen = Screen.loading
-                                        AF.request(debugHost,
-                                                   method: .post,
-                                                   parameters: parameters,
-                                                   encoding: JSONEncoding.default,
-                                                   headers: headers)
-                                            .responseJSON { response in
-                                                debugPrint(response)
-                                                if (response.response == nil) {
-                                                    print("Empty response")
-                                                    return;
-                                                }
-                                                if (response.response!.statusCode == 200) {
-                                                    guard uiConfigSdk.showThankYouScreen else {
-                                                        hideBackButton = false
-                                                        voiceRecordingFlowActive = false
-                                                        return
-                                                    }
-                                                    currentScreen = Screen.thankYou
-                                                } else {
+                                        var subscriptions = Set<AnyCancellable>()
+
+                                        BiometricServices.init(networkRequest: NetworkManager(), env: APIEnvironment.sandbox)
+                                            .sendAudio(token: sdk.token, request: request)
+                                            .sink { completion in
+                                                switch completion {
+                                                case .failure(let error):
                                                     currentScreen = Screen.error
+                                                case .finished:
+                                                    break
+                                                    
                                                 }
+                                            } receiveValue: { response in
+                                                debugPrint(response)
+                                                // TODO: Verify response status
+                                                guard uiConfigSdk.showThankYouScreen else {
+                                                    hideBackButton = false
+                                                    voiceRecordingFlowActive = false
+                                                    return
+                                                }
+                                                currentScreen = Screen.thankYou
                                             }
+                                            .store(in: &subscriptions)
                                         
+//                                        AF.request(debugHost,
+//                                                   method: .post,
+//                                                   parameters: parameters,
+//                                                   encoding: JSONEncoding.default,
+//                                                   headers: headers)
+//                                            .responseJSON { response in
+//                                                debugPrint(response)
+//                                                if (response.response == nil) {
+//                                                    print("Empty response")
+//                                                    return;
+//                                                }
+//                                                if (response.response!.statusCode == 200) {
+//                                                    guard uiConfigSdk.showThankYouScreen else {
+//                                                        hideBackButton = false
+//                                                        voiceRecordingFlowActive = false
+//                                                        return
+//                                                    }
+//                                                    currentScreen = Screen.thankYou
+//                                                } else {
+//                                                    currentScreen = Screen.error
+//                                                }
+//                                            }
+//
                                     } catch {
                                         print("Unable to load data: \(error)")
                                     }
