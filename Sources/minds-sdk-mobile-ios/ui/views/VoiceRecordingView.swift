@@ -57,12 +57,12 @@ public struct VoiceRecordingView: View {
                                     Text(uiMessagesSdk.recordingItems[i].key)
                                         .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
-                                                .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
+                                            .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
                                         )
                                     Text(uiMessagesSdk.recordingItems[i].value)
                                         .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
-                                                .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
+                                            .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
                                         )
                                         .id(uiMessagesSdk.recordingItems[i].id)
                                     if (uiMessagesSdk.recordingItems[i].recording != nil) {
@@ -73,7 +73,7 @@ public struct VoiceRecordingView: View {
                                             selectedRecordingIndex = i
                                             self.showActionSheet = true
                                         })
-                                            .id(uiMessagesSdk.recordingItems[i].id + "recording")
+                                        .id(uiMessagesSdk.recordingItems[i].id + "recording")
                                     }
                                 }
                             }
@@ -120,65 +120,32 @@ public struct VoiceRecordingView: View {
                                             externalCostumerID: sdk.externalId,
                                             audioFiles: audios
                                         )
-                                    
-                                        let headers: HTTPHeaders = [
-                                            "authorization": "Bearer " + sdk.token
-                                        ]
+
                                         hideBackButton = true
                                         currentScreen = Screen.loading
-                                        var subscriptions = Set<AnyCancellable>()
 
                                         BiometricServices.init(networkRequest: NetworkManager(), env: APIEnvironment.sandbox)
-                                            .sendAudio(token: sdk.token, request: request)
-                                            .sink { completion in
-                                                switch completion {
+                                            .sendAudio(token: sdk.token, request: request) { result in
+                                                switch result {
+                                                case .success(let response):
+                                                    guard uiConfigSdk.showThankYouScreen else {
+                                                        hideBackButton = false
+                                                        voiceRecordingFlowActive = false
+                                                        return
+                                                    }
+                                                    currentScreen = .thankYou
                                                 case .failure(let error):
-                                                    currentScreen = Screen.error
-                                                case .finished:
-                                                    break
-                                                    
+                                                    print(error)
+                                                    currentScreen = .error
                                                 }
-                                            } receiveValue: { response in
-                                                debugPrint(response)
-                                                guard uiConfigSdk.showThankYouScreen else {
-                                                    hideBackButton = false
-                                                    voiceRecordingFlowActive = false
-                                                    return
-                                                }
-                                                currentScreen = Screen.thankYou
                                             }
-                                            .store(in: &subscriptions)
-                                        
-//                                        AF.request(debugHost,
-//                                                   method: .post,
-//                                                   parameters: parameters,
-//                                                   encoding: JSONEncoding.default,
-//                                                   headers: headers)
-//                                            .responseJSON { response in
-//                                                debugPrint(response)
-//                                                if (response.response == nil) {
-//                                                    print("Empty response")
-//                                                    return;
-//                                                }
-//                                                if (response.response!.statusCode == 200) {
-//                                                    guard uiConfigSdk.showThankYouScreen else {
-//                                                        hideBackButton = false
-//                                                        voiceRecordingFlowActive = false
-//                                                        return
-//                                                    }
-//                                                    currentScreen = Screen.thankYou
-//                                                } else {
-//                                                    currentScreen = Screen.error
-//                                                }
-//                                            }
-//
                                     } catch {
                                         print("Unable to load data: \(error)")
                                     }
                                 }) {
                                     Text(uiMessagesSdk.sendAudioButtonLabel)
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
-                                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                                         )
                                         .frame(maxWidth: .infinity, maxHeight: 40)
                                 }
@@ -188,7 +155,7 @@ public struct VoiceRecordingView: View {
                                 Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
                                     .foregroundColor(uiConfigSdk.textColor)
                                     .font(uiConfigSdk.fontFamily.isEmpty ?
-                                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                                     )
                                     .padding(.top, 5)
                                 

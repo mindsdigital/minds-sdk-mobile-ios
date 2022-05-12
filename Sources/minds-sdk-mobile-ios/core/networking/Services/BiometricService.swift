@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import Combine
 
 protocol BiometricProtocol {
-    func sendAudio(token: String, request: AudioRequest) -> AnyPublisher<BiometricResponse, NetworkError>
+    func sendAudio(token: String, request: AudioRequest, completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void)
 }
 
 class BiometricServices: BiometricProtocol {
@@ -21,10 +20,12 @@ class BiometricServices: BiometricProtocol {
         self.env = env
     }
     
-    func sendAudio(token: String, request: AudioRequest) -> AnyPublisher<BiometricResponse, NetworkError> {
+    func sendAudio(token: String, request: AudioRequest, completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
         let endpoint = BiometricsEndpoints.biometrics(requestBody: request)
         let request = endpoint.createRequest(token: token, environment: env)
-        return self.networkRequest.request(request)
+        self.networkRequest.request(request) { result in
+            completion(result)
+        }
     }
 }
 

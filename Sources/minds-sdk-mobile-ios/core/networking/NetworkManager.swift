@@ -57,23 +57,16 @@ enum HTTPMethod: String {
 
 enum NetworkError: Error, Equatable {
     case badURL
-    case apiError(code: Int, error: String)
+    case apiError(error: String)
     case invalidJSON(error: String)
-    case unauthorized(code: Int, error: String)
-    case badRequest(code: Int, error: String)
     case serverError
-    case noResponse(_ error: String)
-    case unableToParseData(_ error: String)
-    case unknown(code: Int, error: String)
-    
+
     var message: String {
         switch self {
         case .badURL: return "🌏💥 Invalid URL"
-        case .apiError(let code, let error): return "API ERROR 🧨💥 CODE: \(code) ERROR: \(error)"
+        case .apiError(let error): return "API ERROR 🧨💥ERROR: \(error)"
         case .invalidJSON(let error): return "MINDS SDK: ❌ Invalid JSON: \(error)"
         case .serverError: return "MINDS SDK: ❌ Server Error ❌"
-        default: return "🤷‍♂️ Unknown Error"
-            
         }
     }
 }
@@ -81,34 +74,42 @@ enum NetworkError: Error, Equatable {
 protocol Requestable {
     var requestTimeout: Float { get }
     
-    func request<T: Codable>(_ request: NetworkRequest) -> AnyPublisher<T, NetworkError>
+    func request<T: Codable>(_ request: NetworkRequest, completion: @escaping (Result<T, NetworkError>) -> Void)
 }
 
 class NetworkManager: Requestable {
     var requestTimeout: Float = 30
     
-    public func request<T>(_ request: NetworkRequest) -> AnyPublisher<T, NetworkError> where T: Decodable, T: Encodable {
+    public func request<T>(_ request: NetworkRequest, completion: @escaping (Result<T, NetworkError>) -> Void) where T: Decodable, T: Encodable {
         let sessionConfiguration = URLSessionConfiguration.default
         sessionConfiguration.timeoutIntervalForRequest = TimeInterval(request.requestTimeout ?? requestTimeout)
         
         guard let url = URL(string: request.url) else {
-            return AnyPublisher(Fail<T, NetworkError>(error: .badURL))
+            completion(.failure(.badURL))
+            return
         }
         
-        return URLSession.shared
-            .dataTaskPublisher(for: request.buildURLRequest(with: url))
-            .tryMap { output in
-                guard output.response is HTTPURLResponse else {
-                    throw NetworkError.serverError
-                }
-                
-                return output.data
+        return URLSession.shared.dataTask(with: request.buildURLRequest(with: url)) { data, response, error in
+            if let error = error {
+                print(#function, "🧨 Request: \(request)\nError: \(error)")
+                completion(.failure(.apiError(error: String(describing: error))))
+                return
             }
-            .decode(type: T.self, decoder: JSONDecoder())
-            .mapError { error in
-                NetworkError.invalidJSON(error: String(describing: error))
+
+            guard let data = data else {
+                completion(.failure(.serverError))
+                return
             }
-            .eraseToAnyPublisher()
+
+            do {
+                let response = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(response))
+            } catch let error {
+                print(#function, "🧨 Request: \(request)\nError: \(error)")
+                completion(.failure(.invalidJSON(error: String(describing: error))))
+            }
+        }
+        .resume()
     }
 }
 
