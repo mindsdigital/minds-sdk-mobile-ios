@@ -140,7 +140,6 @@ public struct VoiceRecordingView: View {
                                                 }
                                             } receiveValue: { response in
                                                 debugPrint(response)
-                                                // TODO: Verify response status
                                                 guard uiConfigSdk.showThankYouScreen else {
                                                     hideBackButton = false
                                                     voiceRecordingFlowActive = false

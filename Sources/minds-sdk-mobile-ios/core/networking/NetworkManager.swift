@@ -73,17 +73,6 @@ enum NetworkError: Error, Equatable {
         case .invalidJSON(let error): return "MINDS SDK: ❌ Invalid JSON: \(error)"
         case .serverError: return "MINDS SDK: ❌ Server Error ❌"
         default: return "🤷‍♂️ Unknown Error"
-//        case .unauthorized(let code, let error):
-//            <#code#>
-//        case .badRequest(let code, let error):
-//            <#code#>
-//        case .serverError(let code, let error):
-//            <#code#>
-//        case .noResponse(let _):
-//            <#code#>
-//        case .unableToParseData(let _):
-//            <#code#>
-//        case .unknown(let code, let error):
             
         }
     }
