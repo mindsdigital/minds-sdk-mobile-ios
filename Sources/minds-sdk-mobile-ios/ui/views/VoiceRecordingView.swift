@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Alamofire
+import Combine
 
 enum Screen {
     case main
@@ -28,7 +29,7 @@ public struct VoiceRecordingView: View {
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
-
+    
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
@@ -56,12 +57,12 @@ public struct VoiceRecordingView: View {
                                     Text(uiMessagesSdk.recordingItems[i].key)
                                         .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
-                                                .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
+                                            .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
                                         )
                                     Text(uiMessagesSdk.recordingItems[i].value)
                                         .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
-                                                .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
+                                            .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
                                         )
                                         .id(uiMessagesSdk.recordingItems[i].id)
                                     if (uiMessagesSdk.recordingItems[i].recording != nil) {
@@ -72,7 +73,7 @@ public struct VoiceRecordingView: View {
                                             selectedRecordingIndex = i
                                             self.showActionSheet = true
                                         })
-                                            .id(uiMessagesSdk.recordingItems[i].id + "recording")
+                                        .id(uiMessagesSdk.recordingItems[i].id + "recording")
                                     }
                                 }
                             }
@@ -101,62 +102,50 @@ public struct VoiceRecordingView: View {
                                             rate = "16K"
                                         }
                                         // array of dictionaries
-                                        var audios: [[String: String]] = []
+                                        var audios: [AudioFile] = []
                                         for recordingItem in uiMessagesSdk.recordingItems {
                                             let data = try Data(contentsOf: recordingItem.recording!)
                                             let encodedString = data.base64EncodedString()
-                                            let audio: [String: String] = [
-                                                "extension": "wav",
-                                                "content": encodedString,
-                                                "rate": rate,
-                                            ]
+                                            let audio = AudioFile(
+                                                fileExtension: "wav",
+                                                content: encodedString,
+                                                rate: rate
+                                            )
                                             audios.append(audio)
                                         }
                                         
-                                        // todo: change host depending on env manually
-                                        let debugHost = "https://staging-speaker-api.minds.digital/v1.0/speaker/enrollment/multi-audio"
-                                        
-                                        let parameters: [String: Any] = [
-                                            "cpf" : sdk.cpf,
-                                            "external_id" : sdk.externalId,
-                                            "phone_number" : sdk.phoneNumber,
-                                            "audios" : audios,
-                                        ]
-                                        let headers: HTTPHeaders = [
-                                            "authorization": "Bearer " + sdk.token
-                                        ]
+                                        let request = AudioRequest(
+                                            cpf: sdk.cpf,
+                                            phoneNumber: sdk.phoneNumber,
+                                            externalCostumerID: sdk.externalId,
+                                            audioFiles: audios
+                                        )
+
                                         hideBackButton = true
                                         currentScreen = Screen.loading
-                                        AF.request(debugHost,
-                                                   method: .post,
-                                                   parameters: parameters,
-                                                   encoding: JSONEncoding.default,
-                                                   headers: headers)
-                                            .responseJSON { response in
-                                                debugPrint(response)
-                                                if (response.response == nil) {
-                                                    print("Empty response")
-                                                    return;
-                                                }
-                                                if (response.response!.statusCode == 200) {
+
+                                        BiometricServices.init(networkRequest: NetworkManager(), env: APIEnvironment.sandbox)
+                                            .sendAudio(token: sdk.token, request: request) { result in
+                                                switch result {
+                                                case .success(let response):
                                                     guard uiConfigSdk.showThankYouScreen else {
                                                         hideBackButton = false
                                                         voiceRecordingFlowActive = false
                                                         return
                                                     }
-                                                    currentScreen = Screen.thankYou
-                                                } else {
-                                                    currentScreen = Screen.error
+                                                    currentScreen = .thankYou
+                                                case .failure(let error):
+                                                    print(error)
+                                                    currentScreen = .error
                                                 }
                                             }
-                                        
                                     } catch {
                                         print("Unable to load data: \(error)")
                                     }
                                 }) {
                                     Text(uiMessagesSdk.sendAudioButtonLabel)
                                         .font(uiConfigSdk.fontFamily.isEmpty ?
-                                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                                         )
                                         .frame(maxWidth: .infinity, maxHeight: 40)
                                 }
@@ -166,7 +155,7 @@ public struct VoiceRecordingView: View {
                                 Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
                                     .foregroundColor(uiConfigSdk.textColor)
                                     .font(uiConfigSdk.fontFamily.isEmpty ?
-                                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                                     )
                                     .padding(.top, 5)
                                 
