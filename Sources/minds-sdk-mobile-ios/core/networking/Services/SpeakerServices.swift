@@ -40,7 +40,7 @@ struct ValidateFormatRequest: Codable {
 }
 
 struct ValidateFormatResponse: Codable {
-    let status: String
+    let status: String?
     let success: Bool
     let isValid: Bool
 
