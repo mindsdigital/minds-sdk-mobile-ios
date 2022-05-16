@@ -8,8 +8,6 @@
 import Foundation
 import Alamofire
 
-typealias Headers = [String: String]
-
 enum SpeakerEndpoints {
 
     case validateFormat(requestBody: ValidateFormatRequest)

@@ -127,7 +127,7 @@ public struct VoiceRecordingView: View {
                                         BiometricServices.init(networkRequest: NetworkManager(), env: APIEnvironment.sandbox)
                                             .sendAudio(token: sdk.token, request: request) { result in
                                                 switch result {
-                                                case .success(let response):
+                                                case .success:
                                                     guard uiConfigSdk.showThankYouScreen else {
                                                         hideBackButton = false
                                                         voiceRecordingFlowActive = false
