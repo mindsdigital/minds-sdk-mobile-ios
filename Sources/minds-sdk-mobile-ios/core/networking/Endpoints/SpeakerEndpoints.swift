@@ -41,7 +41,7 @@ enum SpeakerEndpoints {
         let baseUrl = environment.baseURL
         switch self {
         case .validateFormat:
-            return "\(baseUrl)/speaker/validate-audio-format"
+            return "\(baseUrl)/v1.0/speaker/validate-audio-format"
         }
     }
 }

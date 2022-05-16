@@ -43,7 +43,7 @@ enum BiometricsEndpoints {
         let baseUrl = environment.baseURL
         switch self {
         case .biometrics:
-            return "\(baseUrl)/biometrics"
+            return "\(baseUrl)/v2/biometrics"
         }
     }
 }
