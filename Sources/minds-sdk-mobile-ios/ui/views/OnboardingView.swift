@@ -110,8 +110,9 @@ public struct OnboardingView: View {
             for i in 0..<uiMessagesSdk.recordingItems.count {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
-            
+
             validateAudioFormat()
+            validateDataInput()
         }
     }
 
