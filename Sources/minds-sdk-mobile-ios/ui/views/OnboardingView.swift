@@ -12,6 +12,7 @@ import SwiftUI
 public struct OnboardingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
+    @ObservedObject var sdk = MindsSDK.shared
     @Environment(\.presentationMode) var presentation
     
     @State var showActionSheet: Bool = false
@@ -25,32 +26,32 @@ public struct OnboardingView: View {
         ZStack(alignment: .leading) {
             ScrollView {
                 HStack {
-                VStack(alignment: .leading) {
-                    Text(uiMessagesSdk.onboardingTitle)
-                        .foregroundColor(uiConfigSdk.textColor)
-                        .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
-                        )
-                        .multilineTextAlignment(.leading)
-                        .padding(.bottom, 20)
-                    Text(uiMessagesSdk.hintTextTitle)
-                        .foregroundColor(uiConfigSdk.textColor)
-                        .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                        )
-                        .padding(.bottom, 5)
                     VStack(alignment: .leading) {
-                        ForEach(uiMessagesSdk.hintTexts, id: \.self) { hintText in
-                            Text("• " + hintText)
-                                .foregroundColor(uiConfigSdk.textColor)
-                                .font(uiConfigSdk.fontFamily.isEmpty ?
+                        Text(uiMessagesSdk.onboardingTitle)
+                            .foregroundColor(uiConfigSdk.textColor)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
+                            )
+                            .multilineTextAlignment(.leading)
+                            .padding(.bottom, 20)
+                        Text(uiMessagesSdk.hintTextTitle)
+                            .foregroundColor(uiConfigSdk.textColor)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                            )
+                            .padding(.bottom, 5)
+                        VStack(alignment: .leading) {
+                            ForEach(uiMessagesSdk.hintTexts, id: \.self) { hintText in
+                                Text("• " + hintText)
+                                    .foregroundColor(uiConfigSdk.textColor)
+                                    .font(uiConfigSdk.fontFamily.isEmpty ?
                                         .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                                )
+                                    )
+                            }
                         }
                     }
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 90)
+                    .padding(.horizontal)
+                    .padding(.bottom, 90)
                     Spacer()
                 }
             }
@@ -65,7 +66,7 @@ public struct OnboardingView: View {
                         Text(uiMessagesSdk.startRecordingButtonLabel)
                             .foregroundColor(Color.white)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
-                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                             )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
@@ -79,7 +80,7 @@ public struct OnboardingView: View {
                             Text(uiMessagesSdk.skipRecordingButtonLabel)
                                 .foregroundColor(uiConfigSdk.hexVariant400)
                                 .font(uiConfigSdk.fontFamily.isEmpty ?
-                                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                                 )
                                 .frame(maxWidth: .infinity, maxHeight: 40)
                         }
@@ -109,6 +110,23 @@ public struct OnboardingView: View {
             for i in 0..<uiMessagesSdk.recordingItems.count {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
+            
+            let request = ValidateFormatRequest(
+                fileExtension: "wav",
+                rate: sdk.sampleRate
+            )
+            
+            SpeakerServices.init(networkRequest: NetworkManager(), env: .sandbox)
+                .validateAudioFormat(token: sdk.token, request: request) { result in
+                    switch result {
+                    case .success(let response):
+                        if !response.isValid  {
+                            assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
+                        }
+                    case .failure:
+                        assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
+                    }
+                }
         }
     }
 }
