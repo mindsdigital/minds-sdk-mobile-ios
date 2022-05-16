@@ -111,22 +111,48 @@ public struct OnboardingView: View {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
             
-            let request = ValidateFormatRequest(
-                fileExtension: "wav",
-                rate: sdk.sampleRate
-            )
-            
-            SpeakerServices.init(networkRequest: NetworkManager(), env: .sandbox)
-                .validateAudioFormat(token: sdk.token, request: request) { result in
-                    switch result {
-                    case .success(let response):
-                        if !response.isValid  {
-                            assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
-                        }
-                    case .failure:
+            validateAudioFormat()
+        }
+    }
+
+    private func validateAudioFormat() {
+        let request = ValidateFormatRequest(
+            fileExtension: sdk.fileExtension,
+            rate: sdk.sampleRate
+        )
+
+        SpeakerServices.init(networkRequest: NetworkManager(), env: .sandbox)
+            .validateAudioFormat(token: sdk.token, request: request) { result in
+                switch result {
+                case .success(let response):
+                    if !response.isValid  {
                         assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
                     }
+                case .failure:
+                    assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
                 }
-        }
+            }
+    }
+
+    private func validateDataInput() {
+        let request = ValidateInputRequest(
+            cpf: sdk.cpf,
+            fileExtension: sdk.fileExtension,
+            checkForVerification: true,
+            phoneNumber: sdk.phoneNumber,
+            rate: sdk.sampleRate
+        )
+
+        BiometricServices.init(networkRequest: NetworkManager(), env: .sandbox)
+            .validateInput(token: sdk.token, request: request) { result in
+                switch result {
+                case .success(let response):
+                    if !response.success  {
+                        assertionFailure("Input de dados inválidos: \(response.message)")
+                    }
+                case .failure:
+                    assertionFailure("Input de dados inválidos")
+                }
+            }
     }
 }

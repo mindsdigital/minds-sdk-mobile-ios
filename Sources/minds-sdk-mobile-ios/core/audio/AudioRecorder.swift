@@ -44,7 +44,7 @@ class AudioRecorder: NSObject, ObservableObject {
         }
         
         let documentPath = FileManager.default.temporaryDirectory
-        let audioFilename = documentPath.appendingPathComponent("\(key).wav")
+        let audioFilename = documentPath.appendingPathComponent("\(key).\(sdk.fileExtension)")
         
         let settings = [
             AVFormatIDKey: Int(kAudioFormatLinearPCM),

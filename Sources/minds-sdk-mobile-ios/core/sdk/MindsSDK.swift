@@ -22,4 +22,5 @@ public class MindsSDK: ObservableObject {
     @Published public var sampleRate: Int = 16000
     @Published public var channelConfig: String = "" // todo: unused for now
     @Published public var linearPCMBitDepthKey: Int = 16
+    @Published public var fileExtension: String = "wav"
 }

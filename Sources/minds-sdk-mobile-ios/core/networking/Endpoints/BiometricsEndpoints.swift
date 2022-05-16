@@ -13,6 +13,7 @@ typealias Headers = [String: String]
 enum BiometricsEndpoints {
     
     case biometrics(requestBody: AudioRequest)
+    case validateDataInput(requestBody: ValidateInputRequest)
     
     var requestTimeOut: Int {
         return 20
@@ -20,7 +21,7 @@ enum BiometricsEndpoints {
     
     var httpMethod: HTTPMethod {
         switch self {
-        case .biometrics:
+        case .biometrics, .validateDataInput:
             return .POST
         }
     }
@@ -36,6 +37,8 @@ enum BiometricsEndpoints {
         switch self {
         case .biometrics(let request):
             return request
+        case .validateDataInput(let request):
+            return request
         }
     }
     
@@ -44,6 +47,8 @@ enum BiometricsEndpoints {
         switch self {
         case .biometrics:
             return "\(baseUrl)/v2/biometrics"
+        case .validateDataInput:
+            return "\(baseUrl)/v2/biometrics/validate-sdk-init"
         }
     }
 }
