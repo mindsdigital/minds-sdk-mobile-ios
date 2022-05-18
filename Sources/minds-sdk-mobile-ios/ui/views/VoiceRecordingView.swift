@@ -26,6 +26,7 @@ public struct VoiceRecordingView: View {
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
     @State var hideBackButton: Bool = false
+    @State var invalidLength: Bool = false
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
@@ -80,6 +81,10 @@ public struct VoiceRecordingView: View {
                 LoadingView()
             } else if (currentScreen == Screen.error) {
                 ErrorView(action: {
+                    if invalidLength {
+                        let words = try? RandomWordGenerator()
+                        words?.next()
+                    }
                     currentScreen = Screen.main
                     hideBackButton = false
                 })
@@ -193,13 +198,18 @@ public struct VoiceRecordingView: View {
                             BiometricServices.init(networkRequest: NetworkManager())
                                 .sendAudio(token: sdk.token, request: request) { result in
                                     switch result {
-                                    case .success:
-                                        guard uiConfigSdk.showThankYouScreen else {
-                                            hideBackButton = false
-                                            voiceRecordingFlowActive = false
-                                            return
+                                    case .success(let response):
+                                        if response.success {
+                                            guard uiConfigSdk.showThankYouScreen else {
+                                                hideBackButton = false
+                                                voiceRecordingFlowActive = false
+                                                return
+                                            }
+                                            currentScreen = .thankYou
+                                        } else {
+                                            self.invalidLength = response.status == "invalid_length"
+                                            currentScreen = .error
                                         }
-                                        currentScreen = .thankYou
                                     case .failure(let error):
                                         print(error)
                                         currentScreen = .error
@@ -259,6 +269,26 @@ public struct VoiceRecordingView: View {
             }
             .padding(.horizontal)
         }
+    }
+}
+
+struct RandomWordGenerator {
+    private let words: [String]
+    func ranged(_ range: ClosedRange<Int>) -> RandomWordGenerator {
+        RandomWordGenerator(words: words.filter { range.contains($0.count) })
+    }
+}
+
+extension RandomWordGenerator: Sequence, IteratorProtocol {
+    public func next() -> String? {
+        words.randomElement()
+    }
+}
+
+extension RandomWordGenerator {
+    init() throws {
+        let file = try String(contentsOf: URL(fileURLWithPath: "/usr/share/dict/words"))
+        self.init(words: file.components(separatedBy: "\n"))
     }
 }
 

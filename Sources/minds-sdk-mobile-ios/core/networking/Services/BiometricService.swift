@@ -73,7 +73,7 @@ struct BiometricResponse: Codable {
     let externalId: Int64?
     let status: String?
     let createdAt: Date?
-    let success: Bool?
+    let success: Bool
     let whitelisted: Bool?
     let fraudRisk: String?
     let enrollmentExternalId: Int64?
