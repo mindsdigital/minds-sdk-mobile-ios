@@ -186,7 +186,6 @@ public struct VoiceRecordingView: View {
                                 audioFiles: audios
                             )
 
-                            hideBackButton = true
                             currentScreen = Screen.loading
 
                             BiometricServices.init(networkRequest: NetworkManager(), env: APIEnvironment.sandbox)
@@ -194,7 +193,6 @@ public struct VoiceRecordingView: View {
                                     switch result {
                                     case .success:
                                         guard uiConfigSdk.showThankYouScreen else {
-                                            hideBackButton = false
                                             voiceRecordingFlowActive = false
                                             return
                                         }
