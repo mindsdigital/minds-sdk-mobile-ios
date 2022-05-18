@@ -25,7 +25,7 @@ public struct VoiceRecordingView: View {
     @State var showActionSheet: Bool = false
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
-    @State var hideBackButton: Bool = false
+    @State var deleteRecordingItem: Bool = false
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
@@ -70,6 +70,10 @@ public struct VoiceRecordingView: View {
                                                     selectedRecording!.recording!
                                                 ])
                                                 uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
+
+                                                if deleteRecordingItem {
+                                                    uiMessagesSdk.recordingItems.removeLast()
+                                                }
                                             }
                                         }
                                     )
@@ -81,11 +85,9 @@ public struct VoiceRecordingView: View {
             } else if (currentScreen == Screen.error) {
                 ErrorView(action: {
                     currentScreen = Screen.main
-                    hideBackButton = false
                 })
             } else if (currentScreen == Screen.thankYou) {
                 SuccessView(action: {
-                    hideBackButton = false
                     voiceRecordingFlowActive = false
                 })
             }
@@ -97,6 +99,7 @@ public struct VoiceRecordingView: View {
                let recording = uiMessagesSdk.recordingItems.last {
                 selectedRecording = recording
                 selectedRecordingIndex = uiMessagesSdk.recordingItems.count - 1
+                self.deleteRecordingItem = true
                 self.showActionSheet = true
             } else {
                 self.presentation.wrappedValue.dismiss()
@@ -131,6 +134,7 @@ public struct VoiceRecordingView: View {
                                               onDeleteAction: {
                                 selectedRecording = uiMessagesSdk.recordingItems[i]
                                 selectedRecordingIndex = i
+                                self.deleteRecordingItem = false
                                 self.showActionSheet = true
                             })
                             .id(uiMessagesSdk.recordingItems[i].id + "recording")
