@@ -122,7 +122,7 @@ public struct OnboardingView: View {
             rate: sdk.sampleRate
         )
 
-        SpeakerServices.init(networkRequest: NetworkManager(), env: .sandbox)
+        SpeakerServices.init(networkRequest: NetworkManager())
             .validateAudioFormat(token: sdk.token, request: request) { result in
                 switch result {
                 case .success(let response):
@@ -144,7 +144,7 @@ public struct OnboardingView: View {
             rate: sdk.sampleRate
         )
 
-        BiometricServices.init(networkRequest: NetworkManager(), env: .sandbox)
+        BiometricServices.init(networkRequest: NetworkManager())
             .validateInput(token: sdk.token, request: request) { result in
                 switch result {
                 case .success(let response):
