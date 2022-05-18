@@ -99,7 +99,7 @@ public struct VoiceRecordingView: View {
                 audioRecorder.deleteRecording(urlsToDelete: [
                     recording
                 ])
-                uiMessagesSdk.recordingItems.last?.recording = nil
+                uiMessagesSdk.recordingItems[uiMessagesSdk.recordingItems.count - 1].recording = nil
             } else {
                 self.presentation.wrappedValue.dismiss()
             }

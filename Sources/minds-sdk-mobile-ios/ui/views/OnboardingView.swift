@@ -73,7 +73,7 @@ public struct OnboardingView: View {
                     .isDetailLink(false)
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
                     
-                    if (uiConfigSdk.showBiometricsSkipButton) {
+                    if (uiConfigSdk.showSkipBiometrics()) {
                         Button(action: {
                             self.showActionSheet = true
                         }) {

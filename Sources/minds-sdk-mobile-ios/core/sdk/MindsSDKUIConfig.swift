@@ -62,4 +62,8 @@ public class MindsSDKUIConfig: ObservableObject {
     public func disableSkipBiometrics() {
         self.showBiometricsSkipButton = false
     }
+
+    func showSkipBiometrics() -> Bool {
+        showBiometricsSkipButton
+    }
 }
