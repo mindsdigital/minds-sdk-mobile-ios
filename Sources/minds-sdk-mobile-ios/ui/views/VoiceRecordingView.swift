@@ -94,19 +94,16 @@ public struct VoiceRecordingView: View {
         .navigationBarItems(leading:
           Button(action: {
             if uiMessagesSdk.recordingItems.count > 1,
-               let lastRecording = uiMessagesSdk.recordingItems.last,
-               let recording = lastRecording.recording {
-                audioRecorder.deleteRecording(urlsToDelete: [
-                    recording
-                ])
-                uiMessagesSdk.recordingItems[uiMessagesSdk.recordingItems.count - 1].recording = nil
+               let recording = uiMessagesSdk.recordingItems.last {
+                selectedRecording = recording
+                selectedRecordingIndex = uiMessagesSdk.recordingItems.count - 1
+                self.showActionSheet = true
             } else {
                 self.presentation.wrappedValue.dismiss()
             }
           }) {
             HStack {
-              Image(systemName: "arrow.left")
-              Text("Back")
+              Image(systemName: "chevron.left")
             }
         })
         
