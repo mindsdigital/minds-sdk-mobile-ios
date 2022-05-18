@@ -117,6 +117,7 @@ struct ValidateInputRequest: Codable {
 
 struct ValidateInputResponse: Codable {
     let success: Bool
-    let message: String
+    let message: String?
     let status: String
+    let result: Bool
 }
