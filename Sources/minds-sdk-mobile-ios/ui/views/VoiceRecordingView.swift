@@ -25,7 +25,7 @@ public struct VoiceRecordingView: View {
     @State var showActionSheet: Bool = false
     @State var selectedRecording: RecordingItem? = nil
     @State var selectedRecordingIndex: Int = 0
-    @State var deleteRecordingItem: Bool = false
+    @State var hideBackButton: Bool = false
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
@@ -70,10 +70,6 @@ public struct VoiceRecordingView: View {
                                                     selectedRecording!.recording!
                                                 ])
                                                 uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
-
-                                                if deleteRecordingItem {
-                                                    uiMessagesSdk.recordingItems.removeLast()
-                                                }
                                             }
                                         }
                                     )
@@ -85,31 +81,37 @@ public struct VoiceRecordingView: View {
             } else if (currentScreen == Screen.error) {
                 ErrorView(action: {
                     currentScreen = Screen.main
+                    hideBackButton = false
                 })
             } else if (currentScreen == Screen.thankYou) {
                 SuccessView(action: {
+                    hideBackButton = false
                     voiceRecordingFlowActive = false
                 })
             }
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
-          Button(action: {
-            if uiMessagesSdk.recordingItems.count > 1,
-               let recording = uiMessagesSdk.recordingItems.last {
-                selectedRecording = recording
-                selectedRecordingIndex = uiMessagesSdk.recordingItems.count - 1
-                self.deleteRecordingItem = true
-                self.showActionSheet = true
+                                Group {
+            if !hideBackButton {
+                Button(action: {
+                    if audioRecorder.recordingsCount > 1,
+                       let recording = uiMessagesSdk.recordingItems.last {
+                        selectedRecording = recording
+                        selectedRecordingIndex = uiMessagesSdk.recordingItems.count - 1
+                        self.showActionSheet = true
+                    } else {
+                        self.presentation.wrappedValue.dismiss()
+                    }
+                }, label: {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                    }
+                })
             } else {
-                self.presentation.wrappedValue.dismiss()
-            }
-          }) {
-            HStack {
-              Image(systemName: "chevron.left")
+                EmptyView()
             }
         })
-        
     }
 
     private var audioScrollView: some View {
@@ -134,7 +136,6 @@ public struct VoiceRecordingView: View {
                                               onDeleteAction: {
                                 selectedRecording = uiMessagesSdk.recordingItems[i]
                                 selectedRecordingIndex = i
-                                self.deleteRecordingItem = false
                                 self.showActionSheet = true
                             })
                             .id(uiMessagesSdk.recordingItems[i].id + "recording")
@@ -186,6 +187,7 @@ public struct VoiceRecordingView: View {
                                 audioFiles: audios
                             )
 
+                            hideBackButton = true
                             currentScreen = Screen.loading
 
                             BiometricServices.init(networkRequest: NetworkManager(), env: APIEnvironment.sandbox)
@@ -193,6 +195,7 @@ public struct VoiceRecordingView: View {
                                     switch result {
                                     case .success:
                                         guard uiConfigSdk.showThankYouScreen else {
+                                            hideBackButton = false
                                             voiceRecordingFlowActive = false
                                             return
                                         }
