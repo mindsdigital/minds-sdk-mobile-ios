@@ -93,9 +93,13 @@ public struct VoiceRecordingView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
           Button(action: {
-            //Your Custom Code Here
-            if uiMessagesSdk.recordingItems.count > 1 {
-                uiMessagesSdk.recordingItems.removeLast()
+            if uiMessagesSdk.recordingItems.count > 1,
+               let lastRecording = uiMessagesSdk.recordingItems.last,
+               let recording = lastRecording.recording {
+                audioRecorder.deleteRecording(urlsToDelete: [
+                    recording
+                ])
+                uiMessagesSdk.recordingItems.last?.recording = nil
             } else {
                 self.presentation.wrappedValue.dismiss()
             }
