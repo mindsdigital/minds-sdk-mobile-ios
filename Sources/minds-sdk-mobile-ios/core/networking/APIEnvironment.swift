@@ -17,11 +17,11 @@ extension APIEnvironment {
     var baseURL: String {
         switch self {
         case .sandbox:
-            return "https://sandbox-speaker-api.minds.digital/v2"
+            return "https://sandbox-speaker-api.minds.digital"
         case .staging:
-            return "https://staging-speaker-api.minds.digital/v2"
+            return "https://staging-speaker-api.minds.digital"
         case .production:
-            return "https://speaker-api.minds.digital/v2"
+            return "https://speaker-api.minds.digital"
         }
     }
 }

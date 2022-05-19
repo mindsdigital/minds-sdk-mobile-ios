@@ -1,54 +1,47 @@
 //
-//  BiometricsEndpoints.swift
+//  SpeakerEndpoints.swift
 //  
 //
-//  Created by Vinicius Salmont on 05/05/22.
+//  Created by Vinicius Salmont on 16/05/22.
 //
 
 import Foundation
 import Alamofire
 
-typealias Headers = [String: String]
+enum SpeakerEndpoints {
 
-enum BiometricsEndpoints {
-    
-    case biometrics(requestBody: AudioRequest)
-    case validateDataInput(requestBody: ValidateInputRequest)
-    
+    case validateFormat(requestBody: ValidateFormatRequest)
+
     var requestTimeOut: Int {
         return 20
     }
-    
+
     var httpMethod: HTTPMethod {
         switch self {
-        case .biometrics, .validateDataInput:
+        case .validateFormat:
             return .POST
         }
     }
-    
+
     func createRequest(token: String, environment: APIEnvironment) -> NetworkRequest {
         var headers: Headers = [:]
         headers["Content-Type"] = "application/json"
         headers["authorization"] = "Bearer \(token)"
         return NetworkRequest(url: getURL(from: environment), headers: headers, body: requestBody, httpMethod: httpMethod)
     }
-    
+
     var requestBody: Encodable? {
         switch self {
-        case .biometrics(let request):
-            return request
-        case .validateDataInput(let request):
+        case .validateFormat(let request):
             return request
         }
     }
-    
+
     func getURL(from environment: APIEnvironment) -> String {
         let baseUrl = environment.baseURL
         switch self {
-        case .biometrics:
-            return "\(baseUrl)/v2/biometrics"
-        case .validateDataInput:
-            return "\(baseUrl)/v2/biometrics/validate-sdk-init"
+        case .validateFormat:
+            return "\(baseUrl)/v1.0/speaker/validate-audio-format"
         }
     }
 }

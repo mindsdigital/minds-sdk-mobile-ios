@@ -43,7 +43,7 @@ public class MindsSDKUIConfig: ObservableObject {
     
     @Published public var textColor: Color = Color(.label)
     @Published public var showThankYouScreen: Bool = true
-    @Published public var showBiometricsSkipButton: Bool = true
+    @Published private var showBiometricsSkipButton: Bool = true
     @Published public var baseFontSize: CGFloat = 16
     @Published public var fontFamily: String = ""
     @Published public var loadingImage: String = ""
@@ -58,4 +58,12 @@ public class MindsSDKUIConfig: ObservableObject {
     @Published public var hexVariant700: Color = Color(hex: "fb9600")
     @Published public var hexVariant800: Color = Color(hex: "fb8500")
     @Published public var hexVariant900: Color = Color(hex: "fa6400")
+
+    public func disableSkipBiometrics() {
+        self.showBiometricsSkipButton = false
+    }
+
+    func showSkipBiometrics() -> Bool {
+        showBiometricsSkipButton
+    }
 }
