@@ -152,7 +152,7 @@ public struct OnboardingView: View {
                         assertionFailure("Input de dados inválidos: \(response.message)")
                     }
                 case .failure:
-                    assertionFailure("Input de dados inválidos")
+                    assertionFailure("Input de dados inválidos: \(response.message)")
                 }
             }
     }
