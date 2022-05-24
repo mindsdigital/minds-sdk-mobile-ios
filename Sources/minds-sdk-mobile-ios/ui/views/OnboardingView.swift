@@ -74,7 +74,7 @@ public struct OnboardingView: View {
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
                     .padding(.bottom, 5)
                     
-                    if (uiConfigSdk.showBiometricsSkipButton) {
+                    if (uiConfigSdk.showSkipBiometrics()) {
                         Button(action: {
                             self.showActionSheet = true
                         }) {
@@ -125,7 +125,7 @@ public struct OnboardingView: View {
             rate: sdk.sampleRate
         )
 
-        SpeakerServices.init(networkRequest: NetworkManager(), env: .sandbox)
+        SpeakerServices.init(networkRequest: NetworkManager())
             .validateAudioFormat(token: sdk.token, request: request) { result in
                 switch result {
                 case .success(let response):
@@ -147,7 +147,7 @@ public struct OnboardingView: View {
             rate: sdk.sampleRate
         )
 
-        BiometricServices.init(networkRequest: NetworkManager(), env: .sandbox)
+        BiometricServices.init(networkRequest: NetworkManager())
             .validateInput(token: sdk.token, request: request) { result in
                 switch result {
                 case .success(let response):
