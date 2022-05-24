@@ -72,6 +72,7 @@ public struct OnboardingView: View {
                     }
                     .isDetailLink(false)
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
+                    .padding(.bottom, 5)
                     
                     if (uiConfigSdk.showBiometricsSkipButton) {
                         Button(action: {
@@ -85,6 +86,8 @@ public struct OnboardingView: View {
                                 .frame(maxWidth: .infinity, maxHeight: 40)
                         }
                         .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
+                        .padding(.bottom, 5)
+
                     }
                 }
                 .padding(.horizontal)
