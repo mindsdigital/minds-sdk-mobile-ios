@@ -142,7 +142,7 @@ public struct OnboardingView: View {
         let request = ValidateInputRequest(
             cpf: sdk.cpf,
             fileExtension: sdk.fileExtension,
-            checkForVerification: true,
+            checkForVerification: sdk.processType == .verification,
             phoneNumber: sdk.phoneNumber,
             rate: sdk.sampleRate
         )
@@ -152,7 +152,7 @@ public struct OnboardingView: View {
                 switch result {
                 case .success(let response):
                     if !response.success  {
-                        assertionFailure("Input de dados inválidos: \(response.message)")
+                        assertionFailure("\(response.status) - \(response.message)")
                     }
                 case .failure:
                     assertionFailure("Input de dados inválidos")
