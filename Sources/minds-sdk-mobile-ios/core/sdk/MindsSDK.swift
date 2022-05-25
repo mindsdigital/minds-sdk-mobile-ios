@@ -10,7 +10,7 @@ import Foundation
 @available(macOS 11, *)
 @available(iOS 14.0, *)
 
-enum ProcessType {
+public enum ProcessType {
     case enrollment, verification
 }
 
