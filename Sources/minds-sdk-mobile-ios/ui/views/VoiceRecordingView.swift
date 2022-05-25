@@ -107,6 +107,7 @@ public struct VoiceRecordingView: View {
                                 selectedRecording = item
                                 selectedRecordingIndex = index
                                 self.showActionSheet = true
+                                break
                             }
                         }
                     } else {
