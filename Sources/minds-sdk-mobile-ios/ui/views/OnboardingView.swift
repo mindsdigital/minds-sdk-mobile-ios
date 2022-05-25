@@ -121,7 +121,7 @@ public struct OnboardingView: View {
 
     private func validateAudioFormat() {
         let request = ValidateFormatRequest(
-            fileExtension: sdk.fileExtension,
+            fileExtension: "wav",
             rate: sdk.sampleRate
         )
 
@@ -141,7 +141,7 @@ public struct OnboardingView: View {
     private func validateDataInput() {
         let request = ValidateInputRequest(
             cpf: sdk.cpf,
-            fileExtension: sdk.fileExtension,
+            fileExtension: "wav",
             checkForVerification: sdk.processType == .verification,
             phoneNumber: sdk.phoneNumber,
             rate: sdk.sampleRate
