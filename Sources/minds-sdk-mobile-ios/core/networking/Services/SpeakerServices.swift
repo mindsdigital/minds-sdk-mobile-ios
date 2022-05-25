@@ -15,7 +15,7 @@ class SpeakerServices: SpeakerProtocol {
     private var networkRequest: Requestable
     private var env: APIEnvironment
 
-    init(networkRequest: Requestable, env: APIEnvironment = .staging) {
+    init(networkRequest: Requestable, env: APIEnvironment = .sandbox) {
         self.networkRequest = networkRequest
         self.env = env
     }
