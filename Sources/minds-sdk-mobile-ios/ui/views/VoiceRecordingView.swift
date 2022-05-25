@@ -297,7 +297,7 @@ struct AdditionalValidationGenerator {
         "A minha voz me traz segurança e eu quero autenticá-la"
     ]
 
-    func getNextQuestion() -> String? {
+    mutating func getNextQuestion() -> String? {
         if currentIndex < additionalValidation.count {
             let referenceString = additionalValidation[currentIndex]
             currentIndex += 1
