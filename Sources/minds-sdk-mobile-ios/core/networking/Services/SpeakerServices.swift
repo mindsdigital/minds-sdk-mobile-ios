@@ -43,10 +43,12 @@ struct ValidateFormatResponse: Codable {
     let status: String?
     let success: Bool
     let isValid: Bool
+    let message: String?
 
     enum CodingKeys: String, CodingKey {
         case status
         case success
         case isValid = "is_valid"
+        case message
     }
 }

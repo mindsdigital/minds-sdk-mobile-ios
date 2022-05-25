@@ -130,7 +130,7 @@ public struct OnboardingView: View {
                 switch result {
                 case .success(let response):
                     if !response.isValid  {
-                        assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
+                        assertionFailure(\(response.status) \(response.message)")
                     }
                 case .failure:
                     assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
