@@ -100,11 +100,14 @@ public struct VoiceRecordingView: View {
                                 Group {
             if !hideBackButton {
                 Button(action: {
-                    if audioRecorder.recordingsCount > 1,
-                       let recording = uiMessagesSdk.recordingItems.last {
-                        selectedRecording = recording
-                        selectedRecordingIndex = uiMessagesSdk.recordingItems.count - 1
-                        self.showActionSheet = true
+                    if audioRecorder.recordingsCount > 1 {
+                        for (index, item) in uiMessagesSdk.recordingItems.reversed().enumerated() {
+                            if let recording = item.recording {
+                                selectedRecording = item
+                                selectedRecordingIndex = index
+                                self.showActionSheet = true
+                            }
+                        }
                     } else {
                         self.presentation.wrappedValue.dismiss()
                     }
