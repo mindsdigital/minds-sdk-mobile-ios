@@ -82,11 +82,17 @@ public struct VoiceRecordingView: View {
             } else if (currentScreen == Screen.error) {
                 ErrorView(action: {
                     if invalidLength {
-                        let words = try? RandomWordGenerator()
-                        words?.next()
+                        if let nextQuestion = AdditionalValidationGenerator.shared.getNextQuestion() {
+                            uiMessagesSdk.recordingItems.append(RecordingItem(key: "Repita a frase", value: nextQuestion))
+                            currentScreen = Screen.main
+                        } else {
+                            invalidLength = false
+                        }
+                        
+                    } else {
+                        currentScreen = Screen.main
+                        hideBackButton = false
                     }
-                    currentScreen = Screen.main
-                    hideBackButton = false
                 })
             } else if (currentScreen == Screen.thankYou) {
                 SuccessView(action: {
@@ -277,23 +283,28 @@ public struct VoiceRecordingView: View {
     }
 }
 
-struct RandomWordGenerator {
-    private let words: [String]
-    func ranged(_ range: ClosedRange<Int>) -> RandomWordGenerator {
-        RandomWordGenerator(words: words.filter { range.contains($0.count) })
-    }
-}
+struct AdditionalValidationGenerator {
+    static let shared = AdditionalValidationGenerator()
 
-extension RandomWordGenerator: Sequence, IteratorProtocol {
-    public func next() -> String? {
-        words.randomElement()
-    }
-}
+    private let currentIndex: Int = 0
 
-extension RandomWordGenerator {
-    init() throws {
-        let file = try String(contentsOf: URL(fileURLWithPath: "/usr/share/dict/words"))
-        self.init(words: file.components(separatedBy: "\n"))
+    private let additionalValidation = [
+        "Aqui, a minha voz é a minha senha",
+        "A minha conta é protegida pela minha voz",
+        "Minha identidade é representada pela minha voz",
+        "Minha proteção é garantida pela minha voz",
+        "A minha voz é exclusiva e irreproduzível",
+        "A minha voz me traz segurança e eu quero autenticá-la"
+    ]
+
+    func getNextQuestion() -> String? {
+        if currentIndex < additionalValidation.count {
+            let referenceString = additionalValidation[currentIndex]
+            currentIndex += 1
+            return referenceString
+        }
+
+        return nil
     }
 }
 
