@@ -189,9 +189,7 @@ public struct VoiceRecordingView: View {
                                 let data = try Data(contentsOf: recordingItem.recording!)
                                 let encodedString = data.base64EncodedString()
                                 let audio = AudioFile(
-                                    fileExtension: "wav",
-                                    content: encodedString,
-                                    rate: rate
+                                    content: encodedString
                                 )
                                 audios.append(audio)
                             }
