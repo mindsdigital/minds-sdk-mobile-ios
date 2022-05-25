@@ -286,7 +286,7 @@ public struct VoiceRecordingView: View {
 struct AdditionalValidationGenerator {
     static let shared = AdditionalValidationGenerator()
 
-    private let currentIndex: Int = 0
+    private var currentIndex: Int = 0
 
     private let additionalValidation = [
         "Aqui, a minha voz é a minha senha",
