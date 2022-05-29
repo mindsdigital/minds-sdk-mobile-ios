@@ -54,6 +54,7 @@ struct AudioRequest: Codable {
 
 struct AudioFile: Codable {
     let content: String
+    let `extension`: String = "wav"
 }
 
 struct BiometricResponse: Codable {
