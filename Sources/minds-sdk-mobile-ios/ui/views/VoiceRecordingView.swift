@@ -209,12 +209,6 @@ public struct VoiceRecordingView: View {
                                     switch result {
                                     case .success(let response):
                                         if response.success {
-                                            guard response.status != "invalid_length" else {
-                                                self.invalidLength = true
-                                                currentScreen = .error
-                                                return
-                                            }
-
                                             self.invalidLength = false
 
                                             guard uiConfigSdk.showThankYouScreen else {
@@ -224,6 +218,12 @@ public struct VoiceRecordingView: View {
                                             }
                                             currentScreen = .thankYou
                                         } else {
+                                            guard response.status != "invalid_length" else {
+                                                self.invalidLength = true
+                                                currentScreen = .error
+                                                return
+                                            }
+
                                             self.invalidLength = false
                                             currentScreen = .error
                                         }
