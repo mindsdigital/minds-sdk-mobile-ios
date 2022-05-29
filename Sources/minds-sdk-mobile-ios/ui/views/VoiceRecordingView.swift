@@ -223,6 +223,9 @@ public struct VoiceRecordingView: View {
                                                 return
                                             }
                                             currentScreen = .thankYou
+                                        } else {
+                                            self.invalidLength = false
+                                            currentScreen = .error
                                         }
                                     case .failure(let error):
                                         print(error)
