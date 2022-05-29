@@ -209,15 +209,20 @@ public struct VoiceRecordingView: View {
                                     switch result {
                                     case .success(let response):
                                         if response.success {
+                                            guard response.status != "invalid_length" else {
+                                                self.invalidLength = true
+                                                currentScreen = .error
+                                                return
+                                            }
+
+                                            self.invalidLength = false
+
                                             guard uiConfigSdk.showThankYouScreen else {
                                                 hideBackButton = false
                                                 voiceRecordingFlowActive = false
                                                 return
                                             }
                                             currentScreen = .thankYou
-                                        } else {
-                                            self.invalidLength = response.status == "invalid_length"
-                                            currentScreen = .error
                                         }
                                     case .failure(let error):
                                         print(error)
