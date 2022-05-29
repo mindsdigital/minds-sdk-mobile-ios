@@ -220,7 +220,7 @@ public struct VoiceRecordingView: View {
                                         } else {
                                             guard response.status != "invalid_length" else {
                                                 self.invalidLength = true
-                                                currentScreen = .error
+                                                currentScreen = .main
                                                 return
                                             }
 
