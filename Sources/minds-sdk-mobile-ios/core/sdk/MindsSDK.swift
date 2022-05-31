@@ -32,7 +32,7 @@ public class MindsSDK: ObservableObject {
         self.processType = processType
     }
 
-    public func initializeSDK(completion: @escaping (Result<Void, NetworkError>) -> Void) {
+    public func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
         validateAudioFormat { [weak self] validateAudioResult in
             switch validateAudioResult {
             case .success:
