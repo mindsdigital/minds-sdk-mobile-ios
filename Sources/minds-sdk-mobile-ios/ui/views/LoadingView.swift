@@ -36,6 +36,7 @@ public struct LoadingView: View {
             Spacer()
         }
         .preferredColorScheme(.light)
+        .environment(\.colorScheme, .light)
     }
 }
 

@@ -94,6 +94,8 @@ public struct OnboardingView: View {
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
+        .preferredColorScheme(.light)
+        .environment(\.colorScheme, .light)
         .actionSheet(isPresented: $showActionSheet) {
             ActionSheet(title: Text(uiMessagesSdk.skipRecordingMessageTitle),
                         message: Text(uiMessagesSdk.skipRecordingMessageBody),
@@ -114,6 +116,5 @@ public struct OnboardingView: View {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
         }
-        .preferredColorScheme(.light)
     }
 }

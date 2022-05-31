@@ -49,6 +49,7 @@ public struct ErrorView: View {
         }
         .padding()
         .preferredColorScheme(.light)
+        .environment(\.colorScheme, .light)
     }
 }
 
