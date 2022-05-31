@@ -6,13 +6,16 @@
 //
 
 import Foundation
+import SwiftUI
 
 @available(macOS 11, *)
 @available(iOS 14.0, *)
 public class MindsSDK: ObservableObject {
     static public let shared = MindsSDK()
     
-    public init() { }
+    public init() {
+        UIWindow.appearance().overrideUserInterfaceStyle = .light
+    }
 
     public enum ProcessType {
         case enrollment, verification
