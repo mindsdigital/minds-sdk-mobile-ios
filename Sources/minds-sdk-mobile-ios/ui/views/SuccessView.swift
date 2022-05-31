@@ -48,6 +48,7 @@ public struct SuccessView: View {
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding()
+        .preferredColorScheme(.light)
     }
 }
 

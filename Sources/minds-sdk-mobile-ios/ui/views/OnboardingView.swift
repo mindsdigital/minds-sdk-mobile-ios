@@ -114,5 +114,6 @@ public struct OnboardingView: View {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
         }
+        .preferredColorScheme(.light)
     }
 }

@@ -48,6 +48,7 @@ public struct ErrorView: View {
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding()
+        .preferredColorScheme(.light)
     }
 }
 

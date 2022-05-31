@@ -135,6 +135,7 @@ public struct VoiceRecordingView: View {
                 EmptyView()
             }
         })
+        .preferredColorScheme(.light)
     }
 
     private var audioScrollView: some View {
