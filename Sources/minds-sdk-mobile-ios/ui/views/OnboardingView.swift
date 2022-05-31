@@ -113,50 +113,6 @@ public struct OnboardingView: View {
             for i in 0..<uiMessagesSdk.recordingItems.count {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
-
-            validateAudioFormat()
-            validateDataInput()
         }
-    }
-
-    private func validateAudioFormat() {
-        let request = ValidateFormatRequest(
-            fileExtension: "wav",
-            rate: sdk.sampleRate
-        )
-
-        SpeakerServices.init(networkRequest: NetworkManager())
-            .validateAudioFormat(token: sdk.token, request: request) { result in
-                switch result {
-                case .success(let response):
-                    if !response.isValid  {
-                        assertionFailure("\(response.status) \(response.message)")
-                    }
-                case .failure:
-                    assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
-                }
-            }
-    }
-
-    private func validateDataInput() {
-        let request = ValidateInputRequest(
-            cpf: sdk.cpf,
-            fileExtension: "wav",
-            checkForVerification: sdk.processType == .verification,
-            phoneNumber: sdk.phoneNumber,
-            rate: sdk.sampleRate
-        )
-
-        BiometricServices.init(networkRequest: NetworkManager())
-            .validateInput(token: sdk.token, request: request) { result in
-                switch result {
-                case .success(let response):
-                    if !response.success  {
-                        assertionFailure("\(response.status) - \(response.message)")
-                    }
-                case .failure:
-                    assertionFailure("Input de dados inválidos")
-                }
-            }
     }
 }
