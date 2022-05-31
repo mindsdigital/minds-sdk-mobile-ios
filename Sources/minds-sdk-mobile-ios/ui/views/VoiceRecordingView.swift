@@ -118,12 +118,11 @@ public struct VoiceRecordingView: View {
                         }
                     } else {
                         if let item = uiMessagesSdk.recordingItems.first {
-                            if item.recording != nil,
-                               selectedRecording = item,
-                               selectedRecordingIndex = 0 {
+                            if item.recording != nil {
+                               selectedRecording = item
+                               selectedRecordingIndex = 0
                                 self.showActionSheet = false
                                 self.presentation.wrappedValue.dismiss()
-                                break
                             }
                         }
                     }
