@@ -106,17 +106,26 @@ public struct VoiceRecordingView: View {
                                 Group {
             if !hideBackButton {
                 Button(action: {
-                    for item in uiMessagesSdk.recordingItems.reversed() {
-                        if item.recording != nil,
-                           let index = uiMessagesSdk.recordingItems.firstIndex(of: item) {
-                            selectedRecording = item
-                            selectedRecordingIndex = index
-                            self.showActionSheet = true
-                            break
-                        }
-                    }
                     if audioRecorder.recordingsCount > 1 {
-                        self.presentation.wrappedValue.dismiss()
+                        for item in uiMessagesSdk.recordingItems.reversed() {
+                            if item.recording != nil,
+                               let index = uiMessagesSdk.recordingItems.firstIndex(of: item) {
+                                selectedRecording = item
+                                selectedRecordingIndex = index
+                                self.showActionSheet = true
+                                break
+                            }
+                        }
+                    } else {
+                        if let item = uiMessagesSdk.recordingItems.first {
+                            if item.recording != nil,
+                               selectedRecording = item,
+                               selectedRecordingIndex = 0 {
+                                self.showActionSheet = false
+                                self.presentation.wrappedValue.dismiss()
+                                break
+                            }
+                        }
                     }
                 }, label: {
                     HStack {
