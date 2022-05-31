@@ -41,6 +41,7 @@ public class MindsSDKUIMessages: ObservableObject {
     @Published public var genericErrorMessageTitle: String = "Algo deu errado"
     @Published public var genericErrorMessageBody: String = "Ocorreu um erro de conexão entre nossos servidores. Por favor, tente novamente."
     @Published public var genericErrorButtonLabel: String = "Tentar novamente"
+    @Published public var tryAgainLaterButtonLabel: String = "Tentar mais tarde"
     @Published public var successMessageTitle: String = "Tudo certo!"
     @Published public var successMessageBody: String = "Biometria por voz registrada com sucesso."
     @Published public var successButtonLabel: String = "Continuar"

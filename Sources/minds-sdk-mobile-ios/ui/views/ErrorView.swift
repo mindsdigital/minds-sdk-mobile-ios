@@ -46,6 +46,20 @@ public struct ErrorView: View {
             }
             .fillButtonStyle(backgroundColor: Color(.systemRed))
             .frame(maxHeight: .infinity, alignment: .bottom)
+
+            if uiConfigSdk.showTryAgainLater() {
+                Button(action: {
+                    action()
+                }) {
+                    Text(uiMessagesSdk.tryAgainLaterButtonLabel)
+                        .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: 40)
+                }
+                .fillButtonStyle(backgroundColor: Color(.systemRed))
+                .frame(maxHeight: .infinity, alignment: .bottom)
+            }
         }
         .padding()
         .preferredColorScheme(.light)
