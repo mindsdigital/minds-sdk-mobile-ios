@@ -128,6 +128,8 @@ public struct VoiceRecordingView: View {
                                 self.showActionSheet = false
                                 self.presentation.wrappedValue.dismiss()
                             }
+                        } else {
+                            self.presentation.wrappedValue.dismiss()
                         }
                     }
                 }, label: {
