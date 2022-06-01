@@ -84,6 +84,7 @@ public struct VoiceRecordingView: View {
                     if invalidLength {
                         if let nextQuestion = AdditionalValidationGenerator.shared.getNextQuestion() {
                             uiMessagesSdk.recordingItems.append(RecordingItem(key: "Repita a frase", value: nextQuestion))
+                            hideBackButton = false
                             currentScreen = Screen.main
                         } else {
                             invalidLength = false
@@ -93,6 +94,9 @@ public struct VoiceRecordingView: View {
                         currentScreen = Screen.main
                         hideBackButton = false
                     }
+                }, tryAgain: {
+                    hideBackButton = false
+                    voiceRecordingFlowActive = false
                 })
             } else if (currentScreen == Screen.thankYou) {
                 SuccessView(action: {

@@ -12,11 +12,12 @@ import SwiftUI
 public struct ErrorView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
-    @Environment(\.presentationMode) var presentation
     var action: () -> Void = {}
-    
-    public init(action: @escaping () -> Void) {
+    var tryAgain: (() -> Void)? = {}
+
+    public init(action: @escaping () -> Void, tryAgain: (() -> Void)? = nil) {
         self.action = action
+        self.tryAgain = tryAgain
     }
     
     public var body: some View {
@@ -56,7 +57,7 @@ public struct ErrorView: View {
 
                     if uiConfigSdk.showTryAgainLater() {
                         Button(action: {
-                            presentation.wrappedValue.dismiss()
+                            tryAgain?()
                         }) {
                             Text(uiMessagesSdk.tryAgainLaterButtonLabel)
                                 .font(uiConfigSdk.fontFamily.isEmpty ?
