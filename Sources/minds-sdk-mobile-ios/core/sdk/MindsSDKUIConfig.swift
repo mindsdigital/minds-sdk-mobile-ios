@@ -44,6 +44,7 @@ public class MindsSDKUIConfig: ObservableObject {
     @Published public var textColor: Color = Color(.label)
     @Published public var showThankYouScreen: Bool = true
     @Published private var showBiometricsSkipButton: Bool = true
+    @Published private var showTryAgainLaterButton: Bool = false
     @Published public var baseFontSize: CGFloat = 16
     @Published public var fontFamily: String = ""
     @Published public var loadingImage: String = ""
@@ -63,7 +64,15 @@ public class MindsSDKUIConfig: ObservableObject {
         self.showBiometricsSkipButton = false
     }
 
+    public func setRetryLaterButtonLabel(visible: Bool) {
+        self.showTryAgainLaterButton = visible
+    }
+
     func showSkipBiometrics() -> Bool {
         showBiometricsSkipButton
+    }
+
+    func showTryAgainLater() -> Bool {
+        showTryAgainLaterButton
     }
 }

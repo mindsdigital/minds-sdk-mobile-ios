@@ -13,9 +13,11 @@ public struct ErrorView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     var action: () -> Void = {}
-    
-    public init(action: @escaping () -> Void) {
+    var tryAgain: (() -> Void)? = {}
+
+    public init(action: @escaping () -> Void, tryAgain: (() -> Void)? = nil) {
         self.action = action
+        self.tryAgain = tryAgain
     }
     
     public var body: some View {
@@ -34,20 +36,45 @@ public struct ErrorView: View {
                     )
                 Spacer()
             }
-            
-            Button(action: {
-                action()
-            }) {
-                Text(uiMessagesSdk.genericErrorButtonLabel)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: 40)
+
+            ZStack {
+                Color(UIColor.systemBackground)
+                    .ignoresSafeArea()
+                    .frame(maxWidth: .infinity, maxHeight: 90)
+
+                VStack {
+                    Button(action: {
+                        action()
+                    }) {
+                        Text(uiMessagesSdk.genericErrorButtonLabel)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                            )
+                            .frame(maxWidth: .infinity, maxHeight: 40)
+                    }
+                    .fillButtonStyle(backgroundColor: Color(.systemRed))
+                    .padding(.bottom, 5)
+
+                    if uiConfigSdk.showTryAgainLater() {
+                        Button(action: {
+                            tryAgain?()
+                        }) {
+                            Text(uiMessagesSdk.tryAgainLaterButtonLabel)
+                                .font(uiConfigSdk.fontFamily.isEmpty ?
+                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: 40)
+                        }
+                        .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
+                        .padding(.bottom, 5)
+                    }
+                }
             }
-            .fillButtonStyle(backgroundColor: Color(.systemRed))
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .padding()
+        .preferredColorScheme(.light)
+        .environment(\.colorScheme, .light)
     }
 }
 

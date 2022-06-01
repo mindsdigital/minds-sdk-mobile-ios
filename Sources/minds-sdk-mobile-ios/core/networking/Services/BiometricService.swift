@@ -53,16 +53,8 @@ struct AudioRequest: Codable {
 }
 
 struct AudioFile: Codable {
-    let fileExtension: String
     let content: String
-    let rate: String
-    
-    
-    enum CodingKeys: String, CodingKey {
-        case fileExtension = "extension"
-        case content
-        case rate
-    }
+    let `extension`: String = "wav"
 }
 
 struct BiometricResponse: Codable {
@@ -119,5 +111,4 @@ struct ValidateInputResponse: Codable {
     let success: Bool
     let message: String?
     let status: String
-    let result: Bool
 }

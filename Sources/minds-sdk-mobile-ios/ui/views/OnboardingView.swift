@@ -72,6 +72,7 @@ public struct OnboardingView: View {
                     }
                     .isDetailLink(false)
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
+                    .padding(.bottom, 5)
                     
                     if (uiConfigSdk.showSkipBiometrics()) {
                         Button(action: {
@@ -85,12 +86,16 @@ public struct OnboardingView: View {
                                 .frame(maxWidth: .infinity, maxHeight: 40)
                         }
                         .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
+                        .padding(.bottom, 5)
+
                     }
                 }
                 .padding(.horizontal)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
+        .preferredColorScheme(.light)
+        .environment(\.colorScheme, .light)
         .actionSheet(isPresented: $showActionSheet) {
             ActionSheet(title: Text(uiMessagesSdk.skipRecordingMessageTitle),
                         message: Text(uiMessagesSdk.skipRecordingMessageBody),
@@ -110,50 +115,6 @@ public struct OnboardingView: View {
             for i in 0..<uiMessagesSdk.recordingItems.count {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
-
-            validateAudioFormat()
-            validateDataInput()
         }
-    }
-
-    private func validateAudioFormat() {
-        let request = ValidateFormatRequest(
-            fileExtension: sdk.fileExtension,
-            rate: sdk.sampleRate
-        )
-
-        SpeakerServices.init(networkRequest: NetworkManager())
-            .validateAudioFormat(token: sdk.token, request: request) { result in
-                switch result {
-                case .success(let response):
-                    if !response.isValid  {
-                        assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
-                    }
-                case .failure:
-                    assertionFailure("Formado de aúdio inválido: \(request.fileExtension) \(request.rate)")
-                }
-            }
-    }
-
-    private func validateDataInput() {
-        let request = ValidateInputRequest(
-            cpf: sdk.cpf,
-            fileExtension: sdk.fileExtension,
-            checkForVerification: true,
-            phoneNumber: sdk.phoneNumber,
-            rate: sdk.sampleRate
-        )
-
-        BiometricServices.init(networkRequest: NetworkManager())
-            .validateInput(token: sdk.token, request: request) { result in
-                switch result {
-                case .success(let response):
-                    if !response.success  {
-                        assertionFailure("Input de dados inválidos: \(response.message)")
-                    }
-                case .failure(let response):
-                    assertionFailure("Input de dados inválidos: \(response.message)")
-                }
-            }
     }
 }

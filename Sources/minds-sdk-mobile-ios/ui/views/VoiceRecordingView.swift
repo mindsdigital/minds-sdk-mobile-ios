@@ -82,11 +82,21 @@ public struct VoiceRecordingView: View {
             } else if (currentScreen == Screen.error) {
                 ErrorView(action: {
                     if invalidLength {
-                        let words = try? RandomWordGenerator()
-                        words?.next()
+                        if let nextQuestion = AdditionalValidationGenerator.shared.getNextQuestion() {
+                            uiMessagesSdk.recordingItems.append(RecordingItem(key: "Repita a frase", value: nextQuestion))
+                            hideBackButton = false
+                            currentScreen = Screen.main
+                        } else {
+                            invalidLength = false
+                        }
+                        
+                    } else {
+                        currentScreen = Screen.main
+                        hideBackButton = false
                     }
-                    currentScreen = Screen.main
+                }, tryAgain: {
                     hideBackButton = false
+                    voiceRecordingFlowActive = false
                 })
             } else if (currentScreen == Screen.thankYou) {
                 SuccessView(action: {
@@ -100,13 +110,27 @@ public struct VoiceRecordingView: View {
                                 Group {
             if !hideBackButton {
                 Button(action: {
-                    if audioRecorder.recordingsCount > 1,
-                       let recording = uiMessagesSdk.recordingItems.last {
-                        selectedRecording = recording
-                        selectedRecordingIndex = uiMessagesSdk.recordingItems.count - 1
-                        self.showActionSheet = true
+                    if audioRecorder.recordingsCount > 1 {
+                        for item in uiMessagesSdk.recordingItems.reversed() {
+                            if item.recording != nil,
+                               let index = uiMessagesSdk.recordingItems.firstIndex(of: item) {
+                                selectedRecording = item
+                                selectedRecordingIndex = index
+                                self.showActionSheet = true
+                                break
+                            }
+                        }
                     } else {
-                        self.presentation.wrappedValue.dismiss()
+                        if let item = uiMessagesSdk.recordingItems.first {
+                            if item.recording != nil {
+                               selectedRecording = item
+                               selectedRecordingIndex = 0
+                                self.showActionSheet = false
+                                self.presentation.wrappedValue.dismiss()
+                            }
+                        } else {
+                            self.presentation.wrappedValue.dismiss()
+                        }
                     }
                 }, label: {
                     HStack {
@@ -117,6 +141,8 @@ public struct VoiceRecordingView: View {
                 EmptyView()
             }
         })
+        .preferredColorScheme(.light)
+        .environment(\.colorScheme, .light)
     }
 
     private var audioScrollView: some View {
@@ -178,9 +204,7 @@ public struct VoiceRecordingView: View {
                                 let data = try Data(contentsOf: recordingItem.recording!)
                                 let encodedString = data.base64EncodedString()
                                 let audio = AudioFile(
-                                    fileExtension: sdk.fileExtension,
-                                    content: encodedString,
-                                    rate: rate
+                                    content: encodedString
                                 )
                                 audios.append(audio)
                             }
@@ -200,6 +224,8 @@ public struct VoiceRecordingView: View {
                                     switch result {
                                     case .success(let response):
                                         if response.success {
+                                            self.invalidLength = false
+
                                             guard uiConfigSdk.showThankYouScreen else {
                                                 hideBackButton = false
                                                 voiceRecordingFlowActive = false
@@ -207,7 +233,13 @@ public struct VoiceRecordingView: View {
                                             }
                                             currentScreen = .thankYou
                                         } else {
-                                            self.invalidLength = response.status == "invalid_length"
+                                            guard response.status != "invalid_length" else {
+                                                self.invalidLength = true
+                                                currentScreen = .error
+                                                return
+                                            }
+
+                                            self.invalidLength = false
                                             currentScreen = .error
                                         }
                                     case .failure(let error):
@@ -272,23 +304,28 @@ public struct VoiceRecordingView: View {
     }
 }
 
-struct RandomWordGenerator {
-    private let words: [String]
-    func ranged(_ range: ClosedRange<Int>) -> RandomWordGenerator {
-        RandomWordGenerator(words: words.filter { range.contains($0.count) })
-    }
-}
+struct AdditionalValidationGenerator {
+    static var shared = AdditionalValidationGenerator()
 
-extension RandomWordGenerator: Sequence, IteratorProtocol {
-    public func next() -> String? {
-        words.randomElement()
-    }
-}
+    private var currentIndex: Int = 0
 
-extension RandomWordGenerator {
-    init() throws {
-        let file = try String(contentsOf: URL(fileURLWithPath: "/usr/share/dict/words"))
-        self.init(words: file.components(separatedBy: "\n"))
+    private let additionalValidation = [
+        "Aqui, a minha voz é a minha senha",
+        "A minha conta é protegida pela minha voz",
+        "Minha identidade é representada pela minha voz",
+        "Minha proteção é garantida pela minha voz",
+        "A minha voz é exclusiva e irreproduzível",
+        "A minha voz me traz segurança e eu quero autenticá-la"
+    ]
+
+    mutating func getNextQuestion() -> String? {
+        if currentIndex < additionalValidation.count {
+            let referenceString = additionalValidation[currentIndex]
+            currentIndex += 1
+            return referenceString
+        }
+
+        return nil
     }
 }
 
