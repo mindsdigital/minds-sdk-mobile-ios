@@ -36,33 +36,41 @@ public struct ErrorView: View {
                 Spacer()
             }
 
-            VStack {
-                Button(action: {
-                    action()
-                }) {
-                    Text(uiMessagesSdk.genericErrorButtonLabel)
-                        .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                        )
-                        .frame(maxWidth: .infinity, maxHeight: 40)
-                }
-                .fillButtonStyle(backgroundColor: Color(.systemRed))
+            ZStack {
+                Color(UIColor.systemBackground)
+                    .ignoresSafeArea()
+                    .frame(maxWidth: .infinity, maxHeight: 90)
 
-                if uiConfigSdk.showTryAgainLater() {
+                VStack {
                     Button(action: {
-                        presentation.wrappedValue.dismiss()
+                        action()
                     }) {
-                        Text(uiMessagesSdk.tryAgainLaterButtonLabel)
+                        Text(uiMessagesSdk.genericErrorButtonLabel)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
                                 .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                             )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
                     .fillButtonStyle(backgroundColor: Color(.systemRed))
+                    .padding(.bottom, 5)
+
+                    if uiConfigSdk.showTryAgainLater() {
+                        Button(action: {
+                            presentation.wrappedValue.dismiss()
+                        }) {
+                            Text(uiMessagesSdk.tryAgainLaterButtonLabel)
+                                .font(uiConfigSdk.fontFamily.isEmpty ?
+                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: 40)
+                        }
+                        .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
+                        .padding(.bottom, 5)
+                    }
                 }
             }
+            .frame(maxHeight: .infinity, alignment: .bottom)
         }
-        .frame(maxHeight: .infinity, alignment: .bottom)
         .padding()
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
