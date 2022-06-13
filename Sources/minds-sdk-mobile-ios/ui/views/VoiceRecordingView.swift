@@ -240,7 +240,7 @@ public struct VoiceRecordingView: View {
 
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, .vertical)
         }
     }
     
@@ -277,6 +277,7 @@ public struct VoiceRecordingView: View {
                     case .success(let response):
                         if response.success {
                             self.invalidLength = false
+                            resetAdditionalValidation()
 
                             guard uiConfigSdk.showThankYouScreen else {
                                 hideBackButton = false
@@ -292,15 +293,25 @@ public struct VoiceRecordingView: View {
                             }
 
                             self.invalidLength = false
+                            resetAdditionalValidation()
                             currentScreen = .error
                         }
                     case .failure(let error):
                         print(error)
+                        resetAdditionalValidation()
                         currentScreen = .error
                     }
                 }
         } catch {
             print("Unable to load data: \(error)")
+            resetAdditionalValidation()
+        }
+    }
+    
+    private func resetAdditionalValidation() {
+        AdditionalValidationGenerator.shared.reset()
+        uiMessagesSdk.recordingItems.removeAll { item in
+            item.key == "Repita a frase"
         }
     }
 }
@@ -310,7 +321,7 @@ struct AdditionalValidationGenerator {
 
     private var currentIndex: Int = 0
 
-    private let additionalValidation = [
+    let additionalValidation = [
         "Aqui, a minha voz é a minha senha",
         "A minha conta é protegida pela minha voz",
         "Minha identidade é representada pela minha voz",
@@ -327,6 +338,10 @@ struct AdditionalValidationGenerator {
         }
 
         return nil
+    }
+    
+    mutating func reset() {
+        currentIndex = 0
     }
 }
 
