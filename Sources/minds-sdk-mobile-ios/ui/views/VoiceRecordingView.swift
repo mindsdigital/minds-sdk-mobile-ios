@@ -91,8 +91,7 @@ public struct VoiceRecordingView: View {
                         }
                         
                     } else {
-                        currentScreen = Screen.main
-                        hideBackButton = false
+                        sendAudio()
                     }
                 }, tryAgain: {
                     hideBackButton = false
@@ -191,63 +190,7 @@ public struct VoiceRecordingView: View {
             VStack {
                 if (audioRecorder.recordingsCount == uiMessagesSdk.recordingItems.count) {
                     Button(action: {
-                        do {
-                            var rate = "8K"
-                            if sdk.linearPCMBitDepthKey != 8 {
-                                rate = "16K"
-                            }
-                            // array of dictionaries
-                            var audios: [AudioFile] = []
-                            for recordingItem in uiMessagesSdk.recordingItems {
-                                let data = try Data(contentsOf: recordingItem.recording!)
-                                let encodedString = data.base64EncodedString()
-                                let audio = AudioFile(
-                                    content: encodedString
-                                )
-                                audios.append(audio)
-                            }
-
-                            let request = AudioRequest(
-                                cpf: sdk.cpf,
-                                phoneNumber: sdk.phoneNumber,
-                                externalCostumerID: sdk.externalId,
-                                audioFiles: audios
-                            )
-
-                            hideBackButton = true
-                            currentScreen = Screen.loading
-
-                            BiometricServices.init(networkRequest: NetworkManager())
-                                .sendAudio(token: sdk.token, request: request) { result in
-                                    switch result {
-                                    case .success(let response):
-                                        if response.success {
-                                            self.invalidLength = false
-
-                                            guard uiConfigSdk.showThankYouScreen else {
-                                                hideBackButton = false
-                                                voiceRecordingFlowActive = false
-                                                return
-                                            }
-                                            currentScreen = .thankYou
-                                        } else {
-                                            guard response.status != "invalid_length" else {
-                                                self.invalidLength = true
-                                                currentScreen = .error
-                                                return
-                                            }
-
-                                            self.invalidLength = false
-                                            currentScreen = .error
-                                        }
-                                    case .failure(let error):
-                                        print(error)
-                                        currentScreen = .error
-                                    }
-                                }
-                        } catch {
-                            print("Unable to load data: \(error)")
-                        }
+                        sendAudio()
                     }) {
                         Text(uiMessagesSdk.sendAudioButtonLabel)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
@@ -298,6 +241,66 @@ public struct VoiceRecordingView: View {
                 }
             }
             .padding(.horizontal)
+        }
+    }
+    
+    private func sendAudio() {
+        do {
+            var rate = "8K"
+            if sdk.linearPCMBitDepthKey != 8 {
+                rate = "16K"
+            }
+            // array of dictionaries
+            var audios: [AudioFile] = []
+            for recordingItem in uiMessagesSdk.recordingItems {
+                let data = try Data(contentsOf: recordingItem.recording!)
+                let encodedString = data.base64EncodedString()
+                let audio = AudioFile(
+                    content: encodedString
+                )
+                audios.append(audio)
+            }
+
+            let request = AudioRequest(
+                cpf: sdk.cpf,
+                phoneNumber: sdk.phoneNumber,
+                externalCostumerID: sdk.externalId,
+                audioFiles: audios
+            )
+
+            hideBackButton = true
+            currentScreen = Screen.loading
+
+            BiometricServices.init(networkRequest: NetworkManager())
+                .sendAudio(token: sdk.token, request: request) { result in
+                    switch result {
+                    case .success(let response):
+                        if response.success {
+                            self.invalidLength = false
+
+                            guard uiConfigSdk.showThankYouScreen else {
+                                hideBackButton = false
+                                voiceRecordingFlowActive = false
+                                return
+                            }
+                            currentScreen = .thankYou
+                        } else {
+                            guard response.status != "invalid_length" else {
+                                self.invalidLength = true
+                                currentScreen = .error
+                                return
+                            }
+
+                            self.invalidLength = false
+                            currentScreen = .error
+                        }
+                    case .failure(let error):
+                        print(error)
+                        currentScreen = .error
+                    }
+                }
+        } catch {
+            print("Unable to load data: \(error)")
         }
     }
 }
