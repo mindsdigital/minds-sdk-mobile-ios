@@ -124,8 +124,10 @@ public struct VoiceRecordingView: View {
                             selectedRecording = item
                             selectedRecordingIndex = 0
                             self.showActionSheet = false
+                            resetAdditionalValidation()
                             self.presentation.wrappedValue.dismiss()
                         } else {
+                            resetAdditionalValidation()
                             self.presentation.wrappedValue.dismiss()
                         }
                     }
