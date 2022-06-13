@@ -242,7 +242,8 @@ public struct VoiceRecordingView: View {
 
                 }
             }
-            .padding(.horizontal, .vertical)
+            .padding(.horizontal)
+            .padding(.vertical)
         }
     }
     
