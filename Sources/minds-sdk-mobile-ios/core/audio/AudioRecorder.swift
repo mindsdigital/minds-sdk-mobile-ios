@@ -52,7 +52,6 @@ class AudioRecorder: NSObject, ObservableObject {
             AVNumberOfChannelsKey: 1,
             AVLinearPCMBitDepthKey: sdk.linearPCMBitDepthKey,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
-            AVLinearPCMBitDepthKey: 16,
             AVLinearPCMIsBigEndianKey: false,
             AVLinearPCMIsFloatKey: false
         ] as [String : Any]
