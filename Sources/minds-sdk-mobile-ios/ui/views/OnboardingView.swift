@@ -90,6 +90,7 @@ public struct OnboardingView: View {
                     }
                 }
                 .padding(.horizontal)
+                .padding(.vertical)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
