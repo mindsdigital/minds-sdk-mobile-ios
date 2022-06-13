@@ -51,10 +51,8 @@ class AudioRecorder: NSObject, ObservableObject {
             AVSampleRateKey: sdk.sampleRate,
             AVNumberOfChannelsKey: 1,
             AVLinearPCMBitDepthKey: sdk.linearPCMBitDepthKey,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
-            AVLinearPCMIsBigEndianKey: false,
-            AVLinearPCMIsFloatKey: false
-        ] as [String : Any]
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+        ]
         
         do {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
