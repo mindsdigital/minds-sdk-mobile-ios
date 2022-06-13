@@ -47,12 +47,15 @@ class AudioRecorder: NSObject, ObservableObject {
         let audioFilename = documentPath.appendingPathComponent("\(key).wav")
         
         let settings = [
-            AVFormatIDKey: Int(kAudioFormatLinearPCM),
+            AVFormatIDKey: Int(kAudioFormatFLAC),
             AVSampleRateKey: sdk.sampleRate,
             AVNumberOfChannelsKey: 1,
             AVLinearPCMBitDepthKey: sdk.linearPCMBitDepthKey,
-            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-        ]
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
+            AVLinearPCMBitDepthKey: 16,
+            AVLinearPCMIsBigEndianKey: false,
+            AVLinearPCMIsFloatKey: false
+        ] as [String : Any]
         
         do {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
