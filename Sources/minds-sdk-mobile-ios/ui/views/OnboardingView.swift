@@ -59,7 +59,6 @@ public struct OnboardingView: View {
             
             ZStack {
                 Color(UIColor.systemBackground)
-                    .ignoresSafeArea()
                     .frame(maxWidth: .infinity, maxHeight: 90)
                 VStack {
                     NavigationLink(destination: VoiceRecordingView(voiceRecordingFlowActive: $voiceRecordingFlowActive)) {
@@ -91,6 +90,7 @@ public struct OnboardingView: View {
                     }
                 }
                 .padding(.horizontal)
+                .padding(.vertical)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }

@@ -71,6 +71,9 @@ public struct VoiceRecordingView: View {
                                                     selectedRecording!.recording!
                                                 ])
                                                 uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
+                                                if audioRecorder.recordingsCount == 0 {
+                                                    self.presentation.wrappedValue.dismiss()
+                                                }
                                             }
                                         }
                                     )
@@ -91,8 +94,7 @@ public struct VoiceRecordingView: View {
                         }
                         
                     } else {
-                        currentScreen = Screen.main
-                        hideBackButton = false
+                        sendAudio()
                     }
                 }, tryAgain: {
                     hideBackButton = false
@@ -121,14 +123,13 @@ public struct VoiceRecordingView: View {
                             }
                         }
                     } else {
-                        if let item = uiMessagesSdk.recordingItems.first {
-                            if item.recording != nil {
-                               selectedRecording = item
-                               selectedRecordingIndex = 0
-                                self.showActionSheet = false
-                                self.presentation.wrappedValue.dismiss()
-                            }
+                        if let item = uiMessagesSdk.recordingItems.first, item.recording != nil {
+                            selectedRecording = item
+                            selectedRecordingIndex = 0
+                            self.showActionSheet = true
+                            resetAdditionalValidation()
                         } else {
+                            resetAdditionalValidation()
                             self.presentation.wrappedValue.dismiss()
                         }
                     }
@@ -193,63 +194,7 @@ public struct VoiceRecordingView: View {
             VStack {
                 if (audioRecorder.recordingsCount == uiMessagesSdk.recordingItems.count) {
                     Button(action: {
-                        do {
-                            var rate = "8K"
-                            if sdk.linearPCMBitDepthKey != 8 {
-                                rate = "16K"
-                            }
-                            // array of dictionaries
-                            var audios: [AudioFile] = []
-                            for recordingItem in uiMessagesSdk.recordingItems {
-                                let data = try Data(contentsOf: recordingItem.recording!)
-                                let encodedString = data.base64EncodedString()
-                                let audio = AudioFile(
-                                    content: encodedString
-                                )
-                                audios.append(audio)
-                            }
-
-                            let request = AudioRequest(
-                                cpf: sdk.cpf,
-                                phoneNumber: sdk.phoneNumber,
-                                externalCostumerID: sdk.externalId,
-                                audioFiles: audios
-                            )
-
-                            hideBackButton = true
-                            currentScreen = Screen.loading
-
-                            BiometricServices.init(networkRequest: NetworkManager())
-                                .sendAudio(token: sdk.token, request: request) { result in
-                                    switch result {
-                                    case .success(let response):
-                                        if response.success {
-                                            self.invalidLength = false
-
-                                            guard uiConfigSdk.showThankYouScreen else {
-                                                hideBackButton = false
-                                                voiceRecordingFlowActive = false
-                                                return
-                                            }
-                                            currentScreen = .thankYou
-                                        } else {
-                                            guard response.status != "invalid_length" else {
-                                                self.invalidLength = true
-                                                currentScreen = .error
-                                                return
-                                            }
-
-                                            self.invalidLength = false
-                                            currentScreen = .error
-                                        }
-                                    case .failure(let error):
-                                        print(error)
-                                        currentScreen = .error
-                                    }
-                                }
-                        } catch {
-                            print("Unable to load data: \(error)")
-                        }
+                        sendAudio()
                     }) {
                         Text(uiMessagesSdk.sendAudioButtonLabel)
                             .font(uiConfigSdk.fontFamily.isEmpty ?
@@ -300,6 +245,78 @@ public struct VoiceRecordingView: View {
                 }
             }
             .padding(.horizontal)
+            .padding(.vertical)
+        }
+    }
+    
+    private func sendAudio() {
+        do {
+            var rate = "8K"
+            if sdk.linearPCMBitDepthKey != 8 {
+                rate = "16K"
+            }
+            // array of dictionaries
+            var audios: [AudioFile] = []
+            for recordingItem in uiMessagesSdk.recordingItems {
+                let data = try Data(contentsOf: recordingItem.recording!)
+                let encodedString = data.base64EncodedString()
+                let audio = AudioFile(
+                    content: encodedString
+                )
+                audios.append(audio)
+            }
+
+            let request = AudioRequest(
+                cpf: sdk.cpf,
+                phoneNumber: sdk.phoneNumber,
+                externalCostumerID: sdk.externalId,
+                audios: audios
+            )
+
+            hideBackButton = true
+            currentScreen = Screen.loading
+
+            BiometricServices.init(networkRequest: NetworkManager())
+                .sendAudio(token: sdk.token, request: request) { result in
+                    switch result {
+                    case .success(let response):
+                        if response.success {
+                            self.invalidLength = false
+                            resetAdditionalValidation()
+
+                            guard uiConfigSdk.showThankYouScreen else {
+                                hideBackButton = false
+                                voiceRecordingFlowActive = false
+                                return
+                            }
+                            currentScreen = .thankYou
+                        } else {
+                            guard response.status != "invalid_length" else {
+                                self.invalidLength = true
+                                currentScreen = .error
+                                return
+                            }
+
+                            self.invalidLength = false
+                            resetAdditionalValidation()
+                            currentScreen = .error
+                        }
+                    case .failure(let error):
+                        print(error)
+                        resetAdditionalValidation()
+                        currentScreen = .error
+                    }
+                }
+        } catch {
+            print("Unable to load data: \(error)")
+            resetAdditionalValidation()
+        }
+    }
+    
+    private func resetAdditionalValidation() {
+        AdditionalValidationGenerator.shared.reset()
+        uiMessagesSdk.recordingItems.removeAll { item in
+            item.key == "Repita a frase"
         }
     }
 }
@@ -309,7 +326,7 @@ struct AdditionalValidationGenerator {
 
     private var currentIndex: Int = 0
 
-    private let additionalValidation = [
+    let additionalValidation = [
         "Aqui, a minha voz é a minha senha",
         "A minha conta é protegida pela minha voz",
         "Minha identidade é representada pela minha voz",
@@ -326,6 +343,10 @@ struct AdditionalValidationGenerator {
         }
 
         return nil
+    }
+    
+    mutating func reset() {
+        currentIndex = 0
     }
 }
 
