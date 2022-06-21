@@ -270,7 +270,7 @@ public struct VoiceRecordingView: View {
                 cpf: sdk.cpf,
                 phoneNumber: sdk.phoneNumber,
                 externalCostumerID: sdk.externalId,
-                audioFiles: audios
+                audios: audios
             )
 
             hideBackButton = true
