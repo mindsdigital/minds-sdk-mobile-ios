@@ -123,9 +123,8 @@ public struct VoiceRecordingView: View {
                         if let item = uiMessagesSdk.recordingItems.first, item.recording != nil {
                             selectedRecording = item
                             selectedRecordingIndex = 0
-                            self.showActionSheet = false
+                            self.showActionSheet = true
                             resetAdditionalValidation()
-                            self.presentation.wrappedValue.dismiss()
                         } else {
                             resetAdditionalValidation()
                             self.presentation.wrappedValue.dismiss()
