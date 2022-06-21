@@ -71,6 +71,9 @@ public struct VoiceRecordingView: View {
                                                     selectedRecording!.recording!
                                                 ])
                                                 uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
+                                                if audioRecorder.recordingsCount == 0 {
+                                                    self.presentation.wrappedValue.dismiss()
+                                                }
                                             }
                                         }
                                     )
