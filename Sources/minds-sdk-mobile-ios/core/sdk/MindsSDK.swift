@@ -14,10 +14,10 @@ public class MindsSDK: ObservableObject {
     
     public init() { }
 
-    public enum ProcessType {
+    public enum ProcessType: String {
         case enrollment, verification
     }
-    
+
     @Published public var token: String = ""
     @Published public var cpf: String = ""
     @Published public var externalId: String = ""
@@ -31,7 +31,9 @@ public class MindsSDK: ObservableObject {
         self.processType = processType
     }
 
-    public func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
+    public func initializeSDK(for processType: ProcessType,
+                              completion: @escaping (Result<Void, Error>) -> Void) {
+        setProcessType(processType: processType)
         self.validateDataInput { dataInputResult in
             switch dataInputResult {
             case .success:
@@ -48,7 +50,8 @@ public class MindsSDK: ObservableObject {
             fileExtension: "wav",
             checkForVerification: processType == .verification,
             phoneNumber: phoneNumber,
-            rate: sampleRate
+            rate: sampleRate,
+            action: processType.rawValue
         )
 
         BiometricServices.init(networkRequest: NetworkManager())

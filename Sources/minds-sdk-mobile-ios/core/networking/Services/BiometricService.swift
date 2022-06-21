@@ -21,7 +21,8 @@ class BiometricServices: BiometricProtocol {
         self.env = env
     }
     
-    func sendAudio(token: String, request: AudioRequest, completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
+    func sendAudio(token: String, request: AudioRequest,
+                   completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
         let endpoint = BiometricsEndpoints.biometrics(requestBody: request)
         let request = endpoint.createRequest(token: token, environment: env)
         self.networkRequest.request(request) { result in
@@ -29,7 +30,8 @@ class BiometricServices: BiometricProtocol {
         }
     }
 
-    func validateInput(token: String, request: ValidateInputRequest, completion: @escaping (Result<ValidateInputResponse, NetworkError>) -> Void) {
+    func validateInput(token: String, request: ValidateInputRequest,
+                       completion: @escaping (Result<ValidateInputResponse, NetworkError>) -> Void) {
         let endpoint = BiometricsEndpoints.validateDataInput(requestBody: request)
         let request = endpoint.createRequest(token: token, environment: env)
         self.networkRequest.request(request) { result in
@@ -98,12 +100,14 @@ struct ValidateInputRequest: Codable {
     let checkForVerification: Bool
     let phoneNumber: String
     let rate: Int
+    let action: String
 
     enum CodingKeys: String, CodingKey {
         case cpf
         case fileExtension = "extension"
         case checkForVerification = "check_for_verification"
         case phoneNumber = "phone_number"
+        case action
         case rate
     }
 }
@@ -111,5 +115,6 @@ struct ValidateInputRequest: Codable {
 struct ValidateInputResponse: Codable {
     let success: Bool
     let message: String?
+    let result: Bool?
     let status: String
 }
