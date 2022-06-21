@@ -39,16 +39,17 @@ class BiometricServices: BiometricProtocol {
 }
 
 struct AudioRequest: Codable {
+    let action: String = "ENROLLMENT"
     let cpf: String
     let phoneNumber: String
     let externalCostumerID: String
-    let audioFiles: [AudioFile]
+    let audios: [AudioFile]
     
     enum CodingKeys: String, CodingKey {
         case cpf
         case phoneNumber = "phone_number"
         case externalCostumerID = "external_customer_id"
-        case audioFiles = "audio"
+        case audios = "audio"
     }
 }
 
