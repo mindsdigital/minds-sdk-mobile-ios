@@ -31,6 +31,7 @@ public struct VoiceRecordingView: View {
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
     @Environment(\.presentationMode) var presentation
+    @State private var isAnimating: Bool = false
 
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
@@ -224,8 +225,12 @@ public struct VoiceRecordingView: View {
                                 .foregroundColor(Color.white)
                         }
                         .frame(width: 56, height: 56)
-                        .background(uiConfigSdk.hexVariant400)
-                        .cornerRadius(100)
+                        .background(animationStack)
+                        .onAppear {
+                            DispatchQueue.main.async {
+                                self.isAnimating = true
+                            }
+                        }
                     } else {
                         Button(action: {
                             if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
@@ -240,6 +245,11 @@ public struct VoiceRecordingView: View {
                         .frame(width: 56, height: 56)
                         .background(uiConfigSdk.hexVariant400)
                         .cornerRadius(100)
+                        .onAppear {
+                            DispatchQueue.main.async {
+                                self.isAnimating = false
+                            }
+                        }
                     }
 
                 }
@@ -248,7 +258,28 @@ public struct VoiceRecordingView: View {
             .padding(.vertical)
         }
     }
-    
+
+    private var animationStack: some View {
+        ZStack {
+            Circle()
+                .fill(uiConfigSdk.hexVariant400.opacity(0.25))
+                .frame(width: 56, height: 56)
+                .scaleEffect(self.isAnimating ? 1.8 : 1)
+            Circle()
+                .fill(uiConfigSdk.hexVariant400.opacity(0.35))
+                .frame(width: 56, height: 56)
+                .scaleEffect(self.isAnimating ? 1.3 : 1)
+            Circle()
+                .fill(uiConfigSdk.hexVariant400)
+                .frame(width: 56, height: 56)
+        }
+        .animation(
+            Animation.linear(duration: 1)
+                .delay(0.2)
+                .repeatForever(autoreverses: false)
+        )
+    }
+
     private func sendAudio() {
         do {
             var rate = "8K"
