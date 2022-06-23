@@ -212,35 +212,10 @@ public struct VoiceRecordingView: View {
                         )
                         .padding(.top, 5)
 
-                    if audioRecorder.recording {
-                        Button(action: {
-                            self.audioRecorder.stopRecording()
-                            let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
-                            uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording = audio
-                            audioRecorder.recordingsCount += 1
-                        }) {
-                            Image(systemName: "stop.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(Color.white)
-                        }
-                        .frame(width: 56, height: 56)
-                        .background(uiConfigSdk.hexVariant400)
-                        .cornerRadius(100)
-                    } else {
-                        Button(action: {
-                            if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
-                                self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
-                            }
-                        }) {
-                            Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(uiConfigSdk.hexVariant400)
-                        }
-                        .frame(width: 56, height: 56)
-                        .background(uiConfigSdk.hexVariant400)
-                        .cornerRadius(100)
-                    }
+                    RecordingButton(isRecording: audioRecorder.recording,
+                                    background: uiConfigSdk.hexVariant400,
+                                    recordingButtonHandler: self.recordingButtonHandler,
+                                    stopButtonHandler: self.stopButtonHandler)
 
                 }
             }
@@ -248,7 +223,20 @@ public struct VoiceRecordingView: View {
             .padding(.vertical)
         }
     }
-    
+
+    private func recordingButtonHandler() {
+        self.audioRecorder.stopRecording()
+        let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
+        uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].recording = audio
+        audioRecorder.recordingsCount += 1
+    }
+
+    private func stopButtonHandler() {
+        if (audioRecorder.recordingsCount < uiMessagesSdk.recordingItems.count) {
+            self.audioRecorder.startRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
+        }
+    }
+
     private func sendAudio() {
         do {
             var rate = "8K"
