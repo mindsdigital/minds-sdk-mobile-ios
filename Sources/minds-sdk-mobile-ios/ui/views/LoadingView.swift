@@ -12,9 +12,11 @@ import SwiftUI
 public struct LoadingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
-    
+    private var textFont: Font = .body
+
     public init() {
-        
+        let customFont = Font.custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+        self.textFont = uiConfigSdk.fontFamily.isEmpty ? .body : customFont
     }
     
     public var body: some View {
@@ -25,14 +27,11 @@ public struct LoadingView: View {
             } else {
                 Image(uiConfigSdk.loadingImage)
             }
-            
-            ForEach(uiMessagesSdk.loadingIndicativeTexts, id: \.self) { loadingIndicativeText in
-                Text(loadingIndicativeText)
-                    .foregroundColor(uiConfigSdk.textColor)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                    )
-            }
+
+            SequentialTextWithAnimation(texts: uiMessagesSdk.loadingIndicativeTexts,
+                                        textColor: uiConfigSdk.textColor,
+                                        font: textFont)
+
             Spacer()
         }
         .preferredColorScheme(.light)
