@@ -27,13 +27,11 @@ public class MindsSDK: ObservableObject {
     @Published public var linearPCMBitDepthKey: Int = 16
     @Published public var processType: ProcessType = .enrollment
 
-    func setProcessType(processType: ProcessType) {
+    public func setProcessType(processType: ProcessType) {
         self.processType = processType
     }
 
-    public func initializeSDK(for processType: ProcessType,
-                              completion: @escaping (Result<Void, Error>) -> Void) {
-        setProcessType(processType: processType)
+    public func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
         self.validateDataInput { dataInputResult in
             switch dataInputResult {
             case .success:
@@ -50,8 +48,7 @@ public class MindsSDK: ObservableObject {
             fileExtension: "wav",
             checkForVerification: processType == .verification,
             phoneNumber: phoneNumber,
-            rate: sampleRate,
-            action: processType.rawValue
+            rate: sampleRate
         )
 
         BiometricServices.init(networkRequest: NetworkManager())

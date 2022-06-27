@@ -255,6 +255,7 @@ public struct VoiceRecordingView: View {
             }
 
             let request = AudioRequest(
+                action: sdk.processType.rawValue,
                 cpf: sdk.cpf,
                 phoneNumber: sdk.phoneNumber,
                 externalCostumerID: sdk.externalId,
