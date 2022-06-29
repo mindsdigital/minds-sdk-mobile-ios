@@ -27,6 +27,8 @@ public class MindsSDK: ObservableObject {
     @Published public var linearPCMBitDepthKey: Int = 16
     @Published public var processType: ProcessType = .enrollment
 
+    public var onBiometricsReceive: ((Result<BiometricResponse, NetworkError>) -> Void)?
+
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
     }

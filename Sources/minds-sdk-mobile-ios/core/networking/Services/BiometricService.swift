@@ -61,21 +61,21 @@ struct AudioFile: Codable {
     let `extension`: String = "wav"
 }
 
-struct BiometricResponse: Codable {
-    let id: Int64?
-    let cpf: String?
-    let verificationID: Int64?
-    let action: String?
-    let externalId: String?
-    let status: String?
-    let createdAt: String?
-    let success: Bool
-    let whitelisted: Bool?
-    let fraudRisk: String?
-    let enrollmentExternalId: String?
-    let matchPrediction: String?
-    let confidence: String?
-    let message: String?
+public struct BiometricResponse: Codable {
+    public let id: Int64?
+    public let cpf: String?
+    public let verificationID: Int64?
+    public let action: String?
+    public let externalId: String?
+    public let status: String?
+    public let createdAt: String?
+    public let success: Bool
+    public let whitelisted: Bool?
+    public let fraudRisk: String?
+    public let enrollmentExternalId: String?
+    public let matchPrediction: String?
+    public let confidence: String?
+    public let message: String?
     
     enum CodingKeys: String, CodingKey {
         case id
