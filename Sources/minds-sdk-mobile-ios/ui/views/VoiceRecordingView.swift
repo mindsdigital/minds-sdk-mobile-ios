@@ -30,8 +30,7 @@ public struct VoiceRecordingView: View {
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
-    @Environment(\.presentationMode) var presentation
-
+    
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
@@ -52,7 +51,7 @@ public struct VoiceRecordingView: View {
         VStack {
             if currentScreen == Screen.main {
                 VStack(alignment: .leading) {
-
+                    
                     audioScrollView
                     // Bottom Recording View
                     bottomRecordingView
@@ -71,9 +70,6 @@ public struct VoiceRecordingView: View {
                                                     selectedRecording!.recording!
                                                 ])
                                                 uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
-                                                if audioRecorder.recordingsCount == 0 {
-                                                    self.presentation.wrappedValue.dismiss()
-                                                }
                                             }
                                         }
                                     )
@@ -130,7 +126,6 @@ public struct VoiceRecordingView: View {
                             resetAdditionalValidation()
                         } else {
                             resetAdditionalValidation()
-                            self.presentation.wrappedValue.dismiss()
                         }
                     }
                 }, label: {
@@ -145,7 +140,7 @@ public struct VoiceRecordingView: View {
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
     }
-
+    
     private var audioScrollView: some View {
         ScrollView {
             ScrollViewReader { reader in
@@ -183,11 +178,11 @@ public struct VoiceRecordingView: View {
                         reader.scrollTo(uiMessagesSdk.recordingItems[min(uiMessagesSdk.recordingItems.count - 1, count)].id)
                     }
                 }
-
+                
             }
         }
     }
-
+    
     private var bottomRecordingView: some View {
         VStack{
             Divider()
@@ -204,14 +199,14 @@ public struct VoiceRecordingView: View {
                     }
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
                 } else {
-
+                    
                     Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
                         .foregroundColor(uiConfigSdk.textColor)
                         .font(uiConfigSdk.fontFamily.isEmpty ?
                             .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
                         )
                         .padding(.top, 5)
-
+                    
                     if audioRecorder.recording {
                         Button(action: {
                             self.audioRecorder.stopRecording()
@@ -241,7 +236,7 @@ public struct VoiceRecordingView: View {
                         .background(uiConfigSdk.hexVariant400)
                         .cornerRadius(100)
                     }
-
+                    
                 }
             }
             .padding(.horizontal)
@@ -265,17 +260,17 @@ public struct VoiceRecordingView: View {
                 )
                 audios.append(audio)
             }
-
+            
             let request = AudioRequest(
                 cpf: sdk.cpf,
                 phoneNumber: sdk.phoneNumber,
-                externalCostumerID: sdk.externalId,
+                externalCustomerID: sdk.externalId,
                 audios: audios
             )
-
+            
             hideBackButton = true
             currentScreen = Screen.loading
-
+            
             BiometricServices.init(networkRequest: NetworkManager())
                 .sendAudio(token: sdk.token, request: request) { result in
                     switch result {
@@ -283,7 +278,7 @@ public struct VoiceRecordingView: View {
                         if response.success {
                             self.invalidLength = false
                             resetAdditionalValidation()
-
+                            
                             guard uiConfigSdk.showThankYouScreen else {
                                 hideBackButton = false
                                 voiceRecordingFlowActive = false
@@ -296,7 +291,7 @@ public struct VoiceRecordingView: View {
                                 currentScreen = .error
                                 return
                             }
-
+                            
                             self.invalidLength = false
                             resetAdditionalValidation()
                             currentScreen = .error
@@ -306,6 +301,7 @@ public struct VoiceRecordingView: View {
                         resetAdditionalValidation()
                         currentScreen = .error
                     }
+                    uiMessagesSdk.genericErrorMessageBody = invalidLength ? "Duração de audio inválida" : uiMessagesSdk.genericErrorMessageBody
                 }
         } catch {
             print("Unable to load data: \(error)")
@@ -323,9 +319,9 @@ public struct VoiceRecordingView: View {
 
 struct AdditionalValidationGenerator {
     static var shared = AdditionalValidationGenerator()
-
+    
     private var currentIndex: Int = 0
-
+    
     let additionalValidation = [
         "Aqui, a minha voz é a minha senha",
         "A minha conta é protegida pela minha voz",
@@ -334,14 +330,14 @@ struct AdditionalValidationGenerator {
         "A minha voz é exclusiva e irreproduzível",
         "A minha voz me traz segurança e eu quero autenticá-la"
     ]
-
+    
     mutating func getNextQuestion() -> String? {
         if currentIndex < additionalValidation.count {
             let referenceString = additionalValidation[currentIndex]
             currentIndex += 1
             return referenceString
         }
-
+        
         return nil
     }
     
@@ -358,7 +354,7 @@ struct VoiceRecordingView_Previews: PreviewProvider {
         uiMessagesSdk.genericErrorMessageBody = "Ocorreu um erro de conexão entre nossos servidores. Por favor, tente novamente."
         uiMessagesSdk.genericErrorButtonLabel = "Tentar novamente"
         return ErrorView(action: {
-
+            
         })
     }
 }
