@@ -255,6 +255,7 @@ public struct VoiceRecordingView: View {
             }
 
             let request = AudioRequest(
+                action: sdk.processType.rawValue,
                 cpf: sdk.cpf,
                 phoneNumber: sdk.phoneNumber,
                 externalCostumerID: sdk.externalId,
@@ -266,6 +267,7 @@ public struct VoiceRecordingView: View {
 
             BiometricServices.init(networkRequest: NetworkManager())
                 .sendAudio(token: sdk.token, request: request) { result in
+                    self.sendResultToHostApplication(result)
                     switch result {
                     case .success(let response):
                         if response.success {
@@ -300,7 +302,13 @@ public struct VoiceRecordingView: View {
             resetAdditionalValidation()
         }
     }
-    
+
+    private func sendResultToHostApplication(_ result: Result<BiometricResponse, NetworkError>) {
+        DispatchQueue.main.async {
+            sdk.onBiometricsReceive?(result)
+        }
+    }
+
     private func resetAdditionalValidation() {
         AdditionalValidationGenerator.shared.reset()
         uiMessagesSdk.recordingItems.removeAll { item in
