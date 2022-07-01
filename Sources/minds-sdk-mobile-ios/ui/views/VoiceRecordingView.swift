@@ -276,6 +276,7 @@ public struct VoiceRecordingView: View {
                         } else {
                             guard response.status != "invalid_length" else {
                                 self.invalidLength = true
+                                uiMessagesSdk.genericErrorMessageBody = invalidLength ? "Duração de audio inválida" : uiMessagesSdk.genericErrorMessageBody
                                 currentScreen = .error
                                 return
                             }
