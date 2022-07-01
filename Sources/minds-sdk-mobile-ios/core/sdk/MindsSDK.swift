@@ -14,10 +14,10 @@ public class MindsSDK: ObservableObject {
     
     public init() { }
 
-    public enum ProcessType {
+    public enum ProcessType: String {
         case enrollment, verification
     }
-    
+
     @Published public var token: String = ""
     @Published public var cpf: String = ""
     @Published public var externalId: String = ""
@@ -27,7 +27,9 @@ public class MindsSDK: ObservableObject {
     @Published public var linearPCMBitDepthKey: Int = 16
     @Published public var processType: ProcessType = .enrollment
 
-    func setProcessType(processType: ProcessType) {
+    public var onBiometricsReceive: ((Result<BiometricResponse, NetworkError>) -> Void)?
+
+    public func setProcessType(processType: ProcessType) {
         self.processType = processType
     }
 
