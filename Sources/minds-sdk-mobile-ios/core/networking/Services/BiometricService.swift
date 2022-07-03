@@ -44,14 +44,14 @@ struct AudioRequest: Codable {
     let action: String
     let cpf: String
     let phoneNumber: String
-    let externalCostumerID: String
+    let externalCustomerID: String
     let audios: [AudioFile]
     
     enum CodingKeys: String, CodingKey {
         case action
         case cpf
         case phoneNumber = "phone_number"
-        case externalCostumerID = "external_customer_id"
+        case externalCustomerID = "external_customer_id"
         case audios = "audio"
     }
 }
