@@ -49,5 +49,5 @@ public class MindsSDKUIMessages: ObservableObject {
         "Enviando gravações...",
         "Analisando formato do áudio...",
     ]
-    @Published public var recordingItems: [RecordingItem] = []
+    @Published var recordingItems: [RecordingItem] = []
 }
