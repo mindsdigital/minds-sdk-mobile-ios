@@ -148,14 +148,10 @@ public struct VoiceRecordingView: View {
                     ForEach(0..<min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1), id: \.self) { i in
                         Text(uiMessagesSdk.recordingItems[i].key)
                             .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant100)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .headline : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .headline)
-                            )
+                            .font(customFont(defaultFont: .headline, defaultStyle: .headline))
                         Text(uiMessagesSdk.recordingItems[i].value)
                             .foregroundColor(i != min(uiMessagesSdk.recordingItems.count, audioRecorder.recordingsCount + 1) - 1 ? Color.gray : uiConfigSdk.hexVariant300)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .title2 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title2)
-                            )
+                            .font(customFont(defaultFont: .title2, defaultStyle: .title2))
                             .id(uiMessagesSdk.recordingItems[i].id)
                         if (uiMessagesSdk.recordingItems[i].recording != nil) {
                             RecordingItemView(audioURL: uiMessagesSdk.recordingItems[i].recording!,
@@ -192,9 +188,7 @@ public struct VoiceRecordingView: View {
                         sendAudio()
                     }) {
                         Text(uiMessagesSdk.sendAudioButtonLabel)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                            )
+                            .font(customFont(defaultFont: .body, defaultStyle: .body))
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
@@ -202,9 +196,7 @@ public struct VoiceRecordingView: View {
                     
                     Text(audioRecorder.recording ? uiMessagesSdk.recordingIndicativeText : uiMessagesSdk.instructionTextForRecording)
                         .foregroundColor(uiConfigSdk.textColor)
-                        .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                        )
+                        .font(customFont(defaultFont: .body, defaultStyle: .body))
                         .padding(.top, 5)
                     RecordingButton(isRecording: audioRecorder.recording,
                                     background: uiConfigSdk.hexVariant400,
@@ -309,6 +301,11 @@ public struct VoiceRecordingView: View {
         uiMessagesSdk.recordingItems.removeAll { item in
             item.key == "Repita a frase"
         }
+    }
+
+    private func customFont(defaultFont: Font, defaultStyle: Font.TextStyle) -> Font {
+        let customFont: Font = .custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: defaultStyle)
+        return uiConfigSdk.getFontFamily().isEmpty ? defaultFont : customFont
     }
 }
 
