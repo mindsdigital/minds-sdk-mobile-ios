@@ -32,6 +32,9 @@ public struct VoiceRecordingView: View {
     @Binding var voiceRecordingFlowActive: Bool
     @Environment(\.presentationMode) var presentation
 
+    @State var numbersOfRetry: Int = 0
+    @State var serviceResult: Result<BiometricResponse, NetworkError>?
+
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
@@ -84,6 +87,7 @@ public struct VoiceRecordingView: View {
                 LoadingView()
             } else if (currentScreen == Screen.error) {
                 ErrorView(action: {
+                    numbersOfRetry += 1
                     if invalidLength {
                         if let nextQuestion = AdditionalValidationGenerator.shared.getNextQuestion() {
                             uiMessagesSdk.recordingItems.append(RecordingItem(key: "Repita a frase", value: nextQuestion))
@@ -99,11 +103,13 @@ public struct VoiceRecordingView: View {
                 }, tryAgain: {
                     hideBackButton = false
                     voiceRecordingFlowActive = false
+                    sendResultToHostApplication()
                 })
             } else if (currentScreen == Screen.thankYou) {
                 SuccessView(action: {
                     hideBackButton = false
                     voiceRecordingFlowActive = false
+                    sendResultToHostApplication()
                 })
             }
         }
@@ -267,7 +273,7 @@ public struct VoiceRecordingView: View {
 
             BiometricServices.init(networkRequest: NetworkManager())
                 .sendAudio(token: sdk.token, request: request) { result in
-                    self.sendResultToHostApplication(result)
+                    self.serviceResult = result
                     switch result {
                     case .success(let response):
                         if response.success {
@@ -303,12 +309,6 @@ public struct VoiceRecordingView: View {
         }
     }
 
-    private func sendResultToHostApplication(_ result: Result<BiometricResponse, NetworkError>) {
-        DispatchQueue.main.async {
-            sdk.onBiometricsReceive?(result)
-        }
-    }
-
     private func resetAdditionalValidation() {
         AdditionalValidationGenerator.shared.reset()
         uiMessagesSdk.recordingItems.removeAll { item in
@@ -316,6 +316,46 @@ public struct VoiceRecordingView: View {
         }
     }
 }
+
+@available(iOS 14.0, *)
+extension VoiceRecordingView {
+
+    func sendResultToHostApplication() {
+        guard let result = self.serviceResult else {
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.sdk.onBiometricsReceive?(self.appendNumberOfRetries(result))
+        }
+    }
+
+    private func appendNumberOfRetries(_ result: Result<BiometricResponse, NetworkError>) -> Result<BiometricResponse, NetworkError> {
+        switch result {
+        case .success(let response):
+            let responseStatus = self.numbersOfRetry > 0 ? "do_biometrics_later" : response.status
+            let successResponse = BiometricResponse(id: response.id,
+                                                    cpf: response.cpf,
+                                                    verificationID: response.verificationID,
+                                                    action: response.action,
+                                                    externalId: response.externalId,
+                                                    status: responseStatus,
+                                                    createdAt: response.createdAt,
+                                                    success: response.success,
+                                                    whitelisted: response.whitelisted,
+                                                    fraudRisk: response.fraudRisk,
+                                                    enrollmentExternalId: response.enrollmentExternalId,
+                                                    matchPrediction: response.matchPrediction,
+                                                    confidence: response.confidence,
+                                                    message: response.message,
+                                                    numberOfRetries: self.numbersOfRetry)
+            return .success(successResponse)
+        case .failure(let error):
+            return .failure(error)
+        }
+    }
+}
+
 
 struct AdditionalValidationGenerator {
     static var shared = AdditionalValidationGenerator()
