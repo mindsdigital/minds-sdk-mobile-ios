@@ -231,6 +231,11 @@ public struct VoiceRecordingView: View {
     }
 
     private func sendAudio() {
+        guard let randomSentenceId = sdk.recordItem?.key,
+              let randomSentenceIdInt = Int(randomSentenceId) else {
+            return
+        }
+
         do {
             var rate = "8K"
             if sdk.linearPCMBitDepthKey != 8 {
@@ -252,7 +257,8 @@ public struct VoiceRecordingView: View {
                 cpf: sdk.cpf,
                 phoneNumber: sdk.phoneNumber,
                 externalCustomerID: sdk.externalId,
-                audios: audios
+                audios: audios,
+                liveness: RandomSentenceId(id: randomSentenceIdInt)
             )
             
             hideBackButton = true

@@ -46,6 +46,7 @@ struct AudioRequest: Codable {
     let phoneNumber: String
     let externalCustomerID: String
     let audios: [AudioFile]
+    let liveness: RandomSentenceId
     
     enum CodingKeys: String, CodingKey {
         case action
@@ -53,6 +54,15 @@ struct AudioRequest: Codable {
         case phoneNumber = "phone_number"
         case externalCustomerID = "external_customer_id"
         case audios = "audio"
+        case liveness = "liveness"
+    }
+}
+
+struct RandomSentenceId: Codable {
+    let id: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id = "sentence_id"
     }
 }
 

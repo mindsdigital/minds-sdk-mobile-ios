@@ -27,6 +27,18 @@ public class MindsSDK: ObservableObject {
     @Published public var linearPCMBitDepthKey: Int = 16
     @Published public var processType: ProcessType = .enrollment
 
+    @Published var recordItem: RecordingItem? {
+        didSet {
+            guard let recordItem = recordItem else {
+                return
+            }
+
+            DispatchQueue.main.async {
+                MindsSDKUIMessages.shared.recordingItems = [recordItem]
+            }
+        }
+    }
+
     public var onBiometricsReceive: ((Result<BiometricResponse, NetworkError>) -> Void)?
 
     public func setProcessType(processType: ProcessType) {
@@ -37,11 +49,31 @@ public class MindsSDK: ObservableObject {
         self.validateDataInput { dataInputResult in
             switch dataInputResult {
             case .success:
-                completion(.success(()))
+                self.getRandomSentences { sentenceResult in
+                    completion(sentenceResult)
+                }
             case .failure(let error):
                 completion(.failure(error))
             }
         }
+    }
+
+    private func getRandomSentences(completion: @escaping (Result<Void, Error>) -> Void) {
+        LivenessService.init(networkRequest: NetworkManager())
+            .getRandomSentence(token: token) { result in
+                switch result {
+                case .success(let response):
+                    DispatchQueue.main.async {
+                        self.recordItem = RecordingItem(key: String(response.data.id),
+                                                        value: response.data.text,
+                                                        recording: nil)
+                    }
+                    completion(.success(()))
+                case .failure(let error):
+                    completion(.failure(error))
+                    assertionFailure("Input de dados inválidos: \(error.localizedDescription)")
+                }
+            }
     }
 
     private func validateDataInput(completion: @escaping (Result<Void, NetworkError>) -> Void) {
