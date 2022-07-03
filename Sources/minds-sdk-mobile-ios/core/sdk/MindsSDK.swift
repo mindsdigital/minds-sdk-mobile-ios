@@ -19,11 +19,13 @@ public class MindsSDK: ObservableObject {
     }
 
     @Published public var token: String = ""
-    @Published public var cpf: String = ""
-    @Published public var externalId: String = ""
-    @Published public var phoneNumber: String = ""
+
+    @Published var cpf: String = ""
+    @Published var externalId: String = ""
+    @Published var phoneNumber: String = ""
+    @Published var connectionTimeout: Float = 20.0
     
-    @Published public var sampleRate: Int = 22050
+    @Published var sampleRate: Int = 22050
     @Published public var linearPCMBitDepthKey: Int = 16
     @Published public var processType: ProcessType = .enrollment
 
@@ -31,6 +33,22 @@ public class MindsSDK: ObservableObject {
 
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
+    }
+
+    public func setCpf(_ cpf: String) {
+        self.cpf = cpf
+    }
+
+    public func setExternalId(_ externalId: String) {
+        self.externalId = externalId
+    }
+
+    public func setPhoneNumber(_ phoneNumber: String) {
+        self.phoneNumber = phoneNumber
+    }
+
+    public func setConnectionTimeout(_ connectionTimeout: Float) {
+        self.connectionTimeout = connectionTimeout
     }
 
     public func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
@@ -53,7 +71,7 @@ public class MindsSDK: ObservableObject {
             rate: sampleRate
         )
 
-        BiometricServices.init(networkRequest: NetworkManager())
+        BiometricServices.init(networkRequest: NetworkManager(requestTimeout: connectionTimeout))
             .validateInput(token: token, request: request) { result in
                 switch result {
                 case .success(let response):

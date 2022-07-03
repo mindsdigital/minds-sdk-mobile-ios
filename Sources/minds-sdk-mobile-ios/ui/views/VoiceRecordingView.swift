@@ -258,7 +258,7 @@ public struct VoiceRecordingView: View {
             hideBackButton = true
             currentScreen = Screen.loading
             
-            BiometricServices.init(networkRequest: NetworkManager())
+            BiometricServices.init(networkRequest: NetworkManager(requestTimeout: sdk.connectionTimeout))
                 .sendAudio(token: sdk.token, request: request) { result in
                     self.sendResultToHostApplication(result)
                     switch result {
