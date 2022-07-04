@@ -78,7 +78,11 @@ protocol Requestable {
 }
 
 class NetworkManager: Requestable {
-    var requestTimeout: Float = 30
+    var requestTimeout: Float
+
+    public init(requestTimeout: Float) {
+        self.requestTimeout = requestTimeout
+    }
     
     public func request<T>(_ request: NetworkRequest, completion: @escaping (Result<T, NetworkError>) -> Void) where T: Decodable, T: Encodable {
         let sessionConfiguration = URLSessionConfiguration.default
