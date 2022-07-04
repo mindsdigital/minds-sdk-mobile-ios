@@ -101,11 +101,6 @@ public struct OnboardingView: View {
                         ]
             )
         }
-        .onAppear {
-            for i in 0..<uiMessagesSdk.recordingItems.count {
-                uiMessagesSdk.recordingItems[i].recording = nil
-            }
-        }
     }
 
     private func customFont(defaultFont: Font, defaultStyle: Font.TextStyle) -> Font {
