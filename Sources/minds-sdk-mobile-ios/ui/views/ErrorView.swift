@@ -26,14 +26,10 @@ public struct ErrorView: View {
                 Spacer()
                 Text(uiMessagesSdk.genericErrorMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
-                    )
+                    .font(customFont(defaultFont: .title, defaultStyle: .title))
                 Text(uiMessagesSdk.genericErrorMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .title3 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title3)
-                    )
+                    .font(customFont(defaultFont: .title3, defaultStyle: .title3))
                 Spacer()
             }
 
@@ -47,9 +43,7 @@ public struct ErrorView: View {
                         action()
                     }) {
                         Text(uiMessagesSdk.genericErrorButtonLabel)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                            )
+                            .font(customFont(defaultFont: .body, defaultStyle: .body))
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
                     .fillButtonStyle(backgroundColor: Color(.systemRed))
@@ -60,9 +54,7 @@ public struct ErrorView: View {
                             tryAgain?()
                         }) {
                             Text(uiMessagesSdk.tryAgainLaterButtonLabel)
-                                .font(uiConfigSdk.fontFamily.isEmpty ?
-                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                                )
+                                .font(customFont(defaultFont: .body, defaultStyle: .body))
                                 .frame(maxWidth: .infinity, maxHeight: 40)
                         }
                         .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
@@ -75,6 +67,11 @@ public struct ErrorView: View {
         .padding()
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
+    }
+
+    private func customFont(defaultFont: Font, defaultStyle: Font.TextStyle) -> Font {
+        let customFont: Font = .custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: defaultStyle)
+        return uiConfigSdk.getFontFamily().isEmpty ? defaultFont : customFont
     }
 }
 

@@ -29,24 +29,18 @@ public struct OnboardingView: View {
                     VStack(alignment: .leading) {
                         Text(uiMessagesSdk.onboardingTitle)
                             .foregroundColor(uiConfigSdk.textColor)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
-                            )
+                            .font(customFont(defaultFont: .title, defaultStyle: .title))
                             .multilineTextAlignment(.leading)
                             .padding(.bottom, 20)
                         Text(uiMessagesSdk.hintTextTitle)
                             .foregroundColor(uiConfigSdk.textColor)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                            )
+                            .font(customFont(defaultFont: .body, defaultStyle: .body))
                             .padding(.bottom, 5)
                         VStack(alignment: .leading) {
                             ForEach(uiMessagesSdk.hintTexts, id: \.self) { hintText in
                                 Text("• " + hintText)
                                     .foregroundColor(uiConfigSdk.textColor)
-                                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                                        .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                                    )
+                                    .font(customFont(defaultFont: .body, defaultStyle: .body))
                             }
                         }
                     }
@@ -64,9 +58,7 @@ public struct OnboardingView: View {
                     NavigationLink(destination: VoiceRecordingView(voiceRecordingFlowActive: $voiceRecordingFlowActive)) {
                         Text(uiMessagesSdk.startRecordingButtonLabel)
                             .foregroundColor(Color.white)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                            )
+                            .font(customFont(defaultFont: .body, defaultStyle: .body))
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
                     .isDetailLink(false)
@@ -79,9 +71,7 @@ public struct OnboardingView: View {
                         }) {
                             Text(uiMessagesSdk.skipRecordingButtonLabel)
                                 .foregroundColor(uiConfigSdk.hexVariant400)
-                                .font(uiConfigSdk.fontFamily.isEmpty ?
-                                    .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                                )
+                                .font(customFont(defaultFont: .body, defaultStyle: .body))
                                 .frame(maxWidth: .infinity, maxHeight: 40)
                         }
                         .outlinedButtonStyle(outlineColor: uiConfigSdk.hexVariant400)
@@ -116,5 +106,10 @@ public struct OnboardingView: View {
                 uiMessagesSdk.recordingItems[i].recording = nil
             }
         }
+    }
+
+    private func customFont(defaultFont: Font, defaultStyle: Font.TextStyle) -> Font {
+        let customFont: Font = .custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: defaultStyle)
+        return uiConfigSdk.getFontFamily().isEmpty ? defaultFont : customFont
     }
 }
