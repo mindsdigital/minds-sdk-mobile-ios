@@ -41,13 +41,22 @@ public class MindsSDKUIConfig: ObservableObject {
         self.hexVariant900 = hexVariant900
     }
     
-    @Published public var textColor: Color = Color(.label)
     @Published public var showThankYouScreen: Bool = true
     @Published private var showBiometricsSkipButton: Bool = true
+    @Published private var showOnboardScreen: Bool = true
     @Published private var showTryAgainLaterButton: Bool = false
-    @Published public var baseFontSize: CGFloat = 16
-    @Published public var fontFamily: String = ""
-    @Published public var loadingImage: String = ""
+
+    // Mark: - Text Color
+    @Published public var textColor: Color = Color(.label)
+
+    // Mark: - Image
+    @Published private var loadingImage: String = ""
+
+    // Mark: - Font Configuration
+    @Published private var baseFontSize: CGFloat = 16
+    @Published private var fontFamily: String = ""
+
+    @Published private var buttonErrorColor: Color = Color(.label)
 
     @Published public var hexVariant50: Color = Color(hex: "fff7e0")
     @Published public var hexVariant100: Color = Color(hex: "ffe9b0")
@@ -60,19 +69,71 @@ public class MindsSDKUIConfig: ObservableObject {
     @Published public var hexVariant800: Color = Color(hex: "fb8500")
     @Published public var hexVariant900: Color = Color(hex: "fa6400")
 
+    // Mark: - Screen configurations
+
     public func disableSkipBiometrics() {
         self.showBiometricsSkipButton = false
-    }
-
-    public func setRetryLaterButtonLabel(visible: Bool) {
-        self.showTryAgainLaterButton = visible
     }
 
     func showSkipBiometrics() -> Bool {
         showBiometricsSkipButton
     }
 
+    public func setRetryLaterButtonLabel(visible: Bool) {
+        self.showTryAgainLaterButton = visible
+    }
+
     func showTryAgainLater() -> Bool {
         showTryAgainLaterButton
+    }
+
+    public func disableOnboardScreen() {
+        self.showOnboardScreen = false
+    }
+
+    func showOnboard() -> Bool {
+        return showOnboardScreen
+    }
+
+    // Mark:  - UI Configurations
+    
+    public func setFontFamilyFile(fontFamily: String) {
+        self.fontFamily = fontFamily
+    }
+
+    func getFontFamily() -> String {
+        return fontFamily
+    }
+
+    public func setTypographyScale(baseFontSize: CGFloat) {
+        self.baseFontSize = baseFontSize
+    }
+
+    func getTypographyScale() -> CGFloat {
+        return baseFontSize
+    }
+
+    public func setLogoImage(loadingImage: String) {
+        self.loadingImage = loadingImage
+    }
+
+    func getLogoImage() -> String {
+        return loadingImage
+    }
+
+    public func setTextColor(textColor: Color) {
+        self.textColor = textColor
+    }
+
+    func getTextColor() -> Color {
+        return textColor
+    }
+
+    public func setButtonErrorColor(color: Color) {
+        self.buttonErrorColor = color
+    }
+
+    func getButtonErrorColor() -> Color {
+        return buttonErrorColor
     }
 }

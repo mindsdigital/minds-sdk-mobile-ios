@@ -15,17 +15,17 @@ public struct LoadingView: View {
     private var textFont: Font = .body
 
     public init() {
-        let customFont = Font.custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-        self.textFont = uiConfigSdk.fontFamily.isEmpty ? .body : customFont
+        let customFont = Font.custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: .body)
+        self.textFont = uiConfigSdk.getFontFamily().isEmpty ? .body : customFont
     }
     
     public var body: some View {
         VStack {
             Spacer()
-            if (uiConfigSdk.loadingImage.isEmpty) {
+            if (uiConfigSdk.getLogoImage().isEmpty) {
                 Image(uiImage: UIImage(named: "robot", in: .module, with: nil) ?? UIImage())
             } else {
-                Image(uiConfigSdk.loadingImage)
+                Image(uiConfigSdk.getLogoImage())
             }
 
             SequentialTextWithAnimation(texts: uiMessagesSdk.loadingIndicativeTexts,
