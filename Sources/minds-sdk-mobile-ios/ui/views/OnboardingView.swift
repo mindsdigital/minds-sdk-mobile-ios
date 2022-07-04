@@ -87,13 +87,13 @@ public struct OnboardingView: View {
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
         .actionSheet(isPresented: $showActionSheet) {
-            ActionSheet(title: Text(uiMessagesSdk.skipRecordingMessageTitle),
-                        message: Text(uiMessagesSdk.skipRecordingMessageBody),
+            ActionSheet(title: Text(uiMessagesSdk.skipMessageTitle),
+                        message: Text(uiMessagesSdk.skipMessageBody),
                         buttons: [
                             .cancel(
-                                Text(uiMessagesSdk.skiprecordingDismissLabel)),
+                                Text(uiMessagesSdk.dismissSkipButtonLabel)),
                             .default(
-                                Text(uiMessagesSdk.skipRecordingConfirmLabel),
+                                Text(uiMessagesSdk.confirmSkipButtonLabel),
                                 action: {
                                     presentation.wrappedValue.dismiss()
                                 }

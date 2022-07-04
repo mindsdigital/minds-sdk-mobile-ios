@@ -22,10 +22,12 @@ public struct SuccessView: View {
         ZStack {
             VStack {
                 Spacer()
-                Text(uiMessagesSdk.successMessageTitle)
+                Text(uiMessagesSdk.confirmationMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(customFont(defaultFont: .title, defaultStyle: .title))
-                Text(uiMessagesSdk.successMessageBody)
+                    .font(uiConfigSdk.fontFamily.isEmpty ?
+                            .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
+                    )
+                Text(uiMessagesSdk.confirmationMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
                     .font(customFont(defaultFont: .title3, defaultStyle: .title3))
                 Spacer()
@@ -58,8 +60,8 @@ public struct SuccessView: View {
 struct SuccessView_Previews: PreviewProvider {
     static var previews: some View {
         let uiMessagesSdk = MindsSDKUIMessages.shared
-        uiMessagesSdk.successMessageTitle = "Tudo certo!"
-        uiMessagesSdk.successMessageBody = "Biometria por voz registrada com sucesso."
+        uiMessagesSdk.confirmationMessageTitle = "Tudo certo!"
+        uiMessagesSdk.confirmationMessageBody = "Biometria por voz registrada com sucesso."
         uiMessagesSdk.successButtonLabel = "Continuar"
         return SuccessView(action: {
             

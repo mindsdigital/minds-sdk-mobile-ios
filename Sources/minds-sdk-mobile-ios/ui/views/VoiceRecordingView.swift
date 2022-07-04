@@ -193,8 +193,10 @@ public struct VoiceRecordingView: View {
                     Button(action: {
                         sendAudio()
                     }) {
-                        Text(uiMessagesSdk.sendAudioButtonLabel)
-                            .font(customFont(defaultFont: .body, defaultStyle: .body))
+                        Text(uiMessagesSdk.audioSendButtonLabel)
+                            .font(uiConfigSdk.fontFamily.isEmpty ?
+                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                            )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
                     .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
