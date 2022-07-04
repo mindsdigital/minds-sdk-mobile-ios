@@ -77,7 +77,7 @@ public class MindsSDK: ObservableObject {
     }
 
     private func getRandomSentences(completion: @escaping (Result<Void, Error>) -> Void) {
-        LivenessService.init(networkRequest: NetworkManager())
+        LivenessService.init(networkRequest: NetworkManager(requestTimeout: 30))
             .getRandomSentence(token: token) { result in
                 switch result {
                 case .success(let response):

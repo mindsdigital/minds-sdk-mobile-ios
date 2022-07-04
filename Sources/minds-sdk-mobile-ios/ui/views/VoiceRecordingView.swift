@@ -194,8 +194,8 @@ public struct VoiceRecordingView: View {
                         sendAudio()
                     }) {
                         Text(uiMessagesSdk.audioSendButtonLabel)
-                            .font(uiConfigSdk.fontFamily.isEmpty ?
-                                .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
+                            .font(uiConfigSdk.getFontFamily().isEmpty ?
+                                .body : .custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: .body)
                             )
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }

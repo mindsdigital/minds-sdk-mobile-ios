@@ -24,8 +24,8 @@ public struct SuccessView: View {
                 Spacer()
                 Text(uiMessagesSdk.confirmationMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
+                    .font(uiConfigSdk.getFontFamily().isEmpty ?
+                            .title : .custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: .title)
                     )
                 Text(uiMessagesSdk.confirmationMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
