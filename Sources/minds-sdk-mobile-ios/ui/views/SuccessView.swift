@@ -22,16 +22,14 @@ public struct SuccessView: View {
         ZStack {
             VStack {
                 Spacer()
-                Text(uiMessagesSdk.successMessageTitle)
+                Text(uiMessagesSdk.confirmationMessageTitle)
                     .foregroundColor(uiConfigSdk.textColor)
                     .font(uiConfigSdk.fontFamily.isEmpty ?
                             .title : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title)
                     )
-                Text(uiMessagesSdk.successMessageBody)
+                Text(uiMessagesSdk.confirmationMessageBody)
                     .foregroundColor(uiConfigSdk.textColor)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .title3 : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .title3)
-                    )
+                    .font(customFont(defaultFont: .title3, defaultStyle: .title3))
                 Spacer()
             }
             
@@ -39,9 +37,7 @@ public struct SuccessView: View {
                 action()
             }) {
                 Text(uiMessagesSdk.successButtonLabel)
-                    .font(uiConfigSdk.fontFamily.isEmpty ?
-                            .body : .custom(uiConfigSdk.fontFamily, size: uiConfigSdk.baseFontSize, relativeTo: .body)
-                    )
+                    .font(customFont(defaultFont: .body, defaultStyle: .body))
                     .frame(maxWidth: .infinity, maxHeight: 40)
             }
             .fillButtonStyle(backgroundColor: uiConfigSdk.hexVariant400)
@@ -52,6 +48,11 @@ public struct SuccessView: View {
         .environment(\.colorScheme, .light)
 
     }
+
+    private func customFont(defaultFont: Font, defaultStyle: Font.TextStyle) -> Font {
+        let customFont: Font = .custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: defaultStyle)
+        return uiConfigSdk.getFontFamily().isEmpty ? defaultFont : customFont
+    }
 }
 
 @available(macOS 11, *)
@@ -59,8 +60,8 @@ public struct SuccessView: View {
 struct SuccessView_Previews: PreviewProvider {
     static var previews: some View {
         let uiMessagesSdk = MindsSDKUIMessages.shared
-        uiMessagesSdk.successMessageTitle = "Tudo certo!"
-        uiMessagesSdk.successMessageBody = "Biometria por voz registrada com sucesso."
+        uiMessagesSdk.confirmationMessageTitle = "Tudo certo!"
+        uiMessagesSdk.confirmationMessageBody = "Biometria por voz registrada com sucesso."
         uiMessagesSdk.successButtonLabel = "Continuar"
         return SuccessView(action: {
             

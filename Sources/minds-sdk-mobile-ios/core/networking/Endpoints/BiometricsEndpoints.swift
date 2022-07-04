@@ -15,10 +15,6 @@ enum BiometricsEndpoints {
     case biometrics(requestBody: AudioRequest)
     case validateDataInput(requestBody: ValidateInputRequest)
     
-    var requestTimeOut: Int {
-        return 20
-    }
-    
     var httpMethod: HTTPMethod {
         switch self {
         case .biometrics, .validateDataInput:

@@ -86,6 +86,7 @@ public struct BiometricResponse: Codable {
     public let matchPrediction: String?
     public let confidence: String?
     public let message: String?
+    public let numberOfRetries: Int?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -102,6 +103,7 @@ public struct BiometricResponse: Codable {
         case matchPrediction = "match_prediction"
         case confidence
         case message
+        case numberOfRetries = "number_of_retries"
     }
 }
 
