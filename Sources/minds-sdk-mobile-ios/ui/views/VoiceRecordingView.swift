@@ -27,6 +27,7 @@ public struct VoiceRecordingView: View {
     @State var selectedRecordingIndex: Int = 0
     @State var hideBackButton: Bool = false
     @State var invalidLength: Bool = false
+    @State var showAlertError: Bool = false
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
@@ -85,14 +86,7 @@ public struct VoiceRecordingView: View {
                 ErrorView(action: {
                     numbersOfRetry += 1
                     if invalidLength {
-                        if let nextQuestion = AdditionalValidationGenerator.shared.getNextQuestion() {
-                            uiMessagesSdk.recordingItems.append(RecordingItem(key: "Repita a frase", value: nextQuestion))
-                            hideBackButton = false
-                            currentScreen = Screen.main
-                        } else {
-                            invalidLength = false
-                        }
-                        
+                        self.showAlertError = true
                     } else {
                         sendAudio()
                     }
@@ -109,6 +103,13 @@ public struct VoiceRecordingView: View {
                 })
             }
         }
+        .alert(isPresented: $showAlertError, content: {
+            Alert(title: Text(self.uiMessagesSdk.invalidLengthErrorMessageTitle),
+                  message: Text(self.uiMessagesSdk.invalidLengthErrorMessageBody),
+                  dismissButton: .default(Text(self.uiMessagesSdk.invalidLengthErrorButtonLabel), action: {
+                self.invalidLength = false
+            }))
+        })
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
                                 Group {
@@ -129,9 +130,6 @@ public struct VoiceRecordingView: View {
                             selectedRecording = item
                             selectedRecordingIndex = 0
                             self.showActionSheet = true
-                            resetAdditionalValidation()
-                        } else {
-                            resetAdditionalValidation()
                         }
                     }
                 }, label: {
@@ -271,43 +269,32 @@ public struct VoiceRecordingView: View {
                     case .success(let response):
                         if response.success {
                             self.invalidLength = false
-                            resetAdditionalValidation()
-                            
+                            self.showAlertError = false
                             guard uiConfigSdk.showThankYouScreen else {
                                 hideBackButton = false
                                 voiceRecordingFlowActive = false
+                                self.sendResultToHostApplication()
                                 return
                             }
                             currentScreen = .thankYou
                         } else {
                             guard response.status != "invalid_length" else {
                                 self.invalidLength = true
-                                uiMessagesSdk.genericErrorMessageBody = invalidLength ? "Duração de audio inválida" : uiMessagesSdk.genericErrorMessageBody
-                                currentScreen = .error
+                                self.showAlertError = true
+                                self.currentScreen = .error
                                 return
                             }
-                            
+
                             self.invalidLength = false
-                            resetAdditionalValidation()
                             currentScreen = .error
                         }
                     case .failure(let error):
                         print(error)
-                        resetAdditionalValidation()
                         currentScreen = .error
                     }
-                    uiMessagesSdk.genericErrorMessageBody = invalidLength ? "Duração de audio inválida" : uiMessagesSdk.genericErrorMessageBody
                 }
         } catch {
             print("Unable to load data: \(error)")
-            resetAdditionalValidation()
-        }
-    }
-
-    private func resetAdditionalValidation() {
-        AdditionalValidationGenerator.shared.reset()
-        uiMessagesSdk.recordingItems.removeAll { item in
-            item.key == "Repita a frase"
         }
     }
 
@@ -319,7 +306,6 @@ public struct VoiceRecordingView: View {
 
 @available(iOS 14.0, *)
 extension VoiceRecordingView {
-
     func sendResultToHostApplication() {
         guard let result = self.serviceResult else {
             return
@@ -353,36 +339,6 @@ extension VoiceRecordingView {
         case .failure(let error):
             return .failure(error)
         }
-    }
-}
-
-
-struct AdditionalValidationGenerator {
-    static var shared = AdditionalValidationGenerator()
-    
-    private var currentIndex: Int = 0
-    
-    let additionalValidation = [
-        "Aqui, a minha voz é a minha senha",
-        "A minha conta é protegida pela minha voz",
-        "Minha identidade é representada pela minha voz",
-        "Minha proteção é garantida pela minha voz",
-        "A minha voz é exclusiva e irreproduzível",
-        "A minha voz me traz segurança e eu quero autenticá-la"
-    ]
-    
-    mutating func getNextQuestion() -> String? {
-        if currentIndex < additionalValidation.count {
-            let referenceString = additionalValidation[currentIndex]
-            currentIndex += 1
-            return referenceString
-        }
-        
-        return nil
-    }
-    
-    mutating func reset() {
-        currentIndex = 0
     }
 }
 
