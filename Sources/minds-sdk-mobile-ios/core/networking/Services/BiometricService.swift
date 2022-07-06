@@ -54,22 +54,19 @@ struct AudioRequest: Codable {
         case phoneNumber = "phone_number"
         case externalCustomerID = "external_customer_id"
         case audios = "audio"
-        case liveness = "liveness"
+        case liveness
     }
 }
 
 public struct RandomSentenceId: Codable {
     public let id: Int
-    public let result: String?
 
-    public init(id: Int, result: String? = nil) {
+    public init(id: Int) {
         self.id = id
-        self.result = result
     }
 
     enum CodingKeys: String, CodingKey {
         case id = "sentence_id"
-        case result
     }
 }
 
