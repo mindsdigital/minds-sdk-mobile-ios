@@ -30,7 +30,7 @@ public struct VoiceRecordingView: View {
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
-
+    @State var doBiometricsLater: Bool = false
     @State var numbersOfRetry: Int = 0
     @State var serviceResult: Result<BiometricResponse, NetworkError>?
 
@@ -97,6 +97,7 @@ public struct VoiceRecordingView: View {
                         sendAudio()
                     }
                 }, tryAgain: {
+                    doBiometricsLater = true
                     hideBackButton = false
                     voiceRecordingFlowActive = false
                     sendResultToHostApplication()
@@ -276,6 +277,7 @@ public struct VoiceRecordingView: View {
                             guard uiConfigSdk.showThankYouScreen else {
                                 hideBackButton = false
                                 voiceRecordingFlowActive = false
+                                sendResultToHostApplication()
                                 return
                             }
                             currentScreen = .thankYou
@@ -333,7 +335,7 @@ extension VoiceRecordingView {
     private func appendNumberOfRetries(_ result: Result<BiometricResponse, NetworkError>) -> Result<BiometricResponse, NetworkError> {
         switch result {
         case .success(let response):
-            let responseStatus = self.numbersOfRetry > 0 ? "do_biometrics_later" : response.status
+            let responseStatus = self.doBiometricsLater ? "do_biometrics_later" : response.status
             let successResponse = BiometricResponse(id: response.id,
                                                     cpf: response.cpf,
                                                     verificationID: response.verificationID,
@@ -348,7 +350,9 @@ extension VoiceRecordingView {
                                                     matchPrediction: response.matchPrediction,
                                                     confidence: response.confidence,
                                                     message: response.message,
-                                                    numberOfRetries: self.numbersOfRetry)
+                                                    numberOfRetries: self.numbersOfRetry,
+                                                    flag: response.flag,
+                                                    liveness: response.liveness)
             return .success(successResponse)
         case .failure(let error):
             return .failure(error)
