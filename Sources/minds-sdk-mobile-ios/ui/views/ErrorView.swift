@@ -14,8 +14,10 @@ public struct ErrorView: View {
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     var action: () -> Void = {}
     var tryAgain: (() -> Void)? = {}
+    var invalidLength: Bool
 
-    public init(action: @escaping () -> Void, tryAgain: (() -> Void)? = nil) {
+    public init(invalidLength: Bool, action: @escaping () -> Void, tryAgain: (() -> Void)? = nil) {
+        self.invalidLength = invalidLength
         self.action = action
         self.tryAgain = tryAgain
     }
@@ -24,10 +26,10 @@ public struct ErrorView: View {
         ZStack {
             VStack {
                 Spacer()
-                Text(uiMessagesSdk.genericErrorMessageTitle)
+                Text(getErrorTitle())
                     .foregroundColor(uiConfigSdk.textColor)
                     .font(customFont(defaultFont: .title, defaultStyle: .title))
-                Text(uiMessagesSdk.genericErrorMessageBody)
+                Text(getErrorBody())
                     .foregroundColor(uiConfigSdk.textColor)
                     .font(customFont(defaultFont: .title3, defaultStyle: .title3))
                 Spacer()
@@ -42,7 +44,7 @@ public struct ErrorView: View {
                     Button(action: {
                         action()
                     }) {
-                        Text(uiMessagesSdk.genericErrorButtonLabel)
+                        Text(getErrorButtonLabel())
                             .font(customFont(defaultFont: .body, defaultStyle: .body))
                             .frame(maxWidth: .infinity, maxHeight: 40)
                     }
@@ -69,6 +71,27 @@ public struct ErrorView: View {
         .environment(\.colorScheme, .light)
     }
 
+    private func getErrorTitle() -> String {
+        if invalidLength {
+            return uiMessagesSdk.invalidLengthErrorMessageTitle
+        }
+        return uiMessagesSdk.genericErrorMessageTitle
+    }
+
+    private func getErrorBody() -> String {
+        if invalidLength {
+            return uiMessagesSdk.invalidLengthErrorMessageBody
+        }
+        return uiMessagesSdk.genericErrorMessageBody
+    }
+
+    private func getErrorButtonLabel() -> String {
+        if invalidLength {
+            return uiMessagesSdk.invalidLengthErrorButtonLabel
+        }
+        return uiMessagesSdk.genericErrorButtonLabel
+    }
+
     private func customFont(defaultFont: Font, defaultStyle: Font.TextStyle) -> Font {
         let customFont: Font = .custom(uiConfigSdk.getFontFamily(), size: uiConfigSdk.getTypographyScale(), relativeTo: defaultStyle)
         return uiConfigSdk.getFontFamily().isEmpty ? defaultFont : customFont
@@ -83,7 +106,7 @@ struct ErrorView_Previews: PreviewProvider {
         uiMessagesSdk.genericErrorMessageTitle = "Algo deu errado"
         uiMessagesSdk.genericErrorMessageBody = "Ocorreu um erro de conexão entre nossos servidores. Por favor, tente novamente."
         uiMessagesSdk.genericErrorButtonLabel = "Tentar novamente"
-        return ErrorView(action: {
+        return ErrorView(invalidLength: false, action: {
             
         })
     }

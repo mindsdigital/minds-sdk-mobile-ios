@@ -27,7 +27,6 @@ public struct VoiceRecordingView: View {
     @State var selectedRecordingIndex: Int = 0
     @State var hideBackButton: Bool = false
     @State var invalidLength: Bool = false
-    @State var showAlertError: Bool = false
     @State var currentScreen: Screen = Screen.main
     @StateObject var audioRecorder: AudioRecorder = AudioRecorder()
     @Binding var voiceRecordingFlowActive: Bool
@@ -83,10 +82,11 @@ public struct VoiceRecordingView: View {
             } else if (currentScreen == Screen.loading) {
                 LoadingView()
             } else if (currentScreen == Screen.error) {
-                ErrorView(action: {
+                ErrorView(invalidLength: invalidLength, action: {
                     numbersOfRetry += 1
                     if invalidLength {
-                        self.showAlertError = true
+                        deleteRecorded()
+                        currentScreen = .main
                     } else {
                         sendAudio()
                     }
@@ -103,13 +103,6 @@ public struct VoiceRecordingView: View {
                 })
             }
         }
-        .alert(isPresented: $showAlertError, content: {
-            Alert(title: Text(self.uiMessagesSdk.invalidLengthErrorMessageTitle),
-                  message: Text(self.uiMessagesSdk.invalidLengthErrorMessageBody),
-                  dismissButton: .default(Text(self.uiMessagesSdk.invalidLengthErrorButtonLabel), action: {
-                self.invalidLength = false
-            }))
-        })
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading:
                                 Group {
@@ -215,6 +208,13 @@ public struct VoiceRecordingView: View {
         }
     }
 
+    private func deleteRecorded() {
+        guard let selectedRecording = uiMessagesSdk.recordingItems.first,
+              let recording = selectedRecording.recording else { return }
+        audioRecorder.deleteRecording(urlsToDelete: [recording])
+        uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
+    }
+
     private func recordingButtonHandler() {
         self.audioRecorder.stopRecording()
         let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
@@ -269,7 +269,6 @@ public struct VoiceRecordingView: View {
                     case .success(let response):
                         if response.success {
                             self.invalidLength = false
-                            self.showAlertError = false
                             guard uiConfigSdk.showThankYouScreen else {
                                 hideBackButton = false
                                 voiceRecordingFlowActive = false
@@ -280,7 +279,6 @@ public struct VoiceRecordingView: View {
                         } else {
                             guard response.status != "invalid_length" else {
                                 self.invalidLength = true
-                                self.showAlertError = true
                                 self.currentScreen = .error
                                 return
                             }
@@ -339,18 +337,5 @@ extension VoiceRecordingView {
         case .failure(let error):
             return .failure(error)
         }
-    }
-}
-
-@available(iOS 14.0, *)
-struct VoiceRecordingView_Previews: PreviewProvider {
-    static var previews: some View {
-        let uiMessagesSdk = MindsSDKUIMessages.shared
-        uiMessagesSdk.genericErrorMessageTitle = "Algo deu errado"
-        uiMessagesSdk.genericErrorMessageBody = "Ocorreu um erro de conexão entre nossos servidores. Por favor, tente novamente."
-        uiMessagesSdk.genericErrorButtonLabel = "Tentar novamente"
-        return ErrorView(action: {
-            
-        })
     }
 }
