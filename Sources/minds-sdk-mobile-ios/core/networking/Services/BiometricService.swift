@@ -60,13 +60,16 @@ struct AudioRequest: Codable {
 
 public struct RandomSentenceId: Codable {
     public let id: Int
+    public let result: String?
 
-    public init(id: Int) {
+    public init(id: Int, result: String? = nil) {
         self.id = id
+        self.result = result
     }
 
     enum CodingKeys: String, CodingKey {
         case id = "sentence_id"
+        case result
     }
 }
 
