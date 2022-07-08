@@ -82,17 +82,11 @@ public struct VoiceRecordingView: View {
             } else if (currentScreen == Screen.loading) {
                 LoadingView()
             } else if (currentScreen == Screen.error) {
-                ErrorView(action: {
+                ErrorView(invalidLength: invalidLength, action: {
                     numbersOfRetry += 1
                     if invalidLength {
-                        if let nextQuestion = AdditionalValidationGenerator.shared.getNextQuestion() {
-                            uiMessagesSdk.recordingItems.append(RecordingItem(key: "Repita a frase", value: nextQuestion))
-                            hideBackButton = false
-                            currentScreen = Screen.main
-                        } else {
-                            invalidLength = false
-                        }
-                        
+                        deleteRecorded()
+                        currentScreen = .main
                     } else {
                         sendAudio()
                     }
@@ -130,9 +124,6 @@ public struct VoiceRecordingView: View {
                             selectedRecording = item
                             selectedRecordingIndex = 0
                             self.showActionSheet = true
-                            resetAdditionalValidation()
-                        } else {
-                            resetAdditionalValidation()
                         }
                     }
                 }, label: {
@@ -218,6 +209,13 @@ public struct VoiceRecordingView: View {
         }
     }
 
+    private func deleteRecorded() {
+        guard let selectedRecording = uiMessagesSdk.recordingItems.first,
+              let recording = selectedRecording.recording else { return }
+        audioRecorder.deleteRecording(urlsToDelete: [recording])
+        uiMessagesSdk.recordingItems[selectedRecordingIndex].recording = nil
+    }
+
     private func recordingButtonHandler() {
         self.audioRecorder.stopRecording()
         let audio = fetchRecording(key: uiMessagesSdk.recordingItems[audioRecorder.recordingsCount].id)
@@ -272,44 +270,30 @@ public struct VoiceRecordingView: View {
                     case .success(let response):
                         if response.success {
                             self.invalidLength = false
-                            resetAdditionalValidation()
-                            
                             guard uiConfigSdk.showThankYouScreen else {
                                 hideBackButton = false
                                 voiceRecordingFlowActive = false
-                                sendResultToHostApplication()
+                                self.sendResultToHostApplication()
                                 return
                             }
                             currentScreen = .thankYou
                         } else {
                             guard response.status != "invalid_length" else {
                                 self.invalidLength = true
-                                uiMessagesSdk.genericErrorMessageBody = invalidLength ? "Duração de audio inválida" : uiMessagesSdk.genericErrorMessageBody
-                                currentScreen = .error
+                                self.currentScreen = .error
                                 return
                             }
-                            
+
                             self.invalidLength = false
-                            resetAdditionalValidation()
                             currentScreen = .error
                         }
                     case .failure(let error):
                         print(error)
-                        resetAdditionalValidation()
                         currentScreen = .error
                     }
-                    uiMessagesSdk.genericErrorMessageBody = invalidLength ? "Duração de audio inválida" : uiMessagesSdk.genericErrorMessageBody
                 }
         } catch {
             print("Unable to load data: \(error)")
-            resetAdditionalValidation()
-        }
-    }
-
-    private func resetAdditionalValidation() {
-        AdditionalValidationGenerator.shared.reset()
-        uiMessagesSdk.recordingItems.removeAll { item in
-            item.key == "Repita a frase"
         }
     }
 
@@ -321,7 +305,6 @@ public struct VoiceRecordingView: View {
 
 @available(iOS 14.0, *)
 extension VoiceRecordingView {
-
     func sendResultToHostApplication() {
         guard let result = self.serviceResult else {
             return
@@ -357,48 +340,5 @@ extension VoiceRecordingView {
         case .failure(let error):
             return .failure(error)
         }
-    }
-}
-
-
-struct AdditionalValidationGenerator {
-    static var shared = AdditionalValidationGenerator()
-    
-    private var currentIndex: Int = 0
-    
-    let additionalValidation = [
-        "Aqui, a minha voz é a minha senha",
-        "A minha conta é protegida pela minha voz",
-        "Minha identidade é representada pela minha voz",
-        "Minha proteção é garantida pela minha voz",
-        "A minha voz é exclusiva e irreproduzível",
-        "A minha voz me traz segurança e eu quero autenticá-la"
-    ]
-    
-    mutating func getNextQuestion() -> String? {
-        if currentIndex < additionalValidation.count {
-            let referenceString = additionalValidation[currentIndex]
-            currentIndex += 1
-            return referenceString
-        }
-        
-        return nil
-    }
-    
-    mutating func reset() {
-        currentIndex = 0
-    }
-}
-
-@available(iOS 14.0, *)
-struct VoiceRecordingView_Previews: PreviewProvider {
-    static var previews: some View {
-        let uiMessagesSdk = MindsSDKUIMessages.shared
-        uiMessagesSdk.genericErrorMessageTitle = "Algo deu errado"
-        uiMessagesSdk.genericErrorMessageBody = "Ocorreu um erro de conexão entre nossos servidores. Por favor, tente novamente."
-        uiMessagesSdk.genericErrorButtonLabel = "Tentar novamente"
-        return ErrorView(action: {
-            
-        })
     }
 }

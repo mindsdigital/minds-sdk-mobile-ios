@@ -49,105 +49,123 @@ public class MindsSDKUIMessages: ObservableObject {
         "Enviando gravações...",
         "Analisando formato do áudio...",
     ]
+    @Published var invalidLengthErrorMessageTitle: String = "Duração de audio inválida"
+    @Published var invalidLengthErrorMessageBody: String = "Por favor, leia a mensagem mais pausadamente"
+    @Published var invalidLengthErrorButtonLabel: String = "Ok"
+
     @Published var recordingItems: [RecordingItem] = []
 
-       public func setRecordingItems(_ items: [RecordingItem]) {
-           self.recordingItems = items
-       }
+    public func setRecordingItems(_ items: [RecordingItem]) {
+        DispatchQueue.main.async {
+            self.recordingItems = items
+        }
+    }
 
-       public func setConfirmationMessageBody(_ messageBody: String) {
-           self.confirmationMessageBody = messageBody
-       }
+    public func setConfirmationMessageBody(_ messageBody: String) {
+       self.confirmationMessageBody = messageBody
+    }
 
-       public func setConfirmationMessageTitle(_ message: String) {
-           self.confirmationMessageTitle = message
-       }
+    public func setConfirmationMessageTitle(_ message: String) {
+       self.confirmationMessageTitle = message
+    }
 
-       public func setGenericErrorMessageTitle(_ message: String) {
-           self.genericErrorMessageTitle = message
-       }
+    public func setGenericErrorMessageTitle(_ message: String) {
+       self.genericErrorMessageTitle = message
+    }
 
-       public func setGenericErrorMessageBody(_ message: String) {
-           self.genericErrorMessageBody = message
-       }
+    public func setGenericErrorMessageBody(_ message: String) {
+       self.genericErrorMessageBody = message
+    }
 
-       public func setGenericErrorButtonLabel(_ label: String) {
-           self.genericErrorButtonLabel = label
-       }
+    public func setGenericErrorButtonLabel(_ label: String) {
+       self.genericErrorButtonLabel = label
+    }
 
-       public func setSuccessButtonLabel(_ label: String) {
-           self.successButtonLabel = label
-       }
+    public func setSuccessButtonLabel(_ label: String) {
+       self.successButtonLabel = label
+    }
 
-       public func setLoadingIndicativeTexts(_ texts: [String]) {
-           self.loadingIndicativeTexts = texts
-       }
+    public func setLoadingIndicativeTexts(_ texts: [String]) {
+       self.loadingIndicativeTexts = texts
+    }
 
-       public func setDeleteMessageTitle(_ text: String) {
-           self.deleteMessageTitle = text
-       }
+    public func setDeleteMessageTitle(_ text: String) {
+       self.deleteMessageTitle = text
+    }
 
-       public func setDeleteMessageBody(_ text: String) {
-           self.deleteMessageBody = text
-       }
+    public func setDeleteMessageBody(_ text: String) {
+       self.deleteMessageBody = text
+    }
 
-       public func setConfirmDeleteButtonLabel(_ text: String) {
-           self.confirmDeleteButtonLabel = text
-       }
+    public func setConfirmDeleteButtonLabel(_ text: String) {
+       self.confirmDeleteButtonLabel = text
+    }
 
-       public func setDismissDeleteButtonLabel(_ text: String) {
-           self.dismissDeleteButtonLabel = text
-       }
+    public func setDismissDeleteButtonLabel(_ text: String) {
+       self.dismissDeleteButtonLabel = text
+    }
 
-       public func setAudioSendButtonLabel(_ text: String) {
-           self.audioSendButtonLabel = text
-       }
+    public func setAudioSendButtonLabel(_ text: String) {
+       self.audioSendButtonLabel = text
+    }
 
-       public func setOnBoardingTitle(_ text: String) {
-           self.onboardingTitle = text
-       }
+    public func setOnBoardingTitle(_ text: String) {
+       self.onboardingTitle = text
+    }
 
-       public func setHintTextTitle(_ text: String) {
-           self.hintTextTitle = text
-       }
+    public func setHintTextTitle(_ text: String) {
+       self.hintTextTitle = text
+    }
 
-       public func setHintTexts(_ texts: [String]) {
-           self.hintTexts = texts
-       }
+    public func setHintTexts(_ texts: [String]) {
+       self.hintTexts = texts
+    }
 
-       public func setStartRecordingButtonLabel(_ text: String) {
-           self.startRecordingButtonLabel = text
-       }
+    public func setStartRecordingButtonLabel(_ text: String) {
+       self.startRecordingButtonLabel = text
+    }
 
-       public func setSkipRecordingButtonLabel(_ text: String) {
-           self.skipRecordingButtonLabel = text
-       }
+    public func setSkipRecordingButtonLabel(_ text: String) {
+       self.skipRecordingButtonLabel = text
+    }
 
-       public func setInstructionTextForRecording(_ text: String) {
-           self.instructionTextForRecording = text
-       }
+    public func setInstructionTextForRecording(_ text: String) {
+       self.instructionTextForRecording = text
+    }
 
-       public func setRecordingIndicativeText(_ text: String) {
-           self.recordingIndicativeText = text
-       }
+    public func setRecordingIndicativeText(_ text: String) {
+       self.recordingIndicativeText = text
+    }
 
-       public func setSkipMessageTitle(_ text: String) {
-           self.skipMessageTitle = text
-       }
+    public func setSkipMessageTitle(_ text: String) {
+       self.skipMessageTitle = text
+    }
 
-       public func setSkipMessageBody(_ text: String) {
-           self.skipMessageBody = text
-       }
+    public func setSkipMessageBody(_ text: String) {
+       self.skipMessageBody = text
+    }
 
-       public func setDismissSkipButtonLabel(_ text: String) {
-           self.dismissSkipButtonLabel = text
-       }
+    public func setDismissSkipButtonLabel(_ text: String) {
+       self.dismissSkipButtonLabel = text
+    }
 
-       public func setConfirmSkipButtonLabel(_ text: String) {
-           self.confirmSkipButtonLabel = text
-       }
+    public func setConfirmSkipButtonLabel(_ text: String) {
+       self.confirmSkipButtonLabel = text
+    }
 
-       public func setTryAgainLaterButtonLabel(_ text: String) {
-           self.tryAgainLaterButtonLabel = text
-       }
+    public func setTryAgainLaterButtonLabel(_ text: String) {
+       self.tryAgainLaterButtonLabel = text
+    }
+
+    public func setInvalidLengthErrorMessageTitle(_ text: String) {
+        self.invalidLengthErrorMessageTitle = text
+    }
+
+    public func setInvalidLengthErrorMessageBody(_ text: String) {
+        self.invalidLengthErrorMessageBody = text
+    }
+
+    public func setInvalidLengthErrorButtonLabel(_ text: String) {
+        self.invalidLengthErrorButtonLabel = text
+    }
 }
