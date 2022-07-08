@@ -24,10 +24,7 @@ public class MindsSDK: ObservableObject {
     @Published var externalId: String = ""
     @Published var phoneNumber: String = ""
     @Published var connectionTimeout: Float = 20.0
-    
-    @Published var sampleRate: Int = 22050
-    @Published public var linearPCMBitDepthKey: Int = 16
-    @Published public var processType: ProcessType = .enrollment
+    @Published var processType: ProcessType = .enrollment
 
     @Published var recordItem: RecordingItem? {
         didSet {
@@ -100,7 +97,7 @@ public class MindsSDK: ObservableObject {
             fileExtension: "wav",
             checkForVerification: processType == .verification,
             phoneNumber: phoneNumber,
-            rate: sampleRate
+            rate: AudioRecorder().sampleRate
         )
 
         BiometricServices.init(networkRequest: NetworkManager(requestTimeout: connectionTimeout))

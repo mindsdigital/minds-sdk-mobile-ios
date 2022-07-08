@@ -236,10 +236,7 @@ public struct VoiceRecordingView: View {
         }
 
         do {
-            var rate = "8K"
-            if sdk.linearPCMBitDepthKey != 8 {
-                rate = "16K"
-            }
+
             // array of dictionaries
             var audios: [AudioFile] = []
             for recordingItem in uiMessagesSdk.recordingItems {
