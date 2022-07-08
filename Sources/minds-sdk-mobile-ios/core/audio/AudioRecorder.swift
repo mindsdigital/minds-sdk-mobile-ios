@@ -22,6 +22,8 @@ class AudioRecorder: NSObject, ObservableObject {
     var audioRecorder: AVAudioRecorder!
     
     @Published var recordingsCount: Int = 0
+
+    var sampleRate: Int = 22050
     
     override init() {
         recordingsCount = 0
@@ -48,7 +50,7 @@ class AudioRecorder: NSObject, ObservableObject {
         
         let settings = [
             AVFormatIDKey: Int(kAudioFormatLinearPCM),
-            AVSampleRateKey: sdk.sampleRate,
+            AVSampleRateKey: self.sampleRate,
             AVNumberOfChannelsKey: 1,
 //            AVLinearPCMBitDepthKey: sdk.linearPCMBitDepthKey,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
