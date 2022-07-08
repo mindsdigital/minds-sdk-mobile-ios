@@ -41,7 +41,7 @@ public class MindsSDK: ObservableObject {
         }
     }
 
-    public var onBiometricsReceive: ((Result<BiometricResponse, NetworkError>) -> Void)?
+    public var onBiometricsReceive: ((BiometricResponse) -> Void)?
 
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
