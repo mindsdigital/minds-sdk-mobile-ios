@@ -60,7 +60,7 @@ public class MindsSDK: ObservableObject {
         self.connectionTimeout = connectionTimeout
     }
 
-    public func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
+    func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
         self.validateDataInput { dataInputResult in
             switch dataInputResult {
             case .success:
