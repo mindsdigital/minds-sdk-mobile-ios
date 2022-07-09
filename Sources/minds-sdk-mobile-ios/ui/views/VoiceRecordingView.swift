@@ -126,6 +126,7 @@ public struct VoiceRecordingView: View {
                             self.showActionSheet = true
                         }
                     }
+                    self.voiceRecordingFlowActive = false
                 }, label: {
                     HStack {
                         Image(systemName: "chevron.left")
