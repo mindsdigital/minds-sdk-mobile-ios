@@ -126,6 +126,7 @@ public struct VoiceRecordingView: View {
                             self.showActionSheet = true
                         }
                     }
+                    self.voiceRecordingFlowActive = false
                 }, label: {
                     HStack {
                         Image(systemName: "chevron.left")
@@ -312,7 +313,8 @@ extension VoiceRecordingView {
         }
     }
 
-    private func appendNumberOfRetries(_ result: Result<BiometricResponse, NetworkError>) -> Result<BiometricResponse, NetworkError> {
+    private func appendNumberOfRetries(_ result: Result<BiometricResponse, NetworkError>) -> BiometricResponse {
+        var biometricResponse: BiometricResponse
         switch result {
         case .success(let response):
             let responseStatus = self.doBiometricsLater ? "do_biometrics_later" : response.status
@@ -333,9 +335,13 @@ extension VoiceRecordingView {
                                                     numberOfRetries: self.numbersOfRetry,
                                                     flag: response.flag,
                                                     liveness: response.liveness)
-            return .success(successResponse)
+            biometricResponse = successResponse
         case .failure(let error):
-            return .failure(error)
+            let failureResponse = BiometricResponse(status: error.message,
+                                                    success: false,
+                                                    message: error.localizedDescription)
+            biometricResponse = failureResponse
         }
+        return biometricResponse
     }
 }

@@ -97,13 +97,13 @@ public struct BiometricResponse: Codable {
     public let flag: Flag?
     public let liveness: [RandomSentenceId]?
 
-    public init(id: Int64?, cpf: String?, verificationID: Int64?,
-                action: String?, externalId: String?, status: String?,
-                createdAt: String?, success: Bool, whitelisted: Bool?,
-                fraudRisk: String?, enrollmentExternalId: String?,
-                matchPrediction: String?, confidence: String?,
-                message: String?, numberOfRetries: Int?, flag: Flag?,
-                liveness: [RandomSentenceId]?) {
+    public init(id: Int64? = nil, cpf: String? = nil, verificationID: Int64? = nil,
+                action: String? = nil, externalId: String? = nil, status: String? = nil,
+                createdAt: String? = nil, success: Bool, whitelisted: Bool? = nil,
+                fraudRisk: String? = nil, enrollmentExternalId: String? = nil,
+                matchPrediction: String? = nil, confidence: String? = nil,
+                message: String? = nil, numberOfRetries: Int? = nil, flag: Flag? = nil,
+                liveness: [RandomSentenceId]? = nil) {
         self.id = id
         self.cpf = cpf
         self.verificationID = verificationID

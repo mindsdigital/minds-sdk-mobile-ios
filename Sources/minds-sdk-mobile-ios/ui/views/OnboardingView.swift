@@ -18,7 +18,7 @@ public struct OnboardingView: View {
     @State var showActionSheet: Bool = false
     @Binding var voiceRecordingFlowActive: Bool
     
-    public init(voiceRecordingFlowActive: Binding<Bool>) {
+    init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
     
