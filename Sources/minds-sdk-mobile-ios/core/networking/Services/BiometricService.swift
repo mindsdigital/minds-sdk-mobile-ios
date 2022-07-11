@@ -54,15 +54,22 @@ struct AudioRequest: Codable {
         case phoneNumber = "phone_number"
         case externalCustomerID = "external_customer_id"
         case audios = "audio"
-        case liveness = "liveness"
+        case liveness
     }
 }
 
-struct RandomSentenceId: Codable {
-    let id: Int
+public struct RandomSentenceId: Codable {
+    public let id: Int
+    public let result: String?
+
+    public init(id: Int, result: String? = nil) {
+        self.id = id
+        self.result = result
+    }
 
     enum CodingKeys: String, CodingKey {
         case id = "sentence_id"
+        case result
     }
 }
 
@@ -87,7 +94,35 @@ public struct BiometricResponse: Codable {
     public let confidence: String?
     public let message: String?
     public let numberOfRetries: Int?
-    
+    public let flag: Flag?
+    public let liveness: [RandomSentenceId]?
+
+    public init(id: Int64?, cpf: String?, verificationID: Int64?,
+                action: String?, externalId: String?, status: String?,
+                createdAt: String?, success: Bool, whitelisted: Bool?,
+                fraudRisk: String?, enrollmentExternalId: String?,
+                matchPrediction: String?, confidence: String?,
+                message: String?, numberOfRetries: Int?, flag: Flag?,
+                liveness: [RandomSentenceId]?) {
+        self.id = id
+        self.cpf = cpf
+        self.verificationID = verificationID
+        self.action = action
+        self.externalId = externalId
+        self.status = status
+        self.createdAt = createdAt
+        self.success = success
+        self.whitelisted = whitelisted
+        self.fraudRisk = fraudRisk
+        self.enrollmentExternalId = enrollmentExternalId
+        self.matchPrediction = matchPrediction
+        self.confidence = confidence
+        self.message = message
+        self.numberOfRetries = numberOfRetries
+        self.flag = flag
+        self.liveness = liveness
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case cpf
@@ -104,7 +139,36 @@ public struct BiometricResponse: Codable {
         case confidence
         case message
         case numberOfRetries = "number_of_retries"
+        case flag
+        case liveness
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(Int64?.self, forKey: .id) ?? nil
+        cpf = try container.decodeIfPresent(String?.self, forKey: .cpf) ?? nil
+        verificationID = try container.decodeIfPresent(Int64?.self, forKey: .verificationID) ?? nil
+        action = try container.decodeIfPresent(String?.self, forKey: .action) ?? nil
+        externalId = try container.decodeIfPresent(String?.self, forKey: .externalId) ?? nil
+        status = try container.decodeIfPresent(String?.self, forKey: .status) ?? nil
+        createdAt = try container.decodeIfPresent(String?.self, forKey: .createdAt) ?? nil
+        success = try container.decode(Bool.self, forKey: .success)
+        whitelisted = try container.decodeIfPresent(Bool?.self, forKey: .whitelisted) ?? nil
+        fraudRisk = try container.decodeIfPresent(String?.self, forKey: .fraudRisk) ?? nil
+        enrollmentExternalId = try container.decodeIfPresent(String?.self, forKey: .enrollmentExternalId) ?? nil
+        matchPrediction = try container.decodeIfPresent(String?.self, forKey: .matchPrediction) ?? nil
+        confidence = try container.decodeIfPresent(String?.self, forKey: .confidence) ?? nil
+        message = try container.decodeIfPresent(String?.self, forKey: .message) ?? nil
+        numberOfRetries = try container.decodeIfPresent(Int?.self, forKey: .numberOfRetries) ?? nil
+        flag = try container.decodeIfPresent(Flag?.self, forKey: .flag) ?? nil
+        liveness = try container.decodeIfPresent([RandomSentenceId]?.self, forKey: .liveness) ?? nil
+    }
+}
+
+public struct Flag: Codable {
+    public let id: Int
+    public let type: String
+    public let description: String
 }
 
 struct ValidateInputRequest: Codable {
