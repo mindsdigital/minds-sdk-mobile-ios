@@ -241,8 +241,15 @@ public struct VoiceRecordingView: View {
             // array of dictionaries
             var audios: [AudioFile] = []
             for recordingItem in uiMessagesSdk.recordingItems {
-                let data = try Data(contentsOf: recordingItem.recording!)
-                let encodedString = data.base64EncodedString()
+
+                let src = recordingItem.recording!
+                
+                let convertedAudioURL = ConvertAudioToOgg.convert(src: src)
+                
+                let convertedAudioData = try Data(contentsOf: convertedAudioURL)
+                
+                let encodedString = convertedAudioData.base64EncodedString()
+                
                 let audio = AudioFile(
                     content: encodedString
                 )

@@ -75,7 +75,7 @@ public struct RandomSentenceId: Codable {
 
 struct AudioFile: Codable {
     let content: String
-    let `extension`: String = "wav"
+    let `extension`: String = "ogg"
 }
 
 public struct BiometricResponse: Codable {

@@ -23,7 +23,7 @@ class AudioRecorder: NSObject, ObservableObject {
     
     @Published var recordingsCount: Int = 0
 
-    var sampleRate: Int = 22050
+    var sampleRate: Int = 48000
     
     override init() {
         recordingsCount = 0

@@ -94,7 +94,7 @@ public class MindsSDK: ObservableObject {
     private func validateDataInput(completion: @escaping (Result<Void, NetworkError>) -> Void) {
         let request = ValidateInputRequest(
             cpf: cpf,
-            fileExtension: "wav",
+            fileExtension: "ogg",
             checkForVerification: processType == .verification,
             phoneNumber: phoneNumber,
             rate: AudioRecorder().sampleRate
