@@ -84,6 +84,7 @@ public struct OnboardingView: View {
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
+        .disableRotation()
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
         .actionSheet(isPresented: $showActionSheet) {

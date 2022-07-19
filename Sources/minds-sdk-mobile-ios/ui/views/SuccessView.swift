@@ -46,6 +46,7 @@ public struct SuccessView: View {
         .padding()
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
+        .disableRotation()
 
     }
 
