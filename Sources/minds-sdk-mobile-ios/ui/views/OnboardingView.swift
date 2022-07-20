@@ -17,9 +17,12 @@ public struct OnboardingView: View {
     
     @State var showActionSheet: Bool = false
     @Binding var voiceRecordingFlowActive: Bool
-    
-    init(voiceRecordingFlowActive: Binding<Bool>) {
+    var dismiss: (() -> Void)?
+
+    init(voiceRecordingFlowActive: Binding<Bool>,
+         dismiss: (() -> Void)? = nil) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
+        self.dismiss = dismiss
     }
     
     public var body: some View {
@@ -95,12 +98,17 @@ public struct OnboardingView: View {
                             .default(
                                 Text(uiMessagesSdk.confirmSkipButtonLabel),
                                 action: {
-                                    presentation.wrappedValue.dismiss()
+                                    dismissOnboardingView()
                                 }
                             )
                         ]
             )
         }
+    }
+
+    private func dismissOnboardingView() {
+        voiceRecordingFlowActive = false
+        self.dismiss?()
     }
 
     private func customFont(defaultFont: Font, defaultStyle: Font.TextStyle) -> Font {

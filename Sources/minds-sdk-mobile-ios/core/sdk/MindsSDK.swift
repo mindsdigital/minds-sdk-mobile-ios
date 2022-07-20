@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import UIKit
+import SwiftUI
 
 @available(macOS 11, *)
 @available(iOS 14.0, *)
@@ -115,5 +117,13 @@ public class MindsSDK: ObservableObject {
                     assertionFailure("Input de dados inválidos: \(error.localizedDescription)")
                 }
             }
+    }
+
+    public func initializeUIKitFlow(onDismiss: (() -> Void)? = nil) -> UIViewController {
+        let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
+                                   dismiss: onDismiss)
+        let childView = UIHostingController(rootView: swiftUIView)
+        childView.view.backgroundColor = .white
+        return childView
     }
 }
