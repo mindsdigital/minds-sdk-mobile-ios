@@ -91,7 +91,7 @@ public class MindsSDK: ObservableObject {
             }
     }
 
-    private func validateDataInput(completion: @escaping (Result<Void, NetworkError>) -> Void) {
+    private func validateDataInput(completion: @escaping (Result<Void, Error>) -> Void) {
         let request = ValidateInputRequest(
             cpf: cpf,
             fileExtension: "ogg",
@@ -104,8 +104,9 @@ public class MindsSDK: ObservableObject {
             .validateInput(token: token, request: request) { result in
                 switch result {
                 case .success(let response):
-                    if !response.success  {
-                        completion(.failure(.serverError))
+                    if !response.success {
+                        let error = MindsSDKError(response.status, message: response.message)
+                        completion(.failure(error))
                         assertionFailure("\(response.status) - \(response.message ?? "")")
                     } else {
                         completion(.success(()))
