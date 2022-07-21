@@ -138,6 +138,7 @@ public struct VoiceRecordingView: View {
         })
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
+        .disableRotation()
     }
     
     private var audioScrollView: some View {

@@ -36,6 +36,7 @@ public struct LoadingView: View {
         }
         .preferredColorScheme(.light)
         .environment(\.colorScheme, .light)
+        .disableRotation()
     }
 }
 
