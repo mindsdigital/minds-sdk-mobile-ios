@@ -13,9 +13,12 @@ import SwiftUI
 public struct MainView: View {
     @StateObject var viewModel = MainViewModel()
     @Binding var voiceRecordingFlowActive: Bool
+    private var dismiss: (() -> Void)?
 
-    public init(voiceRecordingFlowActive: Binding<Bool>) {
+    public init(voiceRecordingFlowActive: Binding<Bool>,
+                dismiss: (() -> Void)? = nil) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
+        self.dismiss = dismiss
     }
 
     public var body: some View {
@@ -36,7 +39,8 @@ public struct MainView: View {
     }
 
     private var onboarding: some View {
-        NavigationLink(destination: OnboardingView(voiceRecordingFlowActive: $voiceRecordingFlowActive),
+        NavigationLink(destination: OnboardingView(voiceRecordingFlowActive: $voiceRecordingFlowActive,
+                                                   dismiss: dismiss),
                        isActive:  $voiceRecordingFlowActive) {
             EmptyView()
         }
