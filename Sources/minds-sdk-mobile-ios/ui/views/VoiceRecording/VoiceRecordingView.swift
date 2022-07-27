@@ -35,10 +35,11 @@ struct VoiceRecordingView: View {
                     .font(.custom(model.uiConfigSdk.getFontFamily(), size: 24))
                 Spacer()
             }
-            
+
             Spacer()
-            
-            RecordingButton(onLongPress: model.onLongPress,
+
+            RecordingButton(longPressMinDuration: 0.3,
+                            onLongPress: model.onLongPress,
                             onTap: model.onTap,
                             onRelease: model.onRelease)
 
@@ -48,11 +49,5 @@ struct VoiceRecordingView: View {
                 .font(.custom(model.uiConfigSdk.getFontFamily(), size: 8))
         }
         .padding(.horizontal, 24)
-    }
-}
-
-struct VoiceRecordingView_Previews: PreviewProvider {
-    static var previews: some View {
-        VoiceRecordingView(model: VoiceRecordingViewModel())
     }
 }

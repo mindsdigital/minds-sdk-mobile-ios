@@ -8,13 +8,11 @@
 import Foundation
 import SwiftUI
 
-@available(macOS 11, *)
-@available(iOS 14.0, *)
 class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @ObservedObject var config = MindsSDKUIConfig.shared
     @Published var state: ViewState = .loading
-    @Published var voiceRecordModel = VoiceRecordingViewModel()
+    @Published var voiceRecordModel = VoiceRecordingViewModel(serviceDelegate: VoiceRecordingServiceDelegateImpl())
 
     enum ViewState {
         case loaded

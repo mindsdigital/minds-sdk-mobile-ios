@@ -7,8 +7,6 @@
 
 import Foundation
 
-@available(macOS 11, *)
-@available(iOS 14.0, *)
 public class MindsSDKUIMessages: ObservableObject {
     static public let shared = MindsSDKUIMessages()
     
@@ -53,11 +51,11 @@ public class MindsSDKUIMessages: ObservableObject {
     @Published var invalidLengthErrorMessageBody: String = "Por favor, leia a mensagem mais pausadamente"
     @Published var invalidLengthErrorButtonLabel: String = "Ok"
 
-    @Published var recordingItems: [RecordingItem] = []
+    @Published var recordingItem: RecordingItem?
 
-    public func setRecordingItems(_ items: [RecordingItem]) {
+    public func setRecordingItem(_ item: RecordingItem) {
         DispatchQueue.main.async {
-            self.recordingItems = items
+            self.recordingItem = item
         }
     }
 
