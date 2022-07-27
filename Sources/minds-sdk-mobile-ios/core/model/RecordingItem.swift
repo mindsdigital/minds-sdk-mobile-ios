@@ -19,10 +19,3 @@ public struct RecordingItem: Identifiable, Codable, Hashable {
     public var value: String
     public var recording: URL? = nil
 }
-
-@available(macOS 11, *)
-@available(iOS 14.0, *)
-public struct Recording {
-    public let fileURL: URL
-    public let createdAt: Date
-}
