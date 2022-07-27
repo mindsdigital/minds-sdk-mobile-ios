@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-@available(macOS 11, *)
-@available(iOS 14.0, *)
 public extension Color {
     public init(hex string: String) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

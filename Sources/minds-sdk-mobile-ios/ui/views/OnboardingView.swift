@@ -58,7 +58,7 @@ public struct OnboardingView: View {
                 Color(UIColor.systemBackground)
                     .frame(maxWidth: .infinity, maxHeight: 90)
                 VStack {
-                    NavigationLink(destination: VoiceRecordingView(voiceRecordingFlowActive: $voiceRecordingFlowActive)) {
+                    NavigationLink(destination: OldVoiceRecordingView(voiceRecordingFlowActive: $voiceRecordingFlowActive)) {
                         Text(uiMessagesSdk.startRecordingButtonLabel)
                             .foregroundColor(Color.white)
                             .font(customFont(defaultFont: .body, defaultStyle: .body))

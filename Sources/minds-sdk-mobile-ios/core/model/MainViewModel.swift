@@ -14,9 +14,10 @@ class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @ObservedObject var config = MindsSDKUIConfig.shared
     @Published var state: ViewState = .loading
+    @Published var voiceRecordModel = VoiceRecordingViewModel()
 
     enum ViewState {
-        case loaded(Bool)
+        case loaded
         case loading
     }
 
@@ -26,8 +27,12 @@ class MainViewModel: ObservableObject {
                 print(received)
             }, receiveValue: { value in
                 DispatchQueue.main.async {
-                    self.state = ViewState.loaded(self.config.showOnboard())
-                    print(self.state)
+                    guard let recordItem = self.sdk.recordItem else {
+                        self.state = .loading
+                        return
+                    }
+                    self.state = ViewState.loaded
+                    self.voiceRecordModel.updateLivenessText(using: recordItem)
                 }
             })
         }

@@ -18,7 +18,7 @@ enum Screen {
 
 @available(macOS 11, *)
 @available(iOS 14.0, *)
-public struct VoiceRecordingView: View {
+public struct OldVoiceRecordingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared
     @ObservedObject var sdk = MindsSDK.shared
@@ -310,7 +310,7 @@ public struct VoiceRecordingView: View {
 }
 
 @available(iOS 14.0, *)
-extension VoiceRecordingView {
+extension OldVoiceRecordingView {
     func sendResultToHostApplication() {
         guard let result = self.serviceResult else {
             return
