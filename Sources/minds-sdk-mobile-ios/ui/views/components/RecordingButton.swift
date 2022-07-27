@@ -7,85 +7,84 @@
 
 import SwiftUI
 
+enum RecordingButtonState {
+    case idle, recording
+}
+
 struct RecordingButton: View {
-    @State private var isAnimating: Bool = false
+    @State private var state: RecordingButtonState = .idle
+    @State private var isHolding = false
 
-    private var isRecording: Bool
-    private var backgroundColor: Color
-    private var recordingButtonHandler: (() -> Void)?
-    private var stopButtonHandler: (() -> Void)?
+    var onLongPress: (() -> Void)?
+    var onTap: (() -> Void)?
+    var onRelease: (() -> Void)?
 
-    init(isRecording: Bool, background: Color,
-         recordingButtonHandler: (() -> Void)? = nil,
-         stopButtonHandler: (() -> Void)? = nil) {
-        self.isRecording = isRecording
-        self.backgroundColor = background
-        self.recordingButtonHandler = recordingButtonHandler
-        self.stopButtonHandler = stopButtonHandler
+    private var longPressMinDuration: Double
+
+    init(longPressMinDuration: Double = 0.5,
+         onLongPress: (() -> Void)? = nil,
+         onTap: (() -> Void)? = nil,
+         onRelease: (() -> Void)? = nil) {
+        self.longPressMinDuration = longPressMinDuration
+        self.onLongPress = onLongPress
+        self.onTap = onTap
+        self.onRelease = onRelease
     }
 
     var body: some View {
-        if isRecording {
-            Button(action: {
-                recordingButtonHandler?()
-            }) {
+        buttonLabel
+            .onTapGesture {
+                isHolding = false
+                onTap?()
+            }
+            .simultaneousGesture(
+                LongPressGesture(minimumDuration: longPressMinDuration)
+                    .onEnded({ _ in
+                        isHolding = true
+                        state = .recording
+                        onLongPress?()
+                    })
+            )
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .onEnded({ _ in
+                        if isHolding {
+                            onRelease?()
+                            isHolding = false
+                            state = .idle
+                        }
+                    })
+            )
+    }
+
+    private var buttonLabel: some View {
+        ZStack(alignment: .center) {
+            Circle()
+                .fill(Color.baselinePrimary)
+                .scaleEffect(state ==  .recording ? 1.25 : 1)
+                .frame(width: 80, height: 80)
+            buttonImage
+        }
+    }
+
+    private var buttonImage: some View {
+        Group {
+            if state == .recording {
                 Image(systemName: "stop.fill")
-                    .font(.system(size: 24))
-                    .foregroundColor(Color.white)
-            }
-            .frame(width: 56, height: 56)
-            .background(animationStack)
-            .onAppear {
-                DispatchQueue.main.async {
-                    self.isAnimating = true
-                }
-            }
-        } else {
-            Button(action: {
-                stopButtonHandler?()
-            }) {
-                Image(uiImage: UIImage(named: "voice", in: .module, with: nil)!)
                     .resizable()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(backgroundColor)
-            }
-            .frame(width: 56, height: 56)
-            .background(backgroundColor)
-            .cornerRadius(100)
-            .onAppear {
-                DispatchQueue.main.async {
-                    self.isAnimating = false
-                }
+                    .frame(width: 25, height: 25)
+                    .foregroundColor(.white)
+            } else {
+                Image(uiImage: UIImage(named: "voice", in: .module, with: nil) ?? UIImage())
+                    .resizable()
+                    .frame(width: 40, height: 40)
             }
         }
     }
-
-    private var animationStack: some View {
-        ZStack {
-            Circle()
-                .fill(backgroundColor.opacity(0.25))
-                .frame(width: 56, height: 56)
-                .scaleEffect(self.isAnimating ? 1.8 : 1)
-            Circle()
-                .fill(backgroundColor.opacity(0.35))
-                .frame(width: 56, height: 56)
-                .scaleEffect(self.isAnimating ? 1.3 : 1)
-            Circle()
-                .fill(backgroundColor)
-                .frame(width: 56, height: 56)
-        }
-        .animation(
-            Animation.linear(duration: 1)
-                .delay(0.2)
-                .repeatForever(autoreverses: false)
-        )
-    }
-
 }
 
 struct RecordingButton_Previews: PreviewProvider {
     static var previews: some View {
-        RecordingButton(isRecording: false,
-                        background: .red)
+        RecordingButton()
     }
 }

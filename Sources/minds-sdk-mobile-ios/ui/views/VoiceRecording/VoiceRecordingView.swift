@@ -7,15 +7,6 @@
 
 import SwiftUI
 
-class VoiceRecordingViewModel: ObservableObject {
-    var uiConfigSdk = MindsSDKUIConfig.shared
-    @Published var livenessText: String = ""
-
-    func updateLivenessText(using item: RecordingItem) {
-        self.livenessText = item.value
-    }
-}
-
 struct VoiceRecordingView: View {
 
     @ObservedObject var model: VoiceRecordingViewModel
@@ -47,19 +38,9 @@ struct VoiceRecordingView: View {
             
             Spacer()
             
-            Button {
-                print("text")
-            } label: {
-                ZStack(alignment: .center) {
-                    Circle()
-                        .frame(width: 80, height: 80)
-                        .foregroundColor(.gray)
-                    Image(uiImage: UIImage(named: "voice", in: .module, with: nil) ?? UIImage())
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(.black)
-                }
-            }
+            RecordingButton(onLongPress: model.onLongPress,
+                            onTap: model.onTap,
+                            onRelease: model.onRelease)
 
             Spacer()
 
