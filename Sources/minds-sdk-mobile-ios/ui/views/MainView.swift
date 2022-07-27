@@ -9,14 +9,15 @@ import Foundation
 import SwiftUI
 
 public struct MainView: View {
-    @StateObject var viewModel = MainViewModel()
+    @State var viewModel: MainViewModel
     @Binding var voiceRecordingFlowActive: Bool
-    private var dismiss: (() -> Void)?
+    var delegate: MindsSDKDelegate?
 
     public init(voiceRecordingFlowActive: Binding<Bool>,
-                dismiss: (() -> Void)? = nil) {
+                delegate: MindsSDKDelegate?) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
-        self.dismiss = dismiss
+        self.delegate = delegate
+        self.viewModel = MainViewModel(delegate: delegate)
     }
 
     public var body: some View {
@@ -41,4 +42,3 @@ public struct MainView: View {
         .navigationBarBackButtonHidden(true)
     }
 }
-

@@ -13,6 +13,11 @@ class MainViewModel: ObservableObject {
     @ObservedObject var config = MindsSDKUIConfig.shared
     @Published var state: ViewState = .loading
     @Published var voiceRecordModel = VoiceRecordingViewModel()
+    weak var delegate: MindsSDKDelegate?
+
+    init(delegate: MindsSDKDelegate?) {
+        self.delegate = delegate
+    }
 
     enum ViewState {
         case loaded
@@ -31,6 +36,7 @@ class MainViewModel: ObservableObject {
                     }
                     self.state = ViewState.loaded
                     self.voiceRecordModel.updateLivenessText(using: recordItem)
+                    self.voiceRecordModel.mindsDelegate = self.delegate
                 }
             })
         }

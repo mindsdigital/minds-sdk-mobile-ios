@@ -11,6 +11,7 @@ class VoiceRecordingViewModel: ObservableObject {
     var uiConfigSdk = MindsSDKUIConfig.shared
     @Published var livenessText: String = ""
     @State private var serviceDelegate: VoiceRecordingServiceDelegate
+    weak var mindsDelegate: MindsSDKDelegate?
 
     init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl()) {
         self.serviceDelegate = serviceDelegate
@@ -30,8 +31,26 @@ class VoiceRecordingViewModel: ObservableObject {
 
     func onRelease() {
         serviceDelegate.stopRecording()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.serviceDelegate.sendAudio()
+        DispatchQueue.main.async {
+            self.serviceDelegate.sendAudio { result in
+                switch result {
+                case .success(let response):
+                    if response.success {
+                        self.mindsDelegate?.onSuccess(response)
+                    } else {
+                        guard response.status != "invalid_length" else {
+                            print("invalid_length")
+                            return
+                        }
+                        let biometric = BiometricResponse(id: response.id,
+                                                          status: response.status,
+                                                          success: false)
+                        self.mindsDelegate?.onServiceError(biometric)
+                    }
+                case .failure(let error):
+                    self.mindsDelegate?.onNetworkError(error)
+                }
+            }
         }
     }
 }
