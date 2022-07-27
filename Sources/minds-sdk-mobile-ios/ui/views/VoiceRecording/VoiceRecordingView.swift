@@ -49,5 +49,6 @@ struct VoiceRecordingView: View {
                 .font(.custom(model.uiConfigSdk.getFontFamily(), size: 8))
         }
         .padding(.horizontal, 24)
+        .disableRotation()
     }
 }
