@@ -12,7 +12,7 @@ class VoiceRecordingViewModel: ObservableObject {
     @Published var livenessText: String = ""
     @State private var serviceDelegate: VoiceRecordingServiceDelegate
 
-    init(serviceDelegate: VoiceRecordingServiceDelegate) {
+    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl()) {
         self.serviceDelegate = serviceDelegate
     }
 

@@ -12,7 +12,7 @@ class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @ObservedObject var config = MindsSDKUIConfig.shared
     @Published var state: ViewState = .loading
-    @Published var voiceRecordModel = VoiceRecordingViewModel(serviceDelegate: VoiceRecordingServiceDelegateImpl())
+    @Published var voiceRecordModel = VoiceRecordingViewModel()
 
     enum ViewState {
         case loaded

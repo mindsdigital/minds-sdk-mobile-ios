@@ -24,15 +24,11 @@ public struct MainView: View {
         case .loaded:
             voiceRecording
         case .loading:
-            if #available(iOS 14.0, *) {
             ProgressView()
                 .onAppear {
                     viewModel.loadData()
                 }
                 .navigationBarBackButtonHidden(true)
-            } else {
-                Text("Loading")
-            }
         }
     }
 
