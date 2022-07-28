@@ -18,6 +18,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.5.0")),
+        .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", .upToNextMajor(from: "3.4.1")),
         .package(name: "SwiftOGG", path: "../swift-ogg")
     ],
     targets: [
@@ -25,9 +26,9 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "minds-sdk-mobile-ios",
-            dependencies: ["Alamofire", "SwiftOGG"],
+            dependencies: ["Alamofire", "SwiftOGG", "Lottie"],
             resources: [
-                .process("resources/Assets.xcassets")
+                .process("resources")
             ]),
     ]
 )
