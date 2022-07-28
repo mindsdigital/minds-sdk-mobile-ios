@@ -7,11 +7,17 @@
 
 import SwiftUI
 
+enum VoiceRecordingViewState {
+    case idle, recording, sending, error
+}
+
 class VoiceRecordingViewModel: ObservableObject {
     var uiConfigSdk = MindsSDKUIConfig.shared
-    @Published var livenessText: String = ""
-    @State private var serviceDelegate: VoiceRecordingServiceDelegate
+    private var serviceDelegate: VoiceRecordingServiceDelegate
     weak var mindsDelegate: MindsSDKDelegate?
+
+    @Published var livenessText: String = ""
+    @Published var state: VoiceRecordingViewState = .idle
 
     init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl()) {
         self.serviceDelegate = serviceDelegate
@@ -21,8 +27,13 @@ class VoiceRecordingViewModel: ObservableObject {
         self.livenessText = item.value
     }
 
+    func doBiometricsLater() {
+        
+    }
+
     func onLongPress() {
         serviceDelegate.startRecording()
+        updateStateOnMainThread(to: .recording)
     }
 
     func onTap() {
@@ -31,17 +42,23 @@ class VoiceRecordingViewModel: ObservableObject {
 
     func onRelease() {
         serviceDelegate.stopRecording()
+        updateStateOnMainThread(to: .sending)
+
         DispatchQueue.main.async {
             self.serviceDelegate.sendAudio { result in
                 switch result {
                 case .success(let response):
                     if response.success {
                         self.mindsDelegate?.onSuccess(response)
+                        self.updateStateOnMainThread(to: .idle)
                     } else {
+                        self.updateStateOnMainThread(to: .error)
+
                         guard response.status != "invalid_length" else {
                             print("invalid_length")
                             return
                         }
+
                         let biometric = BiometricResponse(id: response.id,
                                                           status: response.status,
                                                           success: false)
@@ -49,8 +66,15 @@ class VoiceRecordingViewModel: ObservableObject {
                     }
                 case .failure(let error):
                     self.mindsDelegate?.onNetworkError(error)
+                    self.updateStateOnMainThread(to: .error)
                 }
             }
+        }
+    }
+
+    private func updateStateOnMainThread(to newState: VoiceRecordingViewState) {
+        DispatchQueue.main.async {
+            self.state = newState
         }
     }
 }
