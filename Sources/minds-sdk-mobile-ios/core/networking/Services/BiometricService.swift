@@ -84,7 +84,7 @@ public struct BiometricResponse: Codable {
     public let verificationID: Int64?
     public let action: String?
     public let externalId: String?
-    public let status: String?
+    public var status: String?
     public let createdAt: String?
     public let success: Bool
     public let whitelisted: Bool?
