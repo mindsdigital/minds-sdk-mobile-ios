@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-@available(macOS 11, *)
-@available(iOS 14.0, *)
 public class ImageProvider {
     // convenient for specific image
     public static func picture() -> UIImage {
