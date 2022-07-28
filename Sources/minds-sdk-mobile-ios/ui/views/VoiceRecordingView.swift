@@ -181,6 +181,8 @@ public struct VoiceRecordingView: View {
     
     private var bottomRecordingView: some View {
         VStack{
+            LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
+            Text(MindsStrings.voiceRecordingButtonInstruction())
             Divider()
             VStack {
                 if (audioRecorder.recordingsCount == uiMessagesSdk.recordingItems.count) {
@@ -256,7 +258,7 @@ public struct VoiceRecordingView: View {
                 )
                 audios.append(audio)
             }
-            
+
             let request = AudioRequest(
                 action: sdk.processType.rawValue,
                 cpf: sdk.cpf,
