@@ -9,8 +9,6 @@ import Foundation
 import UIKit
 import SwiftUI
 
-@available(macOS 11, *)
-@available(iOS 14.0, *)
 public class MindsSDK: ObservableObject {
     static public let shared = MindsSDK()
     
@@ -35,7 +33,7 @@ public class MindsSDK: ObservableObject {
             }
 
             DispatchQueue.main.async {
-                MindsSDKUIMessages.shared.recordingItems = [recordItem]
+                MindsSDKUIMessages.shared.recordingItem = recordItem
             }
         }
     }
