@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-@available(macOS 11, *)
-@available(iOS 14.0, *)
 public class MindsSDKUIConfig: ObservableObject {
     static public let shared = MindsSDKUIConfig()
     
