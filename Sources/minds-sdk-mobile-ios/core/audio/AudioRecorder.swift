@@ -11,7 +11,7 @@ import AVFoundation
 import Combine
 
 @available(macOS 11, *)
-@available(iOS 14.0, *)
+@available(iOS 15.0, *)
 class AudioRecorder: NSObject, ObservableObject {
     
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared

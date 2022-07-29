@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 14.0, *)
+@available(iOS 15.0, *)
 class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @ObservedObject var config = MindsSDKUIConfig.shared

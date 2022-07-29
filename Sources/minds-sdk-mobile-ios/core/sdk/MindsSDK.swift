@@ -10,7 +10,7 @@ import UIKit
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 14.0, *)
+@available(iOS 15.0, *)
 public class MindsSDK: ObservableObject {
     static public let shared = MindsSDK()
     
@@ -27,6 +27,7 @@ public class MindsSDK: ObservableObject {
     @Published var phoneNumber: String = ""
     @Published var connectionTimeout: Float = 20.0
     @Published var processType: ProcessType = .enrollment
+    @Published var livenessText: String = ""
 
     @Published var recordItem: RecordingItem? {
         didSet {
@@ -84,6 +85,7 @@ public class MindsSDK: ObservableObject {
                         self.recordItem = RecordingItem(key: String(response.data.id),
                                                         value: response.data.text,
                                                         recording: nil)
+                        self.livenessText = response.data.text
                     }
                     completion(.success(()))
                 case .failure(let error):

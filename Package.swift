@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "minds-sdk-mobile-ios",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v15),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.

@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 14.0, *)
+@available(iOS 15.0, *)
 public struct OnboardingView: View {
     @ObservedObject var uiMessagesSdk: MindsSDKUIMessages = MindsSDKUIMessages.shared
     @ObservedObject var uiConfigSdk = MindsSDKUIConfig.shared

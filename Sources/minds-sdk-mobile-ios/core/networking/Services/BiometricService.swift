@@ -73,6 +73,21 @@ public struct RandomSentenceId: Codable {
     }
 }
 
+public struct RandomSentenceIdResponse: Codable {
+    public let id: Int
+    public let result: String?
+
+    public init(id: Int, result: String? = nil) {
+        self.id = id
+        self.result = result
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case result
+    }
+}
+
 struct AudioFile: Codable {
     let content: String
     let `extension`: String = "ogg"
@@ -95,7 +110,7 @@ public struct BiometricResponse: Codable {
     public let message: String?
     public let numberOfRetries: Int?
     public let flag: Flag?
-    public let liveness: [RandomSentenceId]?
+    public let liveness: [RandomSentenceIdResponse]?
 
     public init(id: Int64? = nil, cpf: String? = nil, verificationID: Int64? = nil,
                 action: String? = nil, externalId: String? = nil, status: String? = nil,
@@ -103,7 +118,7 @@ public struct BiometricResponse: Codable {
                 fraudRisk: String? = nil, enrollmentExternalId: String? = nil,
                 matchPrediction: String? = nil, confidence: String? = nil,
                 message: String? = nil, numberOfRetries: Int? = nil, flag: Flag? = nil,
-                liveness: [RandomSentenceId]? = nil) {
+                liveness: [RandomSentenceIdResponse]? = nil) {
         self.id = id
         self.cpf = cpf
         self.verificationID = verificationID
@@ -161,7 +176,7 @@ public struct BiometricResponse: Codable {
         message = try container.decodeIfPresent(String?.self, forKey: .message) ?? nil
         numberOfRetries = try container.decodeIfPresent(Int?.self, forKey: .numberOfRetries) ?? nil
         flag = try container.decodeIfPresent(Flag?.self, forKey: .flag) ?? nil
-        liveness = try container.decodeIfPresent([RandomSentenceId]?.self, forKey: .liveness) ?? nil
+        liveness = try container.decodeIfPresent([RandomSentenceIdResponse]?.self, forKey: .liveness) ?? nil
     }
 }
 
