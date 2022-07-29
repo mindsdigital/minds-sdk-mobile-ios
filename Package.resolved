@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "Lottie",
+        "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "b04b773957e3e359730590c2e7c16d8c3874ec50",
+          "version": "3.4.1"
+        }
+      },
+      {
         "package": "YbridOgg",
         "repositoryURL": "https://github.com/vector-im/ogg-swift.git",
         "state": {

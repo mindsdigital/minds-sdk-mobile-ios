@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @available(macOS 11, *)
-@available(iOS 14.0, *)
+@available(iOS 15.0, *)
 public struct MainView: View {
     @StateObject var viewModel = MainViewModel()
     @Binding var voiceRecordingFlowActive: Bool
@@ -49,7 +49,7 @@ public struct MainView: View {
     }
 
     private var voiceRecording: some View {
-        NavigationLink(destination: VoiceRecordingView(voiceRecordingFlowActive: $voiceRecordingFlowActive),
+        NavigationLink(destination: VoiceRecordView(showBiometricsFlow: $voiceRecordingFlowActive, dismiss: dismiss),
                        isActive:  $voiceRecordingFlowActive) {
             EmptyView()
         }
