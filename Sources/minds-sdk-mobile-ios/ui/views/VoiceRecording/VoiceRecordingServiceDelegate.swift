@@ -12,7 +12,7 @@ protocol VoiceRecordingServiceDelegate: AnyObject {
     var uiMessagesSdk: MindsSDKUIMessages { get }
     var recordItem: RecordingItem? { get }
     var audioRecorder: AudioRecorder { get }
-    func sendAudio()
+    func sendAudio(_ completion: ((Result<BiometricResponse, NetworkError>) -> Void)?)
 
     func deleteRecorded()
     func startRecording()
@@ -35,7 +35,7 @@ class VoiceRecordingServiceDelegateImpl: VoiceRecordingServiceDelegate {
 
     var audioRecorder: AudioRecorder = AudioRecorder()
 
-    func sendAudio() {
+    func sendAudio(_ completion: ((Result<BiometricResponse, NetworkError>) -> Void)? = nil) {
         guard let randomSentenceId = recordItem?.key,
               let randomSentenceIdInt = Int(randomSentenceId) else {
             return
@@ -63,20 +63,7 @@ class VoiceRecordingServiceDelegateImpl: VoiceRecordingServiceDelegate {
 
             BiometricServices.init(networkRequest: NetworkManager(requestTimeout: sdk.connectionTimeout))
                 .sendAudio(token: sdk.token, request: request) { result in
-                    switch result {
-                    case .success(let response):
-                        if response.success {
-                            print("success")
-                        } else {
-                            guard response.status != "invalid_length" else {
-                                print("invalid_length")
-                                return
-                            }
-                            print("error")
-                        }
-                    case .failure(let error):
-                        print(error)
-                    }
+                    completion?(result)
                 }
         } catch {
             print("Unable to load data: \(error)")
