@@ -60,7 +60,7 @@ class VoiceRecordViewModel: ObservableObject {
     }
     
     func livenessText() -> String {
-        return ""
+        return MindsSDK.shared.livenessText
     }
     
     func audioDuration() -> Double {

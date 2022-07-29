@@ -12,15 +12,9 @@ import AVFAudio
 @available(iOS 15.0, *)
 struct VoiceRecordView: View {
     @StateObject var viewModel = VoiceRecordViewModel()
-    
-//    @State var hasPressed = false
-//    @State var showLoadingView: Bool = false
-//    @State var hasError: Bool = false
-//    @State var hasSuccess: Bool = false
     @Binding var showBiometricsFlow: Bool
     @State var biometricsResponse: BiometricResponse? = nil
     private var dismiss: (() -> Void)?
-//    @Binding var biometricsResponse: BiometricResponse
     
     init(showBiometricsFlow: Binding<Bool>,
          dismiss: (() -> Void)? = nil) {
@@ -45,7 +39,7 @@ struct VoiceRecordView: View {
                     }
                     Spacer()
                     VStack(alignment: .leading) {
-                        Text(MindsSDK.shared.livenessText)
+                        Text(viewModel.livenessText())
                             .font(.largeTitle)
                             .padding()
                     }
@@ -76,12 +70,19 @@ struct VoiceRecordView: View {
                         .frame(width: 56, height: 56)
                         .background(Color(hex: "00DDB8"))
                         .cornerRadius(100)
+                        .scaleEffect(viewModel.state ==  .recording ? 1.25 : 1)
                         .padding()
-                        Text("Minds Digital\nVersão 1.0.0")
-                            .font(.footnote)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(nil)
-                            .padding()
+                        VStack {
+                            Text("Minds Digital")
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(nil)
+                            Text("Versão 1.0.0")
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(nil)
+                        }.padding()
+                        
                     }
                 }
             }
@@ -89,7 +90,7 @@ struct VoiceRecordView: View {
         .alert(MindsStrings.voiceRecordingAlertSubtitle(), isPresented: viewModel.state.isError) {
             Button(MindsStrings.voiceRecordingAlertNeutralButtonLabel()) {
                 showBiometricsFlow = false
-//                dismiss?()
+                dismiss?()
                 viewModel.doBiometricsLater()
             }
             Button(MindsStrings.voiceRecordingAlertButtonLabel(), role: .cancel) { }
