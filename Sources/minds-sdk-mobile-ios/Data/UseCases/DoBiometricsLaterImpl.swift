@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 15.0, *)
 struct DoBiometricsLaterImpl : DoBiometricsLater {
     func execute(biometricResponse: BiometricResponse) {
         var response = biometricResponse

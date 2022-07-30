@@ -9,8 +9,6 @@ import Foundation
 import UIKit
 import SwiftUI
 
-@available(macOS 11, *)
-@available(iOS 15.0, *)
 public class MindsSDK: ObservableObject {
     static public let shared = MindsSDK()
     
