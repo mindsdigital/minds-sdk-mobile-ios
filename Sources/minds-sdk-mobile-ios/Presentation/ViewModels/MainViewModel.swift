@@ -12,11 +12,10 @@ import SwiftUI
 @available(iOS 15.0, *)
 class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
-    @ObservedObject var config = MindsSDKUIConfig.shared
     @Published var state: ViewState = .loading
 
     enum ViewState {
-        case loaded(Bool)
+        case loaded
         case loading
     }
 
@@ -26,7 +25,7 @@ class MainViewModel: ObservableObject {
                 print(received)
             }, receiveValue: { value in
                 DispatchQueue.main.async {
-                    self.state = ViewState.loaded(self.config.showOnboard())
+                    self.state = ViewState.loaded
                     print(self.state)
                 }
             })

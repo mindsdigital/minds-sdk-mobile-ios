@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol BiometricProtocol {
+public protocol BiometricProtocol {
     func sendAudio(token: String, request: AudioRequest, completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void)
     func validateInput(token: String, request: ValidateInputRequest, completion: @escaping (Result<ValidateInputResponse, NetworkError>) -> Void)
 }
@@ -40,7 +40,7 @@ class BiometricServices: BiometricProtocol {
     }
 }
 
-struct AudioRequest: Codable {
+public struct AudioRequest: Codable {
     let action: String
     let cpf: String
     let phoneNumber: String
@@ -101,7 +101,7 @@ public struct BiometricResponse: Codable {
     public let externalId: String?
     public var status: String?
     public let createdAt: String?
-    public let success: Bool
+    public let success: Bool?
     public let whitelisted: Bool?
     public let fraudRisk: String?
     public let enrollmentExternalId: String?
@@ -114,7 +114,7 @@ public struct BiometricResponse: Codable {
 
     public init(id: Int64? = nil, cpf: String? = nil, verificationID: Int64? = nil,
                 action: String? = nil, externalId: String? = nil, status: String? = nil,
-                createdAt: String? = nil, success: Bool, whitelisted: Bool? = nil,
+                createdAt: String? = nil, success: Bool? = nil, whitelisted: Bool? = nil,
                 fraudRisk: String? = nil, enrollmentExternalId: String? = nil,
                 matchPrediction: String? = nil, confidence: String? = nil,
                 message: String? = nil, numberOfRetries: Int? = nil, flag: Flag? = nil,
@@ -186,7 +186,7 @@ public struct Flag: Codable {
     public let description: String
 }
 
-struct ValidateInputRequest: Codable {
+public struct ValidateInputRequest: Codable {
     let cpf: String
     let fileExtension: String
     let checkForVerification: Bool
@@ -202,7 +202,7 @@ struct ValidateInputRequest: Codable {
     }
 }
 
-struct ValidateInputResponse: Codable {
+public struct ValidateInputResponse: Codable {
     let success: Bool
     let message: String?
     let result: Bool?

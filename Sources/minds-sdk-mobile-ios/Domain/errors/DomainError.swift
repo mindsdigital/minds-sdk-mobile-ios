@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum MindsSDKError: Error, Equatable {
+public enum DomainError: Error, Equatable {
     case invalidCPF(String?)
     case invalidPhoneNumber(String?)
     case invalidAudioFormat(String?)
@@ -19,23 +19,23 @@ public enum MindsSDKError: Error, Equatable {
     public init(_ serverResponse: String, message: String?) {
         switch serverResponse {
         case "invalid_cpf":
-            self = MindsSDKError.invalidCPF(message)
+            self = DomainError.invalidCPF(message)
         case "invalid_phone_number":
-            self = MindsSDKError.invalidPhoneNumber(message)
+            self = DomainError.invalidPhoneNumber(message)
         case "invalid_sample_rate":
-            self = MindsSDKError.invalidAudioFormat(message)
+            self = DomainError.invalidAudioFormat(message)
         case "customer_not_found_to_perform_verification":
-            self = MindsSDKError.customerNotFoundToPerformVerification(message)
+            self = DomainError.customerNotFoundToPerformVerification(message)
         case "customer_not_enrolled":
-            self = MindsSDKError.customerNotEnrolled(message)
+            self = DomainError.customerNotEnrolled(message)
         case "customer_not_certified":
-            self = MindsSDKError.invalidAudioFormat(message)
+            self = DomainError.invalidAudioFormat(message)
         default:
-            self = MindsSDKError.internalServerException
+            self = DomainError.internalServerException
         }
     }
 
-    public static func ==(lhs: MindsSDKError, rhs: MindsSDKError) -> Bool {
+    public static func ==(lhs: DomainError, rhs: DomainError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidCPF, .invalidCPF),
                 (.invalidPhoneNumber, .invalidPhoneNumber),

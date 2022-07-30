@@ -25,21 +25,9 @@ public class MindsSDK: ObservableObject {
     @Published var cpf: String = ""
     @Published var externalId: String = ""
     @Published var phoneNumber: String = ""
-    @Published var connectionTimeout: Float = 20.0
+    @Published var connectionTimeout: Float = 30.0
     @Published var processType: ProcessType = .enrollment
-    @Published var livenessText: String = ""
-
-    @Published var recordItem: RecordingItem? {
-        didSet {
-            guard let recordItem = recordItem else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                MindsSDKUIMessages.shared.recordingItems = [recordItem]
-            }
-        }
-    }
+    @Published var liveness: RandomSentenceId = RandomSentenceId(id: 0)
 
     public var onBiometricsReceive: ((BiometricResponse) -> Void)?
 
@@ -82,10 +70,7 @@ public class MindsSDK: ObservableObject {
                 switch result {
                 case .success(let response):
                     DispatchQueue.main.async {
-                        self.recordItem = RecordingItem(key: String(response.data.id),
-                                                        value: response.data.text,
-                                                        recording: nil)
-                        self.livenessText = response.data.text
+                        self.liveness = RandomSentenceId(id: response.data.id, result: response.data.text)
                     }
                     completion(.success(()))
                 case .failure(let error):
@@ -101,7 +86,7 @@ public class MindsSDK: ObservableObject {
             fileExtension: "ogg",
             checkForVerification: processType == .verification,
             phoneNumber: phoneNumber,
-            rate: AudioRecorder().sampleRate
+            rate: Constants.defaultSampleRate
         )
 
         BiometricServices.init(networkRequest: NetworkManager(requestTimeout: connectionTimeout))
@@ -109,7 +94,7 @@ public class MindsSDK: ObservableObject {
                 switch result {
                 case .success(let response):
                     if !response.success {
-                        let error = MindsSDKError(response.status, message: response.message)
+                        let error = DomainError(response.status, message: response.message)
                         completion(.failure(error))
                         assertionFailure("\(response.status) - \(response.message ?? "")")
                     } else {

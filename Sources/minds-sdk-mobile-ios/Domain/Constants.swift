@@ -8,7 +8,7 @@
 import Foundation
 
 struct Constants {
-    // deafault audio configs
+    // default audio configs
     static let defaultSampleRate: Int = 48000
     static let defaultNumberOfChannels: Int = 1
     static let defaultLinearPCMBitDepth: Int = 16

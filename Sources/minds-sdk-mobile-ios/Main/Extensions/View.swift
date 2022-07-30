@@ -20,7 +20,6 @@ extension View {
     }
     
     func changeOrientation(to orientation: UIInterfaceOrientation) {
-        // tell the app to change the orientation
         UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
     }
 }

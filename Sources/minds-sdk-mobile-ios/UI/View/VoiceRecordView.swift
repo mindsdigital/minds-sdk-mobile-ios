@@ -13,7 +13,6 @@ import AVFAudio
 struct VoiceRecordView: View {
     @StateObject var viewModel = VoiceRecordViewModel()
     @Binding var showBiometricsFlow: Bool
-    @State var biometricsResponse: BiometricResponse? = nil
     private var dismiss: (() -> Void)?
     
     init(showBiometricsFlow: Binding<Bool>,
@@ -77,7 +76,7 @@ struct VoiceRecordView: View {
                                 .font(.caption)
                                 .multilineTextAlignment(.center)
                                 .lineLimit(nil)
-                            Text("Versão 1.0.0")
+                            Text("Versão \(Version.versionCode)")
                                 .font(.caption)
                                 .multilineTextAlignment(.center)
                                 .lineLimit(nil)
@@ -96,5 +95,6 @@ struct VoiceRecordView: View {
             Button(MindsStrings.voiceRecordingAlertButtonLabel(), role: .cancel) { }
                 }
         .navigationBarHidden(true)
+        .disableRotation()
     }
 }

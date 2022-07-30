@@ -23,12 +23,8 @@ public struct MainView: View {
 
     public var body: some View {
         switch viewModel.state {
-        case .loaded(let showOnboarding):
-            if showOnboarding {
-                onboarding
-            } else {
+        case .loaded:
                 voiceRecording
-            }
         case .loading:
             ProgressView()
                 .onAppear {
@@ -36,16 +32,6 @@ public struct MainView: View {
                 }
                 .navigationBarBackButtonHidden(true)
         }
-    }
-
-    private var onboarding: some View {
-        NavigationLink(destination: OnboardingView(voiceRecordingFlowActive: $voiceRecordingFlowActive,
-                                                   dismiss: dismiss),
-                       isActive:  $voiceRecordingFlowActive) {
-            EmptyView()
-        }
-        .isDetailLink(false)
-        .navigationBarBackButtonHidden(true)
     }
 
     private var voiceRecording: some View {

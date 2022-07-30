@@ -27,43 +27,60 @@ enum VoiceRecordState {
 
 @MainActor
 class VoiceRecordViewModel: ObservableObject {
-    @Published var state = VoiceRecordState.initial
-    @Published var biometricsResponse: BiometricResponse? = nil
+    private var recordingDelegate: VoiceRecordingServiceDelegate
     
-    var avrecorder: AVAudioRecorder? = nil
+    @Published var state = VoiceRecordState.initial
+    @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
+    
+    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl()) {
+        self.recordingDelegate = serviceDelegate
+    }
     
     func startRecording() {
+        recordingDelegate.startRecording()
         state = VoiceRecordState.recording
-        
-        do {
-            let avsession = try GetAVAudioSessionImpl().execute()
-            avrecorder = try GetAVAudioRecorderImpl().execute()
-            
-            StartRecordingImpl().execute(avAudioRecorder: avrecorder!, avAudioSession: avsession)
-                
-        } catch {
-            print("error")
-        }
     }
     
     func stopRecording() {
-        StopRecordingImpl().execute(avAudioRecorder: avrecorder!)
-                state = VoiceRecordState.loading
+        recordingDelegate.stopRecording()
+        state = VoiceRecordState.loading
     }
     
     func doBiometricsLater() {
         DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse!)
     }
     
-    func sendAudioToApi() {
-        
-    }
-    
     func livenessText() -> String {
-        return MindsSDK.shared.livenessText
+        return MindsSDK.shared.liveness.result ?? ""
     }
     
     func audioDuration() -> Double {
-        return 1.0
+        return recordingDelegate.audioDuration()
+    }
+    
+    func sendAudioToApi() {
+        SendAudioToApi().execute(biometricsService: makeBiometricService()) { result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.biometricsResponse = response
+                }
+                
+                if response.success ?? false {
+                    MindsSDK.shared.onBiometricsReceive?(response)
+                } else {
+                    self.updateStateOnMainThread(to: .error)
+                }
+                
+            case .failure(_):
+                self.updateStateOnMainThread(to: .error)
+            }
+        }
+    }
+    
+    private func updateStateOnMainThread(to newState: VoiceRecordState) {
+        DispatchQueue.main.async {
+            self.state = newState
+        }
     }
 }

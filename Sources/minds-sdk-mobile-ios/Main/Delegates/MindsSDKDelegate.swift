@@ -8,8 +8,8 @@
 import Foundation
 
 public protocol MindsSDKDelegate: AnyObject {
-    func onNetworkError(_ error: NetworkError)
+//    func onNetworkError(_ error: NetworkError)
     func onSuccess(_ response: BiometricResponse)
-    func onServiceError(_ response: BiometricResponse)
-    func onFinish()
+    func onError(_ response: BiometricResponse)
+//    func onFinish()
 }
