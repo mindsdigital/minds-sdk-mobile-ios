@@ -85,12 +85,13 @@ struct VoiceRecordView: View {
         }
         .alert(isPresented: viewModel.state.isError) {
             Alert(
-                title: Text("Ocorreu um erro"),
-                message: Text("Não foi possível carregar as informações. Por favor, tente novamente"),
-                primaryButton: .destructive(Text("Depois"), action: {
-                    viewModel.doBiometricsLater()
-                }),
-                secondaryButton: .default(Text("Tentar novamente"))
+                title: Text(MindsStrings.voiceRecordingAlertTitle()),
+                message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
+                primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
+                                            action: {
+                                                viewModel.doBiometricsLater()
+                                            }),
+                secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
             )
         }
         .navigationBarHidden(true)
