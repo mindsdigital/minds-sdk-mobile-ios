@@ -14,22 +14,19 @@ enum VoiceRecordState {
     case initial, recording, loading, error
     
     var isError: Binding<Bool> {
-        get {
-            Binding(
-                get: {
-                    self == .error
-                },
-                set: {_ in }
-            )
+        switch self {
+        case .error:
+            return .constant(true)
+        default:
+            return .constant(false)
         }
     }
 }
 
-@MainActor
 class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
     
-    @Published var state = VoiceRecordState.initial
+    @Published var state: VoiceRecordState = .initial
     @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
     
     init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl()) {
@@ -38,12 +35,13 @@ class VoiceRecordViewModel: ObservableObject {
     
     func startRecording() {
         recordingDelegate.startRecording()
-        state = VoiceRecordState.recording
+        self.updateStateOnMainThread(to: .recording)
     }
     
     func stopRecording() {
         recordingDelegate.stopRecording()
-        state = VoiceRecordState.loading
+        self.updateStateOnMainThread(to: .loading)
+        sendAudioToApi()
     }
     
     func doBiometricsLater() {
@@ -66,8 +64,10 @@ class VoiceRecordViewModel: ObservableObject {
                     self.biometricsResponse = response
                 }
                 
-                if response.success ?? false {
+                if let success = response.success, success {
                     MindsSDK.shared.onBiometricsReceive?(response)
+
+                    self.updateStateOnMainThread(to: .initial)
                 } else {
                     self.updateStateOnMainThread(to: .error)
                 }

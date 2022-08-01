@@ -12,7 +12,10 @@ struct VoiceRecordView: View {
     @StateObject var viewModel = VoiceRecordViewModel()
     @Binding var showBiometricsFlow: Bool
     private var dismiss: (() -> Void)?
-    
+
+    @State var fadeIn: Bool = false
+    @State var fadeOut: Bool = false
+
     init(showBiometricsFlow: Binding<Bool>,
          dismiss: (() -> Void)? = nil) {
         self._showBiometricsFlow = showBiometricsFlow
@@ -22,7 +25,7 @@ struct VoiceRecordView: View {
     var body: some View {
         NavigationView {
             if viewModel.state == .loading {
-                LoadingView(viewModel: viewModel)
+                LoadingView()
             } else {
                 VStack(spacing: 0.0) {
                     VStack(alignment: .leading, spacing: 0.0) {
@@ -47,27 +50,11 @@ struct VoiceRecordView: View {
 
                             }
                         }.frame(maxWidth: .infinity, minHeight: 80.0, maxHeight: 80.0)
-                            Image(systemName: "mic.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(Color.white)
-                                .onLongPressGesture(minimumDuration: 1.5, maximumDistance: 100, pressing: {
-                                                            pressing in
-                                                            
-                                                            if pressing {
-                                                                viewModel.startRecording()
-                                                            }
-                                                        }, perform: {})
-                                .simultaneousGesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onEnded{ _ in
-                                            viewModel.stopRecording()
-                                            }
-                                    )
-                        .frame(width: 56, height: 56)
-                        .background(Color(hex: "00DDB8"))
-                        .cornerRadius(100)
-                        .scaleEffect(viewModel.state ==  .recording ? 1.25 : 1)
-                        .padding()
+
+                        RecordingButton(longPressMinDuration: 0.3,
+                                        onLongPress: viewModel.startRecording,
+                                        onTap: nil,
+                                        onRelease: viewModel.stopRecording)
                         VStack {
                             Text("Minds Digital")
                                 .font(.caption)
@@ -78,7 +65,7 @@ struct VoiceRecordView: View {
                                 .multilineTextAlignment(.center)
                                 .lineLimit(nil)
                         }.padding()
-                        
+
                     }
                 }
             }
@@ -94,8 +81,21 @@ struct VoiceRecordView: View {
                 secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
             )
         }
+        .onAppear(perform: {
+            withAnimation(Animation.easeIn(duration: 1)) {
+                self.fadeIn = true
+                self.fadeOut = false
+            }
+        })
+        .onDisappear(perform: {
+            withAnimation(Animation.easeIn(duration: 1)) {
+                self.fadeOut = true
+                self.fadeIn = false
+            }
+        })
         .navigationBarHidden(true)
         .disableRotation()
         .preferredColorScheme(.light)
+        .opacity((fadeIn || fadeOut) ? 1 : 0)
     }
 }

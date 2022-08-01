@@ -62,7 +62,7 @@ struct RecordingButton: View {
             Circle()
                 .fill(Color.baselinePrimary)
                 .scaleEffect(state ==  .recording ? 1.25 : 1)
-                .frame(width: 80, height: 80)
+                .frame(width: 64, height: 64)
             buttonImage
         }
     }
@@ -75,9 +75,10 @@ struct RecordingButton: View {
                     .frame(width: 25, height: 25)
                     .foregroundColor(.white)
             } else {
-                Image(uiImage: UIImage(named: "voice", in: .module, with: nil) ?? UIImage())
+                Image(systemName: "mic.fill")
                     .resizable()
-                    .frame(width: 40, height: 40)
+                    .frame(width: 24, height: 34)
+                    .foregroundColor(.white)
             }
         }
     }
