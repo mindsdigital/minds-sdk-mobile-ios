@@ -19,5 +19,6 @@ public struct LoadingView: View {
         .onAppear {
             viewModel.sendAudioToApi()
         }
+        .preferredColorScheme(.light)
     }
 }
