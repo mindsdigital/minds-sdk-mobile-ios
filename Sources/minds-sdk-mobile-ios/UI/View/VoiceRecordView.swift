@@ -96,5 +96,6 @@ struct VoiceRecordView: View {
         }
         .navigationBarHidden(true)
         .disableRotation()
+        .preferredColorScheme(.light)
     }
 }

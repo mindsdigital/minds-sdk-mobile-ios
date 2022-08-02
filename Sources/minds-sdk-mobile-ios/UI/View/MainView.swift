@@ -23,12 +23,14 @@ public struct MainView: View {
         switch viewModel.state {
         case .loaded:
                 voiceRecording
+                .preferredColorScheme(.light)
         case .loading:
             ProgressView()
                 .onAppear {
                     viewModel.loadData()
                 }
                 .navigationBarBackButtonHidden(true)
+                .preferredColorScheme(.light)
         }
     }
 
