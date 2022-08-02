@@ -25,12 +25,18 @@ enum VoiceRecordState {
 
 class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
-    
+    weak var mindsDelegate: MindsSDKDelegate?
+    var completion: (() -> Void?)? = nil
+
     @Published var state: VoiceRecordState = .initial
     @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
     
-    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl()) {
+    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
+         mindsDelegate: MindsSDKDelegate? = nil,
+         completion: (() -> Void?)? = nil) {
         self.recordingDelegate = serviceDelegate
+        self.completion = completion
+        self.mindsDelegate = mindsDelegate
     }
     
     func startRecording() {
@@ -45,13 +51,15 @@ class VoiceRecordViewModel: ObservableObject {
     }
     
     func doBiometricsLater() {
-        DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse!)
+//        DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse!)
+        self.completion?()
     }
     
     func livenessText() -> String {
         return MindsSDK.shared.liveness.result ?? ""
     }
     
+    // not working
     func audioDuration() -> Double {
         return recordingDelegate.audioDuration()
     }
@@ -65,15 +73,17 @@ class VoiceRecordViewModel: ObservableObject {
                 }
                 
                 if let success = response.success, success {
-                    MindsSDK.shared.onBiometricsReceive?(response)
-
+                    self.mindsDelegate?.onSuccess(response)
                     self.updateStateOnMainThread(to: .initial)
+                    self.completion?()
                 } else {
+                    self.mindsDelegate?.onError(response)
                     self.updateStateOnMainThread(to: .error)
                 }
-                
+
             case .failure(_):
                 self.updateStateOnMainThread(to: .error)
+                print("--- SDK SERVICE ERROR")
             }
         }
     }

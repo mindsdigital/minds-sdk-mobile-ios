@@ -9,17 +9,13 @@ import SwiftUI
 import AVFAudio
 
 struct VoiceRecordView: View {
-    @StateObject var viewModel = VoiceRecordViewModel()
-    @Binding var showBiometricsFlow: Bool
-    private var dismiss: (() -> Void)?
-
+    @ObservedObject var viewModel: VoiceRecordViewModel
     @State var fadeIn: Bool = false
-    @State var fadeOut: Bool = false
 
-    init(showBiometricsFlow: Binding<Bool>,
-         dismiss: (() -> Void)? = nil) {
-        self._showBiometricsFlow = showBiometricsFlow
-        self.dismiss = dismiss
+    init(delegate: MindsSDKDelegate?,
+         completion: (() -> Void)? = nil) {
+        self.viewModel = VoiceRecordViewModel(mindsDelegate: delegate,
+                                              completion: completion)
     }
 
     var body: some View {
@@ -71,31 +67,32 @@ struct VoiceRecordView: View {
             }
         }
         .alert(isPresented: viewModel.state.isError) {
-            Alert(
-                title: Text(MindsStrings.voiceRecordingAlertTitle()),
-                message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
-                primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
-                                            action: {
-                                                viewModel.doBiometricsLater()
-                                            }),
-                secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
-            )
+            alert()
         }
         .onAppear(perform: {
-            withAnimation(Animation.easeIn(duration: 1)) {
-                self.fadeIn = true
-                self.fadeOut = false
-            }
+            self.dispatchAnimationOnMainThread()
         })
-        .onDisappear(perform: {
-            withAnimation(Animation.easeIn(duration: 1)) {
-                self.fadeOut = true
-                self.fadeIn = false
-            }
-        })
+        .opacity(fadeIn ? 1 : 0)
         .navigationBarHidden(true)
         .disableRotation()
         .preferredColorScheme(.light)
-        .opacity((fadeIn || fadeOut) ? 1 : 0)
+    }
+
+    private func dispatchAnimationOnMainThread() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            withAnimation(Animation.easeIn(duration: 1)) {
+                self.fadeIn = true
+            }
+        }
+    }
+
+    private func alert() -> Alert {
+        Alert(
+            title: Text(MindsStrings.voiceRecordingAlertTitle()),
+            message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
+            primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
+                                        action: { viewModel.doBiometricsLater() }),
+            secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
+        )
     }
 }

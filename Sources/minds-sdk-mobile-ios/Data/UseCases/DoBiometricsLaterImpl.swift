@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DoBiometricsLaterImpl : DoBiometricsLater {
+struct DoBiometricsLaterImpl: DoBiometricsLater {
     func execute(biometricResponse: BiometricResponse) {
         var response = biometricResponse
         response.status = "do_biometric_later"

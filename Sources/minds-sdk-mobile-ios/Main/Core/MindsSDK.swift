@@ -105,9 +105,9 @@ public class MindsSDK: ObservableObject {
             }
     }
 
-    public func initializeUIKitFlow(onDismiss: (() -> Void)? = nil) -> UIViewController {
+    public func initializeUIKitFlow(delegate: MindsSDKDelegate? = nil) -> UIViewController {
         let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
-                                   dismiss: onDismiss)
+                                   delegate: delegate)
         let childView = UIHostingController(rootView: swiftUIView)
         childView.view.backgroundColor = .white
         return childView
