@@ -12,9 +12,10 @@ extension View {
     func disableRotation() -> some View {
         let rotationChangePublisher = NotificationCenter.default
             .publisher(for: UIDevice.orientationDidChangeNotification)
-        @State var isOrientationLocked = false
 
         return onReceive(rotationChangePublisher) { _ in
+            changeOrientation(to: .portrait)
+        }.onAppear {
             changeOrientation(to: .portrait)
         }
     }

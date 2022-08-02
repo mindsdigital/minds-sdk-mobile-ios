@@ -51,7 +51,12 @@ class VoiceRecordViewModel: ObservableObject {
     }
     
     func doBiometricsLater() {
-//        DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse!)
+        guard let biometricsResponse = biometricsResponse else {
+            return
+        }
+
+        DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse,
+                                        delegate: mindsDelegate)
         self.completion?()
     }
     

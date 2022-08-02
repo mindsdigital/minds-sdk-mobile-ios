@@ -27,8 +27,6 @@ public class MindsSDK: ObservableObject {
     @Published var processType: ProcessType = .enrollment
     @Published var liveness: RandomSentenceId = RandomSentenceId(id: 0)
 
-    public var onBiometricsReceive: ((BiometricResponse) -> Void)?
-
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
     }
