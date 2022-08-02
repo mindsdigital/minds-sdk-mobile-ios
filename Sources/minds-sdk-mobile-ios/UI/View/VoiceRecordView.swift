@@ -8,8 +8,6 @@
 import SwiftUI
 import AVFAudio
 
-@available(macOS 11, *)
-@available(iOS 15.0, *)
 struct VoiceRecordView: View {
     @StateObject var viewModel = VoiceRecordViewModel()
     @Binding var showBiometricsFlow: Bool
@@ -20,8 +18,7 @@ struct VoiceRecordView: View {
         self._showBiometricsFlow = showBiometricsFlow
         self.dismiss = dismiss
     }
-    
-    @available(iOS 15.0, *)
+
     var body: some View {
         NavigationView {
             if viewModel.state == .loading {
@@ -86,14 +83,17 @@ struct VoiceRecordView: View {
                 }
             }
         }
-        .alert(MindsStrings.voiceRecordingAlertSubtitle(), isPresented: viewModel.state.isError) {
-            Button(MindsStrings.voiceRecordingAlertNeutralButtonLabel()) {
-                showBiometricsFlow = false
-                dismiss?()
-                viewModel.doBiometricsLater()
-            }
-            Button(MindsStrings.voiceRecordingAlertButtonLabel(), role: .cancel) { }
-                }
+        .alert(isPresented: viewModel.state.isError) {
+            Alert(
+                title: Text(MindsStrings.voiceRecordingAlertTitle()),
+                message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
+                primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
+                                            action: {
+                                                viewModel.doBiometricsLater()
+                                            }),
+                secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
+            )
+        }
         .navigationBarHidden(true)
         .disableRotation()
     }

@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-@available(macOS 11, *)
-@available(iOS 15.0, *)
 public struct LoadingView: View {
     @ObservedObject var viewModel: VoiceRecordViewModel
     
