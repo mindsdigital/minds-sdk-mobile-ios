@@ -9,15 +9,17 @@ import Foundation
 import SwiftUI
 
 public struct MainView: View {
-    @State var viewModel = MainViewModel()
+    @StateObject var viewModel = MainViewModel()
     @Binding var voiceRecordingFlowActive: Bool
     weak var delegate: MindsSDKDelegate?
+    var completion: (() -> Void)?
 
     public init(voiceRecordingFlowActive: Binding<Bool>,
-                delegate: MindsSDKDelegate? = nil) {
+                delegate: MindsSDKDelegate? = nil,
+                completion: (() -> Void)? = nil) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
         self.delegate = delegate
-        self.viewModel.delegate = delegate
+        self.completion = completion
     }
 
     public var body: some View {
@@ -25,12 +27,14 @@ public struct MainView: View {
         case .loaded:
                 VoiceRecordView(delegate: self.delegate) {
                     voiceRecordingFlowActive = false
+                    completion?()
                 }
                 .preferredColorScheme(.light)
         case .loading:
             ProgressView()
                 .onAppear {
                     viewModel.loadData()
+                    viewModel.delegate = delegate
                 }
                 .navigationBarBackButtonHidden(true)
                 .preferredColorScheme(.light)
