@@ -16,5 +16,6 @@ public struct LoadingView: View {
         .frame(maxWidth: .infinity, minHeight: 80.0, maxHeight: 80.0)
         .padding()
         .preferredColorScheme(.light)
+        .navigationBarHidden(true)
     }
 }

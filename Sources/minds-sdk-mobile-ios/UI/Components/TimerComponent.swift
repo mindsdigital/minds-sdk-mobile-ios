@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TimerComponent: View {
-    private var timer = Timer.publish(every: 0.25,
+    private var timer = Timer.publish(every: 1,
                                       on: .main,
                                       in: .common).autoconnect()
     @State var counter: Int = 0
