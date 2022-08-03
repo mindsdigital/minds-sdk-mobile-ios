@@ -117,8 +117,8 @@ struct VoiceRecordView: View {
     private func genericAlert(_ errorType: VoiceRecordErrorType) -> Alert {
         return Alert(title: Text(errorType.title),
                      message: Text(errorType.subtitle),
-                     primaryButton: .cancel(Text(errorType.primaryActionLabel),
-                                            action: viewModel.doBiometricsLater),
-                     secondaryButton: .destructive(Text(errorType.dismissButtonLabel)))
+                     primaryButton: .destructive(Text(errorType.dismissButtonLabel),
+                                                 action: viewModel.doBiometricsLater),
+                     secondaryButton: .cancel(Text(errorType.primaryActionLabel)))
     }
 }
