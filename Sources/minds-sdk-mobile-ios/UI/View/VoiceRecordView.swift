@@ -42,8 +42,7 @@ struct VoiceRecordView: View {
                     VStack {
                         HStack {
                             if (viewModel.state == .recording) {
-                                LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
-
+                                recordingWaveAndTimer()
                             }
                         }.frame(maxWidth: .infinity, minHeight: 80.0, maxHeight: 80.0)
 
@@ -78,6 +77,13 @@ struct VoiceRecordView: View {
         .preferredColorScheme(.light)
     }
 
+    private func recordingWaveAndTimer() -> some View {
+        VStack {
+            LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
+            TimerComponent(stoped: viewModel.setAudioDuration)
+        }
+    }
+
     private func dispatchAnimationOnMainThread() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             withAnimation(Animation.easeIn(duration: 1)) {
@@ -87,12 +93,32 @@ struct VoiceRecordView: View {
     }
 
     private func alert() -> Alert {
-        Alert(
-            title: Text(MindsStrings.voiceRecordingAlertTitle()),
-            message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
-            primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
-                                        action: { viewModel.doBiometricsLater() }),
-            secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
-        )
+        if case let VoiceRecordState.error(errorType) = viewModel.state {
+            switch errorType {
+            case .invalidLength:
+                return invalidLengthAlert(errorType)
+            case .generic:
+                return genericAlert(errorType)
+            }
+        }
+
+        return Alert(title: Text(""),
+                     message: Text(""),
+                     primaryButton: .cancel(),
+                     secondaryButton: .cancel())
+    }
+
+    private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {
+        return Alert(title: Text(errorType.title),
+                     message: Text(errorType.subtitle),
+                     dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
+    }
+
+    private func genericAlert(_ errorType: VoiceRecordErrorType) -> Alert {
+        return Alert(title: Text(errorType.title),
+                     message: Text(errorType.subtitle),
+                     primaryButton: .cancel(Text(errorType.primaryActionLabel),
+                                            action: viewModel.doBiometricsLater),
+                     secondaryButton: .destructive(Text(errorType.dismissButtonLabel)))
     }
 }
