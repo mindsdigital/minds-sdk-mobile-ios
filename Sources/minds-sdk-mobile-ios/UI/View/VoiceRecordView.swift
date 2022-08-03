@@ -9,20 +9,19 @@ import SwiftUI
 import AVFAudio
 
 struct VoiceRecordView: View {
-    @StateObject var viewModel = VoiceRecordViewModel()
-    @Binding var showBiometricsFlow: Bool
-    private var dismiss: (() -> Void)?
-    
-    init(showBiometricsFlow: Binding<Bool>,
-         dismiss: (() -> Void)? = nil) {
-        self._showBiometricsFlow = showBiometricsFlow
-        self.dismiss = dismiss
+    @ObservedObject var viewModel: VoiceRecordViewModel
+    @State var fadeIn: Bool = false
+
+    init(delegate: MindsSDKDelegate?,
+         completion: (() -> Void)? = nil) {
+        self.viewModel = VoiceRecordViewModel(mindsDelegate: delegate,
+                                              completion: completion)
     }
 
     var body: some View {
         NavigationView {
             if viewModel.state == .loading {
-                LoadingView(viewModel: viewModel)
+                LoadingView()
             } else {
                 VStack(spacing: 0.0) {
                     VStack(alignment: .leading, spacing: 0.0) {
@@ -47,27 +46,11 @@ struct VoiceRecordView: View {
 
                             }
                         }.frame(maxWidth: .infinity, minHeight: 80.0, maxHeight: 80.0)
-                            Image(systemName: "mic.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(Color.white)
-                                .onLongPressGesture(minimumDuration: 1.5, maximumDistance: 100, pressing: {
-                                                            pressing in
-                                                            
-                                                            if pressing {
-                                                                viewModel.startRecording()
-                                                            }
-                                                        }, perform: {})
-                                .simultaneousGesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onEnded{ _ in
-                                            viewModel.stopRecording()
-                                            }
-                                    )
-                        .frame(width: 56, height: 56)
-                        .background(Color(hex: "00DDB8"))
-                        .cornerRadius(100)
-                        .scaleEffect(viewModel.state ==  .recording ? 1.25 : 1)
-                        .padding()
+
+                        RecordingButton(longPressMinDuration: 0.3,
+                                        onLongPress: viewModel.startRecording,
+                                        onTap: nil,
+                                        onRelease: viewModel.stopRecording)
                         VStack {
                             Text("Minds Digital")
                                 .font(.caption)
@@ -78,24 +61,38 @@ struct VoiceRecordView: View {
                                 .multilineTextAlignment(.center)
                                 .lineLimit(nil)
                         }.padding()
-                        
+
                     }
                 }
             }
         }
         .alert(isPresented: viewModel.state.isError) {
-            Alert(
-                title: Text(MindsStrings.voiceRecordingAlertTitle()),
-                message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
-                primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
-                                            action: {
-                                                viewModel.doBiometricsLater()
-                                            }),
-                secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
-            )
+            alert()
         }
+        .onAppear(perform: {
+            self.dispatchAnimationOnMainThread()
+        })
+        .opacity(fadeIn ? 1 : 0)
         .navigationBarHidden(true)
         .disableRotation()
         .preferredColorScheme(.light)
+    }
+
+    private func dispatchAnimationOnMainThread() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            withAnimation(Animation.easeIn(duration: 1)) {
+                self.fadeIn = true
+            }
+        }
+    }
+
+    private func alert() -> Alert {
+        Alert(
+            title: Text(MindsStrings.voiceRecordingAlertTitle()),
+            message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
+            primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
+                                        action: { viewModel.doBiometricsLater() }),
+            secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
+        )
     }
 }

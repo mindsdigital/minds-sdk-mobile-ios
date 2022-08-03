@@ -7,13 +7,10 @@
 
 import Foundation
 
-struct DoBiometricsLaterImpl : DoBiometricsLater {
-    func execute(biometricResponse: BiometricResponse) {
+struct DoBiometricsLaterImpl: DoBiometricsLater {
+    func execute(biometricResponse: BiometricResponse, delegate: MindsSDKDelegate?) {
         var response = biometricResponse
         response.status = "do_biometric_later"
-        
-        DispatchQueue.main.async {
-            MindsSDK.shared.onBiometricsReceive?(response)
-        }
+        delegate?.onError(response)
     }
 }

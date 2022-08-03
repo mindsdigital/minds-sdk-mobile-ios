@@ -14,46 +14,57 @@ enum VoiceRecordState {
     case initial, recording, loading, error
     
     var isError: Binding<Bool> {
-        get {
-            Binding(
-                get: {
-                    self == .error
-                },
-                set: {_ in }
-            )
+        switch self {
+        case .error:
+            return .constant(true)
+        default:
+            return .constant(false)
         }
     }
 }
 
-@MainActor
 class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
-    
-    @Published var state = VoiceRecordState.initial
+    weak var mindsDelegate: MindsSDKDelegate?
+    var completion: (() -> Void?)? = nil
+
+    @Published var state: VoiceRecordState = .initial
     @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
     
-    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl()) {
+    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
+         mindsDelegate: MindsSDKDelegate? = nil,
+         completion: (() -> Void?)? = nil) {
         self.recordingDelegate = serviceDelegate
+        self.completion = completion
+        self.mindsDelegate = mindsDelegate
     }
     
     func startRecording() {
         recordingDelegate.startRecording()
-        state = VoiceRecordState.recording
+        self.updateStateOnMainThread(to: .recording)
     }
     
     func stopRecording() {
         recordingDelegate.stopRecording()
-        state = VoiceRecordState.loading
+        self.updateStateOnMainThread(to: .loading)
+        sendAudioToApi()
     }
     
     func doBiometricsLater() {
-        DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse!)
+        guard let biometricsResponse = biometricsResponse else {
+            return
+        }
+
+        DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse,
+                                        delegate: mindsDelegate)
+        self.completion?()
     }
     
     func livenessText() -> String {
         return MindsSDK.shared.liveness.result ?? ""
     }
     
+    // not working
     func audioDuration() -> Double {
         return recordingDelegate.audioDuration()
     }
@@ -66,14 +77,18 @@ class VoiceRecordViewModel: ObservableObject {
                     self.biometricsResponse = response
                 }
                 
-                if response.success ?? false {
-                    MindsSDK.shared.onBiometricsReceive?(response)
+                if let success = response.success, success {
+                    self.mindsDelegate?.onSuccess(response)
+                    self.updateStateOnMainThread(to: .initial)
+                    self.completion?()
                 } else {
+                    self.mindsDelegate?.onError(response)
                     self.updateStateOnMainThread(to: .error)
                 }
-                
+
             case .failure(_):
                 self.updateStateOnMainThread(to: .error)
+                print("--- SDK SERVICE ERROR")
             }
         }
     }

@@ -11,7 +11,9 @@ import SwiftUI
 class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @Published var state: ViewState = .loading
-
+    weak var delegate: MindsSDKDelegate?
+    @Published var voiceRecordModel = VoiceRecordViewModel()
+    
     enum ViewState {
         case loaded
         case loading
@@ -24,7 +26,7 @@ class MainViewModel: ObservableObject {
             }, receiveValue: { value in
                 DispatchQueue.main.async {
                     self.state = ViewState.loaded
-                    print(self.state)
+                    self.voiceRecordModel.mindsDelegate = self.delegate
                 }
             })
         }

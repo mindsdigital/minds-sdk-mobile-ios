@@ -8,5 +8,5 @@
 import Foundation
 
 protocol DoBiometricsLater {
-    func execute(biometricResponse: BiometricResponse) -> Void
+    func execute(biometricResponse: BiometricResponse, delegate: MindsSDKDelegate?) -> Void
 }

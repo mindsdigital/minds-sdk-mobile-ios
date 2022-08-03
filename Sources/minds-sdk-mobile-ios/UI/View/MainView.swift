@@ -9,20 +9,23 @@ import Foundation
 import SwiftUI
 
 public struct MainView: View {
-    @StateObject var viewModel = MainViewModel()
+    @State var viewModel = MainViewModel()
     @Binding var voiceRecordingFlowActive: Bool
-    private var dismiss: (() -> Void)?
+    weak var delegate: MindsSDKDelegate?
 
     public init(voiceRecordingFlowActive: Binding<Bool>,
-                dismiss: (() -> Void)? = nil) {
+                delegate: MindsSDKDelegate? = nil) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
-        self.dismiss = dismiss
+        self.delegate = delegate
+        self.viewModel.delegate = delegate
     }
 
     public var body: some View {
         switch viewModel.state {
         case .loaded:
-                voiceRecording
+                VoiceRecordView(delegate: self.delegate) {
+                    voiceRecordingFlowActive = false
+                }
                 .preferredColorScheme(.light)
         case .loading:
             ProgressView()
@@ -32,15 +35,6 @@ public struct MainView: View {
                 .navigationBarBackButtonHidden(true)
                 .preferredColorScheme(.light)
         }
-    }
-
-    private var voiceRecording: some View {
-        NavigationLink(destination: VoiceRecordView(showBiometricsFlow: $voiceRecordingFlowActive, dismiss: dismiss),
-                       isActive:  $voiceRecordingFlowActive) {
-            EmptyView()
-        }
-        .isDetailLink(false)
-        .navigationBarBackButtonHidden(true)
     }
 }
 
