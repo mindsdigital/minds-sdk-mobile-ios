@@ -121,7 +121,6 @@ class VoiceRecordViewModel: ObservableObject {
 
     func sendAudioToApiIfReachedMinDuration() {
         guard audioDuration >= 5 else {
-            print("INVALID_LENGHT")
             self.updateStateOnMainThread(to: .error(.invalidLength))
             return
         }
@@ -129,7 +128,7 @@ class VoiceRecordViewModel: ObservableObject {
         sendAudioToApi()
     }
     
-    func sendAudioToApi() {
+    private func sendAudioToApi() {
 
         SendAudioToApi().execute(biometricsService: makeBiometricService()) { result in
             switch result {
