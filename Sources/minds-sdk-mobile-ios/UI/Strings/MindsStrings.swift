@@ -13,7 +13,7 @@ struct MindsStrings {
     }
 
     static func voiceRecordingSubtitle() -> String {
-        return NSLocalizedString("Segure o botão para iniciar a gravação e leia o texto abaixo", comment: "")
+        return NSLocalizedString("Segure o botão para iniciar a gravação\ne leia o texto abaixo", comment: "")
     }
     
     static func voiceRecordingButtonInstruction() -> String {

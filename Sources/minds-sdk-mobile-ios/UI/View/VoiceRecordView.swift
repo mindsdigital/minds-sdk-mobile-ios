@@ -11,6 +11,7 @@ import AVFAudio
 struct VoiceRecordView: View {
     @ObservedObject var viewModel: VoiceRecordViewModel
     @State var fadeIn: Bool = false
+    @State var showTooltip: Bool = false
 
     init(delegate: MindsSDKDelegate?,
          completion: (() -> Void)? = nil) {
@@ -25,31 +26,44 @@ struct VoiceRecordView: View {
             } else {
                 VStack(spacing: 0.0) {
                     VStack(alignment: .leading, spacing: 0.0) {
-                        Text(MindsStrings.voiceRecordingTitle())
-                            .font(.headline)
-                            .padding(0.0)
-                        Text(MindsStrings.voiceRecordingSubtitle())
-                            .font(.subheadline)
-                            .padding(0.0)
+                        HStack {
+                            Text(MindsStrings.voiceRecordingTitle())
+                                .font(.headline)
+                            Spacer()
+                        }
+                        HStack {
+                            Text(MindsStrings.voiceRecordingSubtitle())
+                                .font(.subheadline)
+                            Spacer()
+                        }
                     }
+
                     Spacer()
-                    VStack(alignment: .leading) {
-                        Text(viewModel.livenessText())
-                            .font(.largeTitle)
-                            .padding()
-                    }
-                    Spacer()
-                    VStack {
+
+                    VStack(spacing: 24) {
+                        HStack {
+                            Text(viewModel.livenessText())
+                                .font(.largeTitle)
+                            Spacer()
+                        }
+
                         HStack {
                             if (viewModel.state == .recording) {
                                 recordingWaveAndTimer()
                             }
                         }.frame(maxWidth: .infinity, minHeight: 80.0, maxHeight: 80.0)
+                    }
 
-                        RecordingButton(longPressMinDuration: 0.3,
-                                        onLongPress: viewModel.startRecording,
-                                        onTap: nil,
-                                        onRelease: viewModel.stopRecording)
+                    Spacer()
+
+                    VStack(spacing: 24) {
+                        VStack(spacing: 16) {
+                            RecordingButton(longPressMinDuration: 0.3,
+                                            onLongPress: viewModel.startRecording,
+                                            onTap: { self.showTooltip = true },
+                                            onRelease: viewModel.stopRecording)
+                        }
+
                         VStack {
                             Text("Minds Digital")
                                 .font(.caption)
@@ -59,12 +73,13 @@ struct VoiceRecordView: View {
                                 .font(.caption)
                                 .multilineTextAlignment(.center)
                                 .lineLimit(nil)
-                        }.padding()
-
+                        }
+                        .padding(.top, 24)
                     }
                 }
             }
         }
+        .padding(24)
         .alert(isPresented: viewModel.state.isError) {
             alert()
         }

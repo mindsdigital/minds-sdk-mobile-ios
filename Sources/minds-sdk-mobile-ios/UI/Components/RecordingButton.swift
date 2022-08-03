@@ -62,7 +62,7 @@ struct RecordingButton: View {
             Circle()
                 .fill(Color.baselinePrimary)
                 .scaleEffect(state ==  .recording ? 1.25 : 1)
-                .frame(width: 64, height: 64)
+                .frame(width: 76, height: 76)
             buttonImage
         }
     }
