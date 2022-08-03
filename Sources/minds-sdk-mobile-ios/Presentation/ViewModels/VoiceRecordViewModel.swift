@@ -10,8 +10,48 @@ import AVFAudio
 import UIKit
 import SwiftUI
 
-enum VoiceRecordState {
-    case initial, recording, loading, error
+enum VoiceRecordErrorType {
+    case invalidLength, generic
+
+    var title: String {
+        switch self {
+        case .invalidLength:
+            return MindsStrings.invalidLengthAlertErrorTitle()
+        case .generic:
+            return MindsStrings.genericErrorAlertTitle()
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .invalidLength:
+            return MindsStrings.invalidLengthAlertErrorSubtitle()
+        case .generic:
+            return MindsStrings.genericErrorAlertSubtitle()
+        }
+    }
+
+    var primaryActionLabel: String {
+        switch self {
+        case .invalidLength:
+            return MindsStrings.invalidLengthAlertErrorButtonLabel()
+        case .generic:
+            return MindsStrings.genericErrorAlertButtonLabel()
+        }
+    }
+
+    var neutralButtonLabel: String? {
+        switch self {
+        case .invalidLength:
+            return nil
+        case .generic:
+            return MindsStrings.genericErrorAlertNeutralButtonLabel()
+        }
+    }
+}
+
+enum VoiceRecordState: Equatable {
+    case initial, recording, loading, error(VoiceRecordErrorType)
     
     var isError: Binding<Bool> {
         switch self {
@@ -21,6 +61,16 @@ enum VoiceRecordState {
             return .constant(false)
         }
     }
+
+    static func == (lhs: VoiceRecordState, rhs: VoiceRecordState) -> Bool {
+        switch (lhs, rhs) {
+        case (.initial, .initial), (.recording, .recording),
+             (.loading, .loading), (.error, .error):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 class VoiceRecordViewModel: ObservableObject {
@@ -28,6 +78,7 @@ class VoiceRecordViewModel: ObservableObject {
     weak var mindsDelegate: MindsSDKDelegate?
     var completion: (() -> Void?)? = nil
 
+    @State var audioDuration: Int = 0
     @Published var state: VoiceRecordState = .initial
     @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
     
@@ -63,13 +114,18 @@ class VoiceRecordViewModel: ObservableObject {
     func livenessText() -> String {
         return MindsSDK.shared.liveness.result ?? ""
     }
-    
-    // not working
-    func audioDuration() -> Double {
-        return recordingDelegate.audioDuration()
+
+    func audioHasMinDuration() -> Bool {
+        return audioDuration >= 5
     }
     
     func sendAudioToApi() {
+        guard audioHasMinDuration() else {
+            print("INVALID_LENGHT")
+            self.updateStateOnMainThread(to: .error(.invalidLength))
+            return
+        }
+
         SendAudioToApi().execute(biometricsService: makeBiometricService()) { result in
             switch result {
             case .success(let response):
@@ -83,11 +139,11 @@ class VoiceRecordViewModel: ObservableObject {
                     self.completion?()
                 } else {
                     self.mindsDelegate?.onError(response)
-                    self.updateStateOnMainThread(to: .error)
+                    self.updateStateOnMainThread(to: .error(.generic))
                 }
 
             case .failure(_):
-                self.updateStateOnMainThread(to: .error)
+                self.updateStateOnMainThread(to: .error(.generic))
                 print("--- SDK SERVICE ERROR")
             }
         }

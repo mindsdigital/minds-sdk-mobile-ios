@@ -42,8 +42,7 @@ struct VoiceRecordView: View {
                     VStack {
                         HStack {
                             if (viewModel.state == .recording) {
-                                LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
-
+                                recordingWaveAndTimer()
                             }
                         }.frame(maxWidth: .infinity, minHeight: 80.0, maxHeight: 80.0)
 
@@ -78,6 +77,15 @@ struct VoiceRecordView: View {
         .preferredColorScheme(.light)
     }
 
+    private func recordingWaveAndTimer() -> some View {
+        VStack {
+            LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
+            TimerComponent { seconds in
+                viewModel.audioDuration = seconds
+            }
+        }
+    }
+
     private func dispatchAnimationOnMainThread() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
             withAnimation(Animation.easeIn(duration: 1)) {
@@ -86,13 +94,14 @@ struct VoiceRecordView: View {
         }
     }
 
-    private func alert() -> Alert {
-        Alert(
-            title: Text(MindsStrings.voiceRecordingAlertTitle()),
-            message: Text(MindsStrings.voiceRecordingAlertSubtitle()),
-            primaryButton: .destructive(Text(MindsStrings.voiceRecordingAlertNeutralButtonLabel()),
-                                        action: { viewModel.doBiometricsLater() }),
-            secondaryButton: .default(Text(MindsStrings.voiceRecordingAlertButtonLabel()))
-        )
+    private func alert() -> Alert? {
+        if case let VoiceRecordState.error(errorType) = viewModel.state {
+            return Alert(
+                    title: Text(errorType.title),
+                    message: Text(errorType.subtitle),
+                    primaryButton: .destructive(Text(errorType.neutralButtonLabel ?? ""),
+                                                action: { viewModel.doBiometricsLater() }),
+                    secondaryButton: .default(Text(errorType.primaryActionLabel)))
+        }
     }
 }

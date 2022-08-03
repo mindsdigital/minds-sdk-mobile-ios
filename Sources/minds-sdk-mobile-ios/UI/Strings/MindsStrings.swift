@@ -20,19 +20,31 @@ struct MindsStrings {
         return NSLocalizedString("Segure para gravar, solte para enviar", comment: "")
     }
     
-    static func voiceRecordingAlertTitle() -> String {
+    static func genericErrorAlertTitle() -> String {
         return NSLocalizedString("Ocorreu um erro", comment: "")
     }
     
-    static func voiceRecordingAlertSubtitle() -> String {
+    static func genericErrorAlertSubtitle() -> String {
         return NSLocalizedString("Não foi possível carregar as informações. Você deseja continuar?", comment: "")
     }
     
-    static func voiceRecordingAlertButtonLabel() -> String {
+    static func genericErrorAlertButtonLabel() -> String {
         return NSLocalizedString("Tentar novamente", comment: "")
     }
     
-    static func voiceRecordingAlertNeutralButtonLabel() -> String {
+    static func genericErrorAlertNeutralButtonLabel() -> String {
         return NSLocalizedString("Depois", comment: "")
+    }
+
+    static func invalidLengthAlertErrorTitle() -> String {
+        return NSLocalizedString("Ocorreu um erro", comment: "")
+    }
+    
+    static func invalidLengthAlertErrorSubtitle() -> String {
+        return NSLocalizedString("Não foi possível carregar as informações. Você deseja continuar?", comment: "")
+    }
+    
+    static func invalidLengthAlertErrorButtonLabel() -> String {
+        return NSLocalizedString("Tentar novamente", comment: "")
     }
 }
