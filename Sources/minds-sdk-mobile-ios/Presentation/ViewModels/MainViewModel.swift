@@ -21,8 +21,7 @@ class MainViewModel: ObservableObject {
 
     func loadData() {
         sdk.initializeSDK { result in
-            _ = result.publisher.sink(receiveCompletion: { received in
-                print(received)
+            _ = result.publisher.sink(receiveCompletion: { _ in
             }, receiveValue: { value in
                 DispatchQueue.main.async {
                     self.state = ViewState.loaded
