@@ -37,11 +37,11 @@ struct MindsStrings {
     }
 
     static func invalidLengthAlertErrorTitle() -> String {
-        return NSLocalizedString("Ocorreu um erro", comment: "")
+        return NSLocalizedString("Duração inválida", comment: "")
     }
     
     static func invalidLengthAlertErrorSubtitle() -> String {
-        return NSLocalizedString("Não foi possível carregar as informações. Você deseja continuar?", comment: "")
+        return NSLocalizedString("O áudio gravado precisa ter pelo menos 5 segundos", comment: "")
     }
     
     static func invalidLengthAlertErrorButtonLabel() -> String {

@@ -34,16 +34,16 @@ enum VoiceRecordErrorType {
     var primaryActionLabel: String {
         switch self {
         case .invalidLength:
-            return MindsStrings.invalidLengthAlertErrorButtonLabel()
+            return ""
         case .generic:
             return MindsStrings.genericErrorAlertButtonLabel()
         }
     }
 
-    var neutralButtonLabel: String? {
+    var dismissButtonLabel: String {
         switch self {
         case .invalidLength:
-            return nil
+            return MindsStrings.invalidLengthAlertErrorButtonLabel()
         case .generic:
             return MindsStrings.genericErrorAlertNeutralButtonLabel()
         }
@@ -78,7 +78,7 @@ class VoiceRecordViewModel: ObservableObject {
     weak var mindsDelegate: MindsSDKDelegate?
     var completion: (() -> Void?)? = nil
 
-    @State var audioDuration: Int = 0
+    @Published var audioDuration: Int = 0
     @Published var state: VoiceRecordState = .initial
     @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
     
@@ -98,7 +98,6 @@ class VoiceRecordViewModel: ObservableObject {
     func stopRecording() {
         recordingDelegate.stopRecording()
         self.updateStateOnMainThread(to: .loading)
-        sendAudioToApi()
     }
     
     func doBiometricsLater() {
@@ -115,16 +114,22 @@ class VoiceRecordViewModel: ObservableObject {
         return MindsSDK.shared.liveness.result ?? ""
     }
 
-    func audioHasMinDuration() -> Bool {
-        return audioDuration >= 5
+    func setAudioDuration(_ duration: Int) {
+        self.audioDuration = duration
+        sendAudioToApiIfReachedMinDuration()
     }
-    
-    func sendAudioToApi() {
-        guard audioHasMinDuration() else {
+
+    func sendAudioToApiIfReachedMinDuration() {
+        guard audioDuration >= 5 else {
             print("INVALID_LENGHT")
             self.updateStateOnMainThread(to: .error(.invalidLength))
             return
         }
+
+        sendAudioToApi()
+    }
+    
+    func sendAudioToApi() {
 
         SendAudioToApi().execute(biometricsService: makeBiometricService()) { result in
             switch result {

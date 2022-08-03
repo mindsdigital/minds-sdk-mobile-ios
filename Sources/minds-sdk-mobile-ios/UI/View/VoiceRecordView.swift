@@ -80,9 +80,7 @@ struct VoiceRecordView: View {
     private func recordingWaveAndTimer() -> some View {
         VStack {
             LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
-            TimerComponent { seconds in
-                viewModel.audioDuration = seconds
-            }
+            TimerComponent(stoped: viewModel.setAudioDuration)
         }
     }
 
@@ -94,14 +92,33 @@ struct VoiceRecordView: View {
         }
     }
 
-    private func alert() -> Alert? {
+    private func alert() -> Alert {
         if case let VoiceRecordState.error(errorType) = viewModel.state {
-            return Alert(
-                    title: Text(errorType.title),
-                    message: Text(errorType.subtitle),
-                    primaryButton: .destructive(Text(errorType.neutralButtonLabel ?? ""),
-                                                action: { viewModel.doBiometricsLater() }),
-                    secondaryButton: .default(Text(errorType.primaryActionLabel)))
+            switch errorType {
+            case .invalidLength:
+                return invalidLengthAlert(errorType)
+            case .generic:
+                return genericAlert(errorType)
+            }
         }
+
+        return Alert(title: Text(""),
+                     message: Text(""),
+                     primaryButton: .cancel(),
+                     secondaryButton: .cancel())
+    }
+
+    private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {
+        return Alert(title: Text(errorType.title),
+                     message: Text(errorType.subtitle),
+                     dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
+    }
+
+    private func genericAlert(_ errorType: VoiceRecordErrorType) -> Alert {
+        return Alert(title: Text(errorType.title),
+                     message: Text(errorType.subtitle),
+                     primaryButton: .cancel(Text(errorType.primaryActionLabel),
+                                            action: viewModel.doBiometricsLater),
+                     secondaryButton: .destructive(Text(errorType.dismissButtonLabel)))
     }
 }
