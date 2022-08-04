@@ -10,69 +10,6 @@ import AVFAudio
 import UIKit
 import SwiftUI
 
-enum VoiceRecordErrorType {
-    case invalidLength, generic
-
-    var title: String {
-        switch self {
-        case .invalidLength:
-            return MindsStrings.invalidLengthAlertErrorTitle()
-        case .generic:
-            return MindsStrings.genericErrorAlertTitle()
-        }
-    }
-
-    var subtitle: String {
-        switch self {
-        case .invalidLength:
-            return MindsStrings.invalidLengthAlertErrorSubtitle()
-        case .generic:
-            return MindsStrings.genericErrorAlertSubtitle()
-        }
-    }
-
-    var primaryActionLabel: String {
-        switch self {
-        case .invalidLength:
-            return ""
-        case .generic:
-            return MindsStrings.genericErrorAlertButtonLabel()
-        }
-    }
-
-    var dismissButtonLabel: String {
-        switch self {
-        case .invalidLength:
-            return MindsStrings.invalidLengthAlertErrorButtonLabel()
-        case .generic:
-            return MindsStrings.genericErrorAlertNeutralButtonLabel()
-        }
-    }
-}
-
-enum VoiceRecordState: Equatable {
-    case initial, recording, loading, error(VoiceRecordErrorType)
-    
-    var isError: Binding<Bool> {
-        switch self {
-        case .error:
-            return .constant(true)
-        default:
-            return .constant(false)
-        }
-    }
-
-    static func == (lhs: VoiceRecordState, rhs: VoiceRecordState) -> Bool {
-        switch (lhs, rhs) {
-        case (.initial, .initial), (.recording, .recording),
-             (.loading, .loading), (.error, .error):
-            return true
-        default:
-            return false
-        }
-    }
-}
-
 class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
     weak var mindsDelegate: MindsSDKDelegate?
@@ -157,5 +94,35 @@ class VoiceRecordViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.state = newState
         }
+    }
+
+    func alert() -> Alert {
+        if case let VoiceRecordState.error(errorType) = state {
+            switch errorType {
+            case .invalidLength:
+                return invalidLengthAlert(errorType)
+            case .generic:
+                return genericAlert(errorType)
+            }
+        }
+
+        return Alert(title: Text(""),
+                     message: Text(""),
+                     primaryButton: .cancel(),
+                     secondaryButton: .cancel())
+    }
+
+    private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {
+        return Alert(title: Text(errorType.title),
+                     message: Text(errorType.subtitle),
+                     dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
+    }
+
+    private func genericAlert(_ errorType: VoiceRecordErrorType) -> Alert {
+        return Alert(title: Text(errorType.title),
+                     message: Text(errorType.subtitle),
+                     primaryButton: .destructive(Text(errorType.dismissButtonLabel),
+                                                 action: doBiometricsLater),
+                     secondaryButton: .cancel(Text(errorType.primaryActionLabel)))
     }
 }
