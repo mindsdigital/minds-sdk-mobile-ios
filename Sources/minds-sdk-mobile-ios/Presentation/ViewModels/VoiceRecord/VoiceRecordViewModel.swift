@@ -14,17 +14,23 @@ class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
     weak var mindsDelegate: MindsSDKDelegate?
     var completion: (() -> Void?)? = nil
+    private var sdk: MindsSDK = MindsSDK.shared
 
     @Published var audioDuration: Int = 0
     @Published var state: VoiceRecordState = .initial
     @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
+    @Published var livenessText: RandomSentenceId
+    @Binding var voiceRecordingFlowActive: Bool
     
     init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
          mindsDelegate: MindsSDKDelegate? = nil,
+         voiceRecordingFlowActive: Binding<Bool>,
          completion: (() -> Void?)? = nil) {
+        self.livenessText = sdk.liveness
         self.recordingDelegate = serviceDelegate
         self.completion = completion
         self.mindsDelegate = mindsDelegate
+        self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
     
     func startRecording() {
@@ -44,11 +50,8 @@ class VoiceRecordViewModel: ObservableObject {
 
         DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse,
                                         delegate: mindsDelegate)
-        self.completion?()
-    }
-    
-    func livenessText() -> String {
-        return MindsSDK.shared.liveness.result ?? ""
+//        self.completion?()
+        closeFlow()
     }
 
     func setAudioDuration(_ duration: Int) {
@@ -77,7 +80,8 @@ class VoiceRecordViewModel: ObservableObject {
                 if let success = response.success, success {
                     self.mindsDelegate?.onSuccess(response)
                     self.updateStateOnMainThread(to: .initial)
-                    self.completion?()
+                    self.closeFlow()
+//                    self.completion?()
                 } else {
                     self.mindsDelegate?.onError(response)
                     self.updateStateOnMainThread(to: .error(.generic))
@@ -124,5 +128,9 @@ class VoiceRecordViewModel: ObservableObject {
                      primaryButton: .destructive(Text(errorType.dismissButtonLabel),
                                                  action: doBiometricsLater),
                      secondaryButton: .cancel(Text(errorType.primaryActionLabel)))
+    }
+
+    private func closeFlow() {
+        self.voiceRecordingFlowActive = false
     }
 }

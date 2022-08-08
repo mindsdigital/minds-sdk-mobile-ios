@@ -38,7 +38,7 @@ public enum DomainError: Error, Equatable {
     public static func ==(lhs: DomainError, rhs: DomainError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidCPF, .invalidCPF),
-                (.invalidPhoneNumber, .invalidPhoneNumber),
+            (.invalidPhoneNumber, .invalidPhoneNumber),
             (.invalidAudioFormat, .invalidAudioFormat),
             (.customerNotFoundToPerformVerification, .customerNotFoundToPerformVerification),
             (.customerNotEnrolled, .customerNotEnrolled),

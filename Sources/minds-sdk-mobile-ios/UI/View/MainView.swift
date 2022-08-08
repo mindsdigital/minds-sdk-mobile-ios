@@ -25,7 +25,8 @@ public struct MainView: View {
     public var body: some View {
         switch viewModel.state {
         case .loaded:
-                VoiceRecordView(delegate: self.delegate) {
+            VoiceRecordView(delegate: self.delegate,
+                            voiceRecordingFlowActive: $voiceRecordingFlowActive) {
                     voiceRecordingFlowActive = false
                     completion?()
                 }
