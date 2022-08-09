@@ -49,6 +49,7 @@ public class MindsSDKInitializer {
                     guard let hostingController = self?.createUIHostingController(delegate, response) else {
                         return
                     }
+                    self?.sdk.liveness = response
                     self?.navigationController?.pushViewController(hostingController, animated: true)
                 }
             case .failure(let error):
@@ -72,7 +73,6 @@ public class MindsSDKInitializer {
         }
     }
 }
-
 
 class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
