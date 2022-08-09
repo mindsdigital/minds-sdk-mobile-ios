@@ -8,11 +8,36 @@
 import Foundation
 import SwiftUI
 
+
+public class MindsSDKInitializer {
+    private var sdk = MindsSDK.shared
+    @Binding var voiceRecordingFlowActive: Bool
+    
+    public init(voiceRecordingFlowActive: Binding<Bool>) {
+        self._voiceRecordingFlowActive = voiceRecordingFlowActive
+    }
+
+    public func initialize(onReceive: @escaping ((Error?) -> Void)) {
+        sdk.initializeSDK { result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.sdk.liveness = response
+                    self.voiceRecordingFlowActive = true
+                }
+            case .failure(let error):
+                onReceive(error)
+            }
+        }
+    }
+}
+
+
 class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @Published var state: ViewState = .loading
     weak var delegate: MindsSDKDelegate?
-    @Published var voiceRecordModel = VoiceRecordViewModel()
+    @Published var voiceRecordModel = VoiceRecordViewModel(voiceRecordingFlowActive: .constant(false))
     
     enum ViewState {
         case loaded

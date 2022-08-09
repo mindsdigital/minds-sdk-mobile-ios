@@ -47,7 +47,7 @@ public class MindsSDK: ObservableObject {
         self.connectionTimeout = connectionTimeout
     }
 
-    func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
+    func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
         self.validateDataInput { dataInputResult in
             switch dataInputResult {
             case .success:
@@ -60,18 +60,15 @@ public class MindsSDK: ObservableObject {
         }
     }
 
-    private func getRandomSentences(completion: @escaping (Result<Void, Error>) -> Void) {
+    private func getRandomSentences(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
         LivenessService.init(networkRequest: NetworkManager(requestTimeout: 30))
             .getRandomSentence(token: token) { result in
                 switch result {
                 case .success(let response):
-                    DispatchQueue.main.async {
-                        self.liveness = RandomSentenceId(id: response.data.id, result: response.data.text)
-                    }
-                    completion(.success(()))
+                    let test = RandomSentenceId(id: response.data.id, result: response.data.text)
+                    completion(.success((test)))
                 case .failure(let error):
                     completion(.failure(error))
-                    assertionFailure("Input de dados inválidos: \(error.localizedDescription)")
                 }
             }
     }

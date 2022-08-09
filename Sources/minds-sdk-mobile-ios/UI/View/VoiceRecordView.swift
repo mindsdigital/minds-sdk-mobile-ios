@@ -8,18 +8,23 @@
 import SwiftUI
 import AVFAudio
 
-struct VoiceRecordView: View {
+public struct VoiceRecordView: View {
     @ObservedObject var viewModel: VoiceRecordViewModel
     @State var fadeIn: Bool = false
     @State var showTooltip: Bool = false
+    @Binding var voiceRecordingFlowActive: Bool
 
-    init(delegate: MindsSDKDelegate?,
-         completion: (() -> Void)? = nil) {
+    public init(delegate: MindsSDKDelegate?,
+                voiceRecordingFlowActive: Binding<Bool>,
+                completion: (() -> Void)? = nil) {
+        self._voiceRecordingFlowActive = voiceRecordingFlowActive
         self.viewModel = VoiceRecordViewModel(mindsDelegate: delegate,
+                                              voiceRecordingFlowActive: voiceRecordingFlowActive,
                                               completion: completion)
     }
 
-    var body: some View {
+    @ViewBuilder
+    public var body: some View {
         if viewModel.state == .loading {
             LoadingView()
         } else {
@@ -47,7 +52,7 @@ struct VoiceRecordView: View {
 
                 VStack(spacing: 24) {
                     HStack {
-                        Text(viewModel.livenessText())
+                        Text(viewModel.livenessText.result ?? "")
                             .font(.largeTitle)
                             .lineLimit(nil)
                             .minimumScaleFactor(0.8)
