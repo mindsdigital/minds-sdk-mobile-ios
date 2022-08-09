@@ -114,7 +114,6 @@ public class MindsSDK: ObservableObject {
                                    completion: popToRootViewController)
         self.navigationController = navigationController
         childView = UIHostingController(rootView: swiftUIView)
-        childView?.view.backgroundColor = .white
         return childView ?? UIViewController()
     }
 

@@ -80,7 +80,8 @@ class VoiceRecordViewModel: ObservableObject {
                     self.completion?()
                 } else {
                     self.mindsDelegate?.onError(response)
-                    self.updateStateOnMainThread(to: .error(.generic))
+//                    self.updateStateOnMainThread(to: .error(.generic))
+                    self.completion?()
                 }
 
             case .failure(_):
