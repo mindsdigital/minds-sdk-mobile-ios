@@ -100,24 +100,24 @@ public class MindsSDK: ObservableObject {
             }
     }
 
-    // MARK: Navigation for UIKit flow -
-    var childView: UIViewController?
-    var navigationController: UINavigationController?
-
-    public func initializeUIKitFlow(on navigationController: UINavigationController?,
-                                    delegate: MindsSDKDelegate? = nil) -> UIViewController {
-        let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
-                                   delegate: delegate,
-                                   completion: popToRootViewController)
-        self.navigationController = navigationController
-        childView = UIHostingController(rootView: swiftUIView)
-        childView?.view.backgroundColor = .white
-        return childView ?? UIViewController()
-    }
-
-    private func popToRootViewController() {
-        DispatchQueue.main.async {
-            self.navigationController?.popToRootViewController(animated: true)
-        }
-    }
+//    // MARK: Navigation for UIKit flow -
+//    var childView: UIViewController?
+//    var navigationController: UINavigationController?
+//
+//    public func initializeUIKitFlow(on navigationController: UINavigationController?,
+//                                    delegate: MindsSDKDelegate? = nil) -> UIViewController {
+//        let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
+//                                   delegate: delegate,
+//                                   completion: popToRootViewController)
+//        self.navigationController = navigationController
+//        childView = UIHostingController(rootView: swiftUIView)
+//        childView?.view.backgroundColor = .white
+//        return childView ?? UIViewController()
+//    }
+//
+//    private func popToRootViewController() {
+//        DispatchQueue.main.async {
+//            self.navigationController?.popToRootViewController(animated: true)
+//        }
+//    }
 }

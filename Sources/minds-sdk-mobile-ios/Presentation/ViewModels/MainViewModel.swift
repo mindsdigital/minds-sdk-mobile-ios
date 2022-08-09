@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+import UIKit
 
 public class MindsSDKInitializer {
     private var sdk = MindsSDK.shared
@@ -15,6 +15,10 @@ public class MindsSDKInitializer {
     
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
+    }
+
+    public convenience init() {
+        self.init(voiceRecordingFlowActive: .constant(true))
     }
 
     public func initialize(onReceive: @escaping ((Error?) -> Void)) {
@@ -28,6 +32,43 @@ public class MindsSDKInitializer {
             case .failure(let error):
                 onReceive(error)
             }
+        }
+    }
+
+    private var navigationController: UINavigationController?
+
+    public func initialize(on navigationController: UINavigationController?,
+                           delegate: MindsSDKDelegate? = nil,
+                           onReceive: @escaping ((Error?) -> Void)) {
+        self.navigationController = navigationController
+
+        sdk.initializeSDK { result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async { [weak self] in
+                    guard let hostingController = self?.createUIHostingController(delegate, response) else {
+                        return
+                    }
+                    self?.navigationController?.pushViewController(hostingController, animated: true)
+                }
+            case .failure(let error):
+                onReceive(error)
+            }
+        }
+    }
+
+    private func createUIHostingController(_ delegate: MindsSDKDelegate?,
+                                           _ response: RandomSentenceId) -> UIViewController {
+        let swiftUIView = VoiceRecordView(delegate: delegate,
+                                          voiceRecordingFlowActive: .constant(true),
+                                          completion: popToRootViewController)
+        swiftUIView.viewModel.updateLivenessText(response)
+        return UIHostingController(rootView: swiftUIView)
+    }
+
+    private func popToRootViewController() {
+        DispatchQueue.main.async {
+            self.navigationController?.popToRootViewController(animated: true)
         }
     }
 }

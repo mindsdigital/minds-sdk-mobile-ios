@@ -33,6 +33,10 @@ class VoiceRecordViewModel: ObservableObject {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
     
+    func updateLivenessText(_ liveness: RandomSentenceId) {
+        self.livenessText = liveness
+    }
+
     func startRecording() {
         recordingDelegate.startRecording()
         self.updateStateOnMainThread(to: .recording)
@@ -50,7 +54,6 @@ class VoiceRecordViewModel: ObservableObject {
 
         DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse,
                                         delegate: mindsDelegate)
-//        self.completion?()
         closeFlow()
     }
 
@@ -81,7 +84,6 @@ class VoiceRecordViewModel: ObservableObject {
                     self.mindsDelegate?.onSuccess(response)
                     self.updateStateOnMainThread(to: .initial)
                     self.closeFlow()
-//                    self.completion?()
                 } else {
                     self.mindsDelegate?.onError(response)
                     self.updateStateOnMainThread(to: .error(.generic))
@@ -132,5 +134,6 @@ class VoiceRecordViewModel: ObservableObject {
 
     private func closeFlow() {
         self.voiceRecordingFlowActive = false
+        self.completion?()
     }
 }
