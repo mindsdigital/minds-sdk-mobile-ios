@@ -47,7 +47,7 @@ public class MindsSDK: ObservableObject {
         self.connectionTimeout = connectionTimeout
     }
 
-    func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
+    func initializeSDK(completion: @escaping (Result<Void, Error>) -> Void) {
         self.validateDataInput { dataInputResult in
             switch dataInputResult {
             case .success:
@@ -60,15 +60,18 @@ public class MindsSDK: ObservableObject {
         }
     }
 
-    private func getRandomSentences(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
+    private func getRandomSentences(completion: @escaping (Result<Void, Error>) -> Void) {
         LivenessService.init(networkRequest: NetworkManager(requestTimeout: 30))
             .getRandomSentence(token: token) { result in
                 switch result {
                 case .success(let response):
-                    let test = RandomSentenceId(id: response.data.id, result: response.data.text)
-                    completion(.success((test)))
+                    DispatchQueue.main.async {
+                        self.liveness = RandomSentenceId(id: response.data.id, result: response.data.text)
+                    }
+                    completion(.success(()))
                 case .failure(let error):
                     completion(.failure(error))
+                    assertionFailure("Input de dados inválidos: \(error.localizedDescription)")
                 }
             }
     }
@@ -100,24 +103,23 @@ public class MindsSDK: ObservableObject {
             }
     }
 
-//    // MARK: Navigation for UIKit flow -
-//    var childView: UIViewController?
-//    var navigationController: UINavigationController?
-//
-//    public func initializeUIKitFlow(on navigationController: UINavigationController?,
-//                                    delegate: MindsSDKDelegate? = nil) -> UIViewController {
-//        let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
-//                                   delegate: delegate,
-//                                   completion: popToRootViewController)
-//        self.navigationController = navigationController
-//        childView = UIHostingController(rootView: swiftUIView)
-//        childView?.view.backgroundColor = .white
-//        return childView ?? UIViewController()
-//    }
-//
-//    private func popToRootViewController() {
-//        DispatchQueue.main.async {
-//            self.navigationController?.popToRootViewController(animated: true)
-//        }
-//    }
+    // MARK: Navigation for UIKit flow -
+    var childView: UIViewController?
+    var navigationController: UINavigationController?
+
+    public func initializeUIKitFlow(on navigationController: UINavigationController?,
+                                    delegate: MindsSDKDelegate? = nil) -> UIViewController {
+        let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
+                                   delegate: delegate,
+                                   completion: popToRootViewController)
+        self.navigationController = navigationController
+        childView = UIHostingController(rootView: swiftUIView)
+        return childView ?? UIViewController()
+    }
+
+    private func popToRootViewController() {
+        DispatchQueue.main.async {
+            self.navigationController?.popToRootViewController(animated: true)
+        }
+    }
 }
