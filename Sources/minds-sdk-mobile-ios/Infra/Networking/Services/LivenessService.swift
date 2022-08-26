@@ -21,7 +21,8 @@ class LivenessService: LivenessServiceProtocol {
         self.env = env
     }
 
-    func getRandomSentence(token: String, completion: @escaping (Result<RandomSentenceResponse, NetworkError>) -> Void) {
+    func getRandomSentence(token: String,
+                           completion: @escaping (Result<RandomSentenceResponse, NetworkError>) -> Void) {
         let endpoint = LivenessEndpoints.randomSentences
         let request = endpoint.createRequest(token: token, environment: env)
         self.networkRequest.request(request) { result in
