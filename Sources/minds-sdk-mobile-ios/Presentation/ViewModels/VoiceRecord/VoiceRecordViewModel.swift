@@ -86,11 +86,14 @@ class VoiceRecordViewModel: ObservableObject {
                     self.closeFlow()
                 } else {
                     self.mindsDelegate?.onError(response)
-                    self.updateStateOnMainThread(to: .error(.generic))
+//                    self.updateStateOnMainThread(to: .error(.generic))
+                    self.completion?()
                 }
 
             case .failure(_):
-                self.updateStateOnMainThread(to: .error(.generic))
+//                self.updateStateOnMainThread(to: .error(.generic))
+                self.mindsDelegate?.onError(self.biometricsResponse!)
+                self.completion?()
                 print("--- SDK SERVICE ERROR")
             }
         }
