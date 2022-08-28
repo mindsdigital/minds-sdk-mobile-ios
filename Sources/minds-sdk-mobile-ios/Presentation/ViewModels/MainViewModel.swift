@@ -45,12 +45,10 @@ public class MindsSDKInitializer {
         sdk.initializeSDK { result in
             switch result {
             case .success(let response):
-                DispatchQueue.main.async { [weak self] in
-                    guard let hostingController = self?.createUIHostingController(delegate, response) else {
-                        return
-                    }
-                    self?.sdk.liveness = response
-                    self?.navigationController?.pushViewController(hostingController, animated: true)
+                DispatchQueue.main.async {
+                    let hostingController = self.createUIHostingController(delegate, response)
+                    self.sdk.liveness = response
+                    self.navigationController?.pushViewController(hostingController, animated: true)
                 }
             case .failure(let error):
                 onReceive(error)
