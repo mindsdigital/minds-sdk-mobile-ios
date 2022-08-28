@@ -32,7 +32,8 @@ let package = Package(
                            "SwiftOGG",
                            "Lottie",
                            .product(name: "FirebaseAnalytics", package: "Firebase"),
-                           .product(name: "FirebaseCrashlytics", package: "Firebase"),],
+                           .product(name: "FirebaseCrashlytics", package: "Firebase"),
+                           .product(name: "FirebaseRemoteConfig", package: "Firebase"),],
             resources: [
                 .process("resources")
             ]),

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  EventLoggerImpl.swift
 //  
 //
 //  Created by Guilherme Domingues on 23/08/22.
@@ -9,9 +9,9 @@ import Foundation
 import FirebaseAnalytics
 import FirebaseCore
 
-final class EventLogger {
+final class EventLoggerImpl: EventLogger {
 
-    static let shared = EventLogger()
+    static let shared = EventLoggerImpl()
 
     init() {
         let options: FirebaseOptions = FirebaseOptions(googleAppID: "1:876201019863:ios:24377202febafdc5e32392",
@@ -23,7 +23,7 @@ final class EventLogger {
         FirebaseConfiguration.shared.setLoggerLevel(.min)
     }
 
-    func testLog() {
-        Analytics.logEvent("test_21", parameters: ["param": 1])
+    func logEvent(eventName: String, parameters: [String: Any]?) {
+        Analytics.logEvent(eventName, parameters: parameters)
     }
 }
