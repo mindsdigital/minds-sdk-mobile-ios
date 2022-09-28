@@ -55,7 +55,7 @@ public struct VoiceRecordView: View {
                         Text(viewModel.livenessText.result ?? "")
                             .font(.largeTitle)
                             .lineLimit(nil)
-                            .minimumScaleFactor(0.8)
+                            .minimumScaleFactor(0.6)
                         Spacer()
                     }
 
