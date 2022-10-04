@@ -42,6 +42,8 @@ public class MindsSDKInitializer {
                            onReceive: @escaping ((Error?) -> Void)) {
         self.navigationController = navigationController
 
+        verifyMicrophonePermission()
+
         sdk.initializeSDK { result in
             switch result {
             case .success(let response):
@@ -53,6 +55,15 @@ public class MindsSDKInitializer {
             case .failure(let error):
                 onReceive(error)
             }
+        }
+    }
+
+    func verifyMicrophonePermission() {
+        let audioPermission: GetRecordPermission = GetRecordPermissionImpl()
+        if audioPermission.execute() {
+            print("hasPermission")
+        } else {
+            print("false")
         }
     }
 
