@@ -12,6 +12,7 @@ import UIKit
 public class MindsSDKInitializer {
     private var sdk = MindsSDK.shared
     @Binding var voiceRecordingFlowActive: Bool
+    weak var delegate: MindsSDKDelegate?
     
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
@@ -41,30 +42,55 @@ public class MindsSDKInitializer {
                            delegate: MindsSDKDelegate? = nil,
                            onReceive: @escaping ((Error?) -> Void)) {
         self.navigationController = navigationController
+        self.delegate = delegate
 
-        verifyMicrophonePermission()
-
-        sdk.initializeSDK { result in
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    let hostingController = self.createUIHostingController(delegate, response)
-                    self.sdk.liveness = response
-                    self.navigationController?.pushViewController(hostingController, animated: true)
+        verifyMicrophonePermission {
+            self.sdk.initializeSDK { result in
+                switch result {
+                case .success(let response):
+                    DispatchQueue.main.async {
+                        let hostingController = self.createUIHostingController(delegate, response)
+                        self.sdk.liveness = response
+                        self.navigationController?.pushViewController(hostingController, animated: true)
+                    }
+                case .failure(let error):
+                    onReceive(error)
                 }
-            case .failure(let error):
-                onReceive(error)
             }
         }
     }
 
-    func verifyMicrophonePermission() {
+    func verifyMicrophonePermission(_ completion: (() -> Void)? = nil) {
         let audioPermission: GetRecordPermission = GetRecordPermissionImpl()
-        if audioPermission.execute() {
-            print("hasPermission")
-        } else {
-            print("false")
+        switch audioPermission.execute() {
+        case .denied:
+            showMicPermissionNotGrantedScreen()
+        case .undetermined:
+            delegate?.showMicrophonePermissionPrompt { granted in
+                if granted {
+                    DispatchQueue.main.async {
+                        completion?()
+                    }
+                } else {
+                    self.showMicPermissionNotGrantedScreen()
+                }
+            }
+        default:
+            completion?()
         }
+    }
+
+    private func showMicPermissionNotGrantedScreen() {
+        let micView: MicrophonePermissionView = MicrophonePermissionView(askLater: askMicPermissionLater,
+                                                                         showPrompt: showMicPermissionPrompt)
+    }
+
+    private func askMicPermissionLater() {
+        
+    }
+
+    private func showMicPermissionPrompt() {
+        
     }
 
     private func createUIHostingController(_ delegate: MindsSDKDelegate?,

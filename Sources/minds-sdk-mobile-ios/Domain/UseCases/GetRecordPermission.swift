@@ -9,5 +9,5 @@ import Foundation
 import AVFoundation
 
 protocol GetRecordPermission {
-    func execute() -> Bool
+    func execute() -> AVAudioSession.RecordPermission
 }

@@ -9,12 +9,7 @@ import Foundation
 import AVFoundation
 
 struct GetRecordPermissionImpl: GetRecordPermission {
-    func execute() -> Bool {
-        switch AVAudioSession.sharedInstance().recordPermission {
-        case .granted:
-            return true
-        default:
-            return false
-        }
+    func execute() -> AVAudioSession.RecordPermission {
+        return AVAudioSession.sharedInstance().recordPermission
     }
 }
