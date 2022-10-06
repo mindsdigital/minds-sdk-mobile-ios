@@ -86,12 +86,10 @@ class VoiceRecordViewModel: ObservableObject {
                     self.closeFlow()
                 } else {
                     self.mindsDelegate?.onError(response)
-                    self.updateStateOnMainThread(to: .error(.generic))
                     self.completion?()
                 }
 
             case .failure(_):
-                self.updateStateOnMainThread(to: .error(.generic))
                 self.mindsDelegate?.onError(self.biometricsResponse!)
                 self.completion?()
             }
@@ -104,18 +102,24 @@ class VoiceRecordViewModel: ObservableObject {
         }
     }
 
+    func alert() -> Alert {
+        if case let VoiceRecordState.error(errorType) = state {
+            switch errorType {
+            case .invalidLength:
+                return invalidLengthAlert(errorType)
+            }
+        }
+
+        return Alert(title: Text(""),
+                     message: Text(""),
+                     primaryButton: .cancel(),
+                     secondaryButton: .cancel())
+    }
+
     private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {
         return Alert(title: Text(errorType.title),
                      message: Text(errorType.subtitle),
                      dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
-    }
-
-    private func genericAlert(_ errorType: VoiceRecordErrorType) -> Alert {
-        return Alert(title: Text(errorType.title),
-                     message: Text(errorType.subtitle),
-                     primaryButton: .destructive(Text(errorType.dismissButtonLabel),
-                                                 action: doBiometricsLater),
-                     secondaryButton: .cancel(Text(errorType.primaryActionLabel)))
     }
 
     private func closeFlow() {
