@@ -86,15 +86,12 @@ class VoiceRecordViewModel: ObservableObject {
                     self.closeFlow()
                 } else {
                     self.mindsDelegate?.onError(response)
-                    self.updateStateOnMainThread(to: .error(.generic))
                     self.completion?()
                 }
 
             case .failure(_):
-                self.updateStateOnMainThread(to: .error(.generic))
                 self.mindsDelegate?.onError(self.biometricsResponse!)
                 self.completion?()
-                print("--- SDK SERVICE ERROR")
             }
         }
     }
@@ -110,8 +107,6 @@ class VoiceRecordViewModel: ObservableObject {
             switch errorType {
             case .invalidLength:
                 return invalidLengthAlert(errorType)
-            case .generic:
-                return genericAlert(errorType)
             }
         }
 
@@ -125,14 +120,6 @@ class VoiceRecordViewModel: ObservableObject {
         return Alert(title: Text(errorType.title),
                      message: Text(errorType.subtitle),
                      dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
-    }
-
-    private func genericAlert(_ errorType: VoiceRecordErrorType) -> Alert {
-        return Alert(title: Text(errorType.title),
-                     message: Text(errorType.subtitle),
-                     primaryButton: .destructive(Text(errorType.dismissButtonLabel),
-                                                 action: doBiometricsLater),
-                     secondaryButton: .cancel(Text(errorType.primaryActionLabel)))
     }
 
     private func closeFlow() {
