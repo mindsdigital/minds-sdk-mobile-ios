@@ -94,7 +94,6 @@ class VoiceRecordViewModel: ObservableObject {
                 self.updateStateOnMainThread(to: .error(.generic))
                 self.mindsDelegate?.onError(self.biometricsResponse!)
                 self.completion?()
-                print("--- SDK SERVICE ERROR")
             }
         }
     }
@@ -103,22 +102,6 @@ class VoiceRecordViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.state = newState
         }
-    }
-
-    func alert() -> Alert {
-        if case let VoiceRecordState.error(errorType) = state {
-            switch errorType {
-            case .invalidLength:
-                return invalidLengthAlert(errorType)
-            case .generic:
-                return genericAlert(errorType)
-            }
-        }
-
-        return Alert(title: Text(""),
-                     message: Text(""),
-                     primaryButton: .cancel(),
-                     secondaryButton: .cancel())
     }
 
     private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {

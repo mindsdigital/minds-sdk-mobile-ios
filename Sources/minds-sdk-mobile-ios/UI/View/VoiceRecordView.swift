@@ -97,9 +97,6 @@ public struct VoiceRecordView: View {
             }
         }
         .padding(24)
-        .alert(isPresented: viewModel.state.isError) {
-            viewModel.alert()
-        }
         .onAppear(perform: {
             self.dispatchAnimationOnMainThread()
         })
