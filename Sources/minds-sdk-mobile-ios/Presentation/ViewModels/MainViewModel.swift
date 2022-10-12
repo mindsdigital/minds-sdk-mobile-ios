@@ -64,33 +64,12 @@ public class MindsSDKInitializer {
         let audioPermission: GetRecordPermission = GetRecordPermissionImpl()
         switch audioPermission.execute() {
         case .denied:
-            showMicPermissionNotGrantedScreen()
+            delegate?.microphonePermissionNotGranted()
         case .undetermined:
-            delegate?.showMicrophonePermissionPrompt { granted in
-                if granted {
-                    DispatchQueue.main.async {
-                        completion?()
-                    }
-                } else {
-                    self.showMicPermissionNotGrantedScreen()
-                }
-            }
+            delegate?.showMicrophonePermissionPrompt()
         default:
             completion?()
         }
-    }
-
-    private func showMicPermissionNotGrantedScreen() {
-        let micView: MicrophonePermissionView = MicrophonePermissionView(askLater: askMicPermissionLater,
-                                                                         showPrompt: showMicPermissionPrompt)
-    }
-
-    private func askMicPermissionLater() {
-        
-    }
-
-    private func showMicPermissionPrompt() {
-        
     }
 
     private func createUIHostingController(_ delegate: MindsSDKDelegate?,
