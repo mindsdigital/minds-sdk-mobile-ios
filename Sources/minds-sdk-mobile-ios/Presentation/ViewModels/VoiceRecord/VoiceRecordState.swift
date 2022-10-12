@@ -8,14 +8,12 @@
 import SwiftUI
 
 enum VoiceRecordErrorType {
-    case invalidLength, generic
+    case invalidLength
 
     var title: String {
         switch self {
         case .invalidLength:
             return MindsStrings.invalidLengthAlertErrorTitle()
-        case .generic:
-            return MindsStrings.genericErrorAlertTitle()
         }
     }
 
@@ -23,8 +21,6 @@ enum VoiceRecordErrorType {
         switch self {
         case .invalidLength:
             return MindsStrings.invalidLengthAlertErrorSubtitle()
-        case .generic:
-            return MindsStrings.genericErrorAlertSubtitle()
         }
     }
 
@@ -32,8 +28,6 @@ enum VoiceRecordErrorType {
         switch self {
         case .invalidLength:
             return ""
-        case .generic:
-            return MindsStrings.genericErrorAlertButtonLabel()
         }
     }
 
@@ -41,8 +35,6 @@ enum VoiceRecordErrorType {
         switch self {
         case .invalidLength:
             return MindsStrings.invalidLengthAlertErrorButtonLabel()
-        case .generic:
-            return MindsStrings.genericErrorAlertNeutralButtonLabel()
         }
     }
 }
