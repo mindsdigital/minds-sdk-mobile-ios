@@ -8,8 +8,8 @@
 import Foundation
 
 public protocol MindsSDKDelegate: AnyObject {
-//    func onNetworkError(_ error: NetworkError)
     func onSuccess(_ response: BiometricResponse)
     func onError(_ response: BiometricResponse)
-//    func onFinish()
+    func showMicrophonePermissionPrompt()
+    func microphonePermissionNotGranted()
 }

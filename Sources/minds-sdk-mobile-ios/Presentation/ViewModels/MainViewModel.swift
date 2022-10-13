@@ -12,6 +12,7 @@ import UIKit
 public class MindsSDKInitializer {
     private var sdk = MindsSDK.shared
     @Binding var voiceRecordingFlowActive: Bool
+    weak var delegate: MindsSDKDelegate?
     
     public init(voiceRecordingFlowActive: Binding<Bool>) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
@@ -41,18 +42,33 @@ public class MindsSDKInitializer {
                            delegate: MindsSDKDelegate? = nil,
                            onReceive: @escaping ((Error?) -> Void)) {
         self.navigationController = navigationController
+        self.delegate = delegate
 
-        sdk.initializeSDK { result in
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    let hostingController = self.createUIHostingController(delegate, response)
-                    self.sdk.liveness = response
-                    self.navigationController?.pushViewController(hostingController, animated: true)
+        verifyMicrophonePermission {
+            self.sdk.initializeSDK { result in
+                switch result {
+                case .success(let response):
+                    DispatchQueue.main.async {
+                        let hostingController = self.createUIHostingController(delegate, response)
+                        self.sdk.liveness = response
+                        self.navigationController?.pushViewController(hostingController, animated: true)
+                    }
+                case .failure(let error):
+                    onReceive(error)
                 }
-            case .failure(let error):
-                onReceive(error)
             }
+        }
+    }
+
+    func verifyMicrophonePermission(_ completion: (() -> Void)? = nil) {
+        let audioPermission: GetRecordPermission = GetRecordPermissionImpl()
+        switch audioPermission.execute() {
+        case .denied:
+            delegate?.microphonePermissionNotGranted()
+        case .undetermined:
+            delegate?.showMicrophonePermissionPrompt()
+        default:
+            completion?()
         }
     }
 

@@ -8,7 +8,7 @@
 import Foundation
 import AVFoundation
 
-struct GetAVAudioSessionImpl : GetAVAudioSession {
+struct GetAVAudioSessionImpl: GetAVAudioSession {
     func execute() throws -> AVAudioSession {
         let avAudioSession = AVAudioSession.sharedInstance()
         try avAudioSession.setCategory(.playAndRecord, mode: .default)
