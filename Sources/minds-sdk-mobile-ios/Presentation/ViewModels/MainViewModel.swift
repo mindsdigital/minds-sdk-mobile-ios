@@ -45,7 +45,7 @@ public class MindsSDKInitializer {
         self.delegate = delegate
 
         guard loadMindSDKPlist() else {
-            self.delegate?.propertyListNotImplemented()
+            self.delegate?.propertyListNotProvided()
             onReceive(NSError(domain: "MindsSDK.plist not provided",
                               code: 0012, userInfo: nil))
             return
