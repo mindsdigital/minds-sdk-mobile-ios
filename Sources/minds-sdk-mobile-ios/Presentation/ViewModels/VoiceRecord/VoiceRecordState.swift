@@ -13,14 +13,14 @@ enum VoiceRecordErrorType {
     var title: String {
         switch self {
         case .invalidLength:
-            return MindsStrings.invalidLengthAlertErrorTitle()
+            return MindsSDKConfigs.invalidLengthAlertErrorTitle()
         }
     }
 
     var subtitle: String {
         switch self {
         case .invalidLength:
-            return MindsStrings.invalidLengthAlertErrorSubtitle()
+            return MindsSDKConfigs.invalidLengthAlertErrorSubtitle()
         }
     }
 
@@ -34,7 +34,7 @@ enum VoiceRecordErrorType {
     var dismissButtonLabel: String {
         switch self {
         case .invalidLength:
-            return MindsStrings.invalidLengthAlertErrorButtonLabel()
+            return MindsSDKConfigs.invalidLengthAlertErrorButtonLabel()
         }
     }
 }

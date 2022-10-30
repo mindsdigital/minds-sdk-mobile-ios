@@ -44,6 +44,13 @@ public class MindsSDKInitializer {
         self.navigationController = navigationController
         self.delegate = delegate
 
+        guard loadMindSDKPlist() else {
+            self.delegate?.propertyListNotImplemented()
+            onReceive(NSError(domain: "MindsSDK.plist not provided",
+                              code: 0012, userInfo: nil))
+            return
+        }
+        
         verifyMicrophonePermission {
             self.sdk.initializeSDK { result in
                 switch result {
@@ -70,6 +77,24 @@ public class MindsSDKInitializer {
         default:
             completion?()
         }
+    }
+
+    private func loadMindSDKPlist() -> Bool {
+        if let infoPlistPath = Bundle.main.url(forResource: "MindsSDK",
+                                               withExtension: "plist") {
+            do {
+                let infoPlistData = try Data(contentsOf: infoPlistPath)
+
+                if let dict = try PropertyListSerialization.propertyList(from: infoPlistData, options: [], format: nil) as? [String: Any] {
+                    MindsSDKConfigs.config = dict
+                }
+                return true
+            } catch {
+                return false
+            }
+        }
+
+        return MindsSDKConfigs.config != nil
     }
 
     private func createUIHostingController(_ delegate: MindsSDKDelegate?,
