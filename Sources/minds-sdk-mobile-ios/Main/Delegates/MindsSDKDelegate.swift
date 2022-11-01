@@ -12,5 +12,4 @@ public protocol MindsSDKDelegate: AnyObject {
     func onError(_ response: BiometricResponse)
     func showMicrophonePermissionPrompt()
     func microphonePermissionNotGranted()
-    func propertyListNotProvided()
 }

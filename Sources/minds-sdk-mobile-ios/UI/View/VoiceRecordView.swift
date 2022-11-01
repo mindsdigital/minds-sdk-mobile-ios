@@ -37,15 +37,15 @@ public struct VoiceRecordView: View {
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(MindsSDKConfigs.voiceRecordingTitle())
+                        Text(MindsSDKConfigs.shared.voiceRecordingTitle())
                             .font(.headline)
-                            .foregroundColor(MindsSDKConfigs.voiceRecordTitleColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordTitleColor())
                         Spacer()
                     }
                     HStack {
-                        Text(MindsSDKConfigs.voiceRecordingSubtitle())
+                        Text(MindsSDKConfigs.shared.voiceRecordingSubtitle())
                             .font(.subheadline)
-                            .foregroundColor(MindsSDKConfigs.voiceRecordSubtitleColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordSubtitleColor())
                         Spacer()
                     }
                 }
@@ -58,7 +58,7 @@ public struct VoiceRecordView: View {
                             .font(.largeTitle)
                             .lineLimit(nil)
                             .minimumScaleFactor(0.6)
-                            .foregroundColor(MindsSDKConfigs.voiceRecordMainTextColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordMainTextColor())
                         Spacer()
                     }
 
@@ -93,7 +93,7 @@ public struct VoiceRecordView: View {
                 }
             }
             if showTooltip {
-                Tooltip(text: MindsSDKConfigs.voiceRecordingButtonInstruction()) {
+                Tooltip(text: MindsSDKConfigs.shared.voiceRecordingButtonInstruction()) {
                     self.showTooltip = false
                 }
                 .padding(.bottom, 160)
