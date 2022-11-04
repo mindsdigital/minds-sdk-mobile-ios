@@ -9,10 +9,12 @@ import Foundation
 import UIKit
 import SwiftUI
 
-public class MindsSDK: ObservableObject {
+public class MindsSDK: ObservableObject, FirebaseConfiguration {
     static public let shared = MindsSDK()
-    
-    public init() { }
+
+    init() {
+        configureFirebase()
+    }
 
     public enum ProcessType: String {
         case enrollment, verification
