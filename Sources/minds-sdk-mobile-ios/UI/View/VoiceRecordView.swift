@@ -37,13 +37,15 @@ public struct VoiceRecordView: View {
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(MindsStrings.voiceRecordingTitle())
+                        Text(MindsSDKConfigs.shared.voiceRecordingTitle())
                             .font(.headline)
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordTitleColor())
                         Spacer()
                     }
                     HStack {
-                        Text(MindsStrings.voiceRecordingSubtitle())
+                        Text(MindsSDKConfigs.shared.voiceRecordingSubtitle())
                             .font(.subheadline)
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordSubtitleColor())
                         Spacer()
                     }
                 }
@@ -56,6 +58,7 @@ public struct VoiceRecordView: View {
                             .font(.largeTitle)
                             .lineLimit(nil)
                             .minimumScaleFactor(0.6)
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordMainTextColor())
                         Spacer()
                     }
 
@@ -90,7 +93,7 @@ public struct VoiceRecordView: View {
                 }
             }
             if showTooltip {
-                Tooltip(text: "Segure para gravar, solte para enviar") {
+                Tooltip(text: MindsSDKConfigs.shared.voiceRecordingButtonInstruction()) {
                     self.showTooltip = false
                 }
                 .padding(.bottom, 160)

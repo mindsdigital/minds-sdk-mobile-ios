@@ -43,7 +43,7 @@ public class MindsSDKInitializer {
                            onReceive: @escaping ((Error?) -> Void)) {
         self.navigationController = navigationController
         self.delegate = delegate
-
+        
         verifyMicrophonePermission {
             self.sdk.initializeSDK { result in
                 switch result {
