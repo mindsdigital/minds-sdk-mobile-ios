@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 13.0, *)
 struct TimerComponent: View {
     private var timer = Timer.publish(every: 1,
                                       on: .main,

@@ -8,7 +8,9 @@
 import Foundation
 import SwiftUI
 
+@available(iOS 13.0, *)
 public extension Color {
+
     public init(hex string: String) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if string.hasPrefix("#") {
@@ -85,4 +87,5 @@ public extension Color {
     static var baselinePrimary: Color {
         return Color(hex: "00DDB8")
     }
+
 }

@@ -76,16 +76,19 @@ struct MindsSDKConfigs {
         return getProperty(name: "InvalidLengthAlertErrorButtonLabel")
     }
 
+    @available(iOS 13.0, *)
     func voiceRecordTitleColor() -> Color {
         let colorCode: String = getProperty(name: "VoiceRecordingTitleColor")
         return .init(hex: colorCode)
     }
 
+    @available(iOS 13.0, *)
     func voiceRecordSubtitleColor() -> Color {
         let colorCode: String = getProperty(name: "VoiceRecordingSubtitleColor")
         return .init(hex: colorCode)
     }
 
+    @available(iOS 13.0, *)
     func voiceRecordMainTextColor() -> Color {
         let colorCode: String = getProperty(name: "VoiceRecordingMainTextColor")
         return .init(hex: colorCode)

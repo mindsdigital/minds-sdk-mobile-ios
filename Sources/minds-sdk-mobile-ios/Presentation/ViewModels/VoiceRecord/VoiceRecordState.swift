@@ -42,6 +42,7 @@ enum VoiceRecordErrorType {
 enum VoiceRecordState: Equatable {
     case initial, recording, loading, error(VoiceRecordErrorType)
     
+    @available(iOS 13.0, *)
     var isError: Binding<Bool> {
         switch self {
         case .error:

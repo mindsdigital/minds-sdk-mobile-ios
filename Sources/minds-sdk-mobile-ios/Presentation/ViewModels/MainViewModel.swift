@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
+@available(iOS 13.0, *)
 public class MindsSDKInitializer {
     private var sdk = MindsSDK.shared
     @Binding var voiceRecordingFlowActive: Bool
@@ -88,6 +89,7 @@ public class MindsSDKInitializer {
     }
 }
 
+@available(iOS 13.0, *)
 class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @Published var state: ViewState = .loading

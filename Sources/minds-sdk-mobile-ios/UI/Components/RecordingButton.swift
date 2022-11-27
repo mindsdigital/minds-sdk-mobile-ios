@@ -11,6 +11,7 @@ enum RecordingButtonState {
     case idle, recording
 }
 
+@available(iOS 13.0, *)
 struct RecordingButton: View {
     @State private var state: RecordingButtonState = .idle
     @State private var isHolding = false
@@ -84,6 +85,7 @@ struct RecordingButton: View {
     }
 }
 
+@available(iOS 13.0, *)
 struct RecordingButton_Previews: PreviewProvider {
     static var previews: some View {
         RecordingButton()

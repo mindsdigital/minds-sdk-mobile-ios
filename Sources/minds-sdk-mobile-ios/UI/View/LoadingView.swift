@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 13.0, *)
 public struct LoadingView: View {
 
     public var body: some View {

@@ -8,6 +8,7 @@
 import Foundation
 
 struct SendAudioToApi {
+    @available(iOS 13.0, *)
     func execute(biometricsService: BiometricProtocol, _ completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
         do {
             var audios: [AudioFile] = []

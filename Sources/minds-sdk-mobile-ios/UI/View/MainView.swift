@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@available(iOS 13.0, *)
 public struct MainView: View {
     @StateObject var viewModel = MainViewModel()
     @Binding var voiceRecordingFlowActive: Bool
@@ -32,13 +33,18 @@ public struct MainView: View {
                 }
                 .preferredColorScheme(.light)
         case .loading:
-            ProgressView()
-                .onAppear {
-                    viewModel.loadData()
-                    viewModel.delegate = delegate
-                }
-                .navigationBarBackButtonHidden(true)
-                .preferredColorScheme(.light)
+            if #available(iOS 14, *) {
+                ProgressView()
+                    .onAppear {
+                        viewModel.loadData()
+                        viewModel.delegate = delegate
+                    }
+                    .navigationBarBackButtonHidden(true)
+                    .preferredColorScheme(.light)
+            } else {
+                Rectangle()
+            }
+            
         }
     }
 }

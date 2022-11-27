@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 13.0, *)
 struct Tooltip: View {
 
     private var timer = Timer.publish(every: 1,

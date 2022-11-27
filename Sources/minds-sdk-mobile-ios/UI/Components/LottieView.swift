@@ -8,6 +8,7 @@
 import SwiftUI
 import Lottie
 
+@available(iOS 13.0, *)
 struct LottieView: UIViewRepresentable {
     var name = "success"
     var loopMode: LottieLoopMode = .loop
@@ -38,6 +39,7 @@ struct LottieView: UIViewRepresentable {
     }
 }
 
+@available(iOS 13.0, *)
 struct LottieView_Previews: PreviewProvider {
     static var previews: some View {
         LottieView()

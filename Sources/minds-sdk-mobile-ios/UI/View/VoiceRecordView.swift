@@ -8,6 +8,7 @@
 import SwiftUI
 import AVFAudio
 
+@available(iOS 13.0, *)
 public struct VoiceRecordView: View {
     @ObservedObject var viewModel: VoiceRecordViewModel
     @State var fadeIn: Bool = false

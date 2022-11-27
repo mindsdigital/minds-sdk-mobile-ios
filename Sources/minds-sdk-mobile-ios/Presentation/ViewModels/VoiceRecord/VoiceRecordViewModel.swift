@@ -10,6 +10,7 @@ import AVFAudio
 import UIKit
 import SwiftUI
 
+@available(iOS 13.0, *)
 class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
     weak var mindsDelegate: MindsSDKDelegate?
