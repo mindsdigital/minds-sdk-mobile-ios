@@ -1,16 +1,17 @@
 //
-//  MindsSDK.swift
+//  MindsSDK_iOS13.swift
 //  
 //
-//  Created by Guilherme Domingues on 27/11/22.
+//  Created by Liviu Bosbiciu on 12.04.2022.
 //
 
 import Foundation
 import UIKit
+import SwiftUI
 
-public final class MindsSDK {
-
-    static public let shared = MindsSDK()
+@available(iOS 13.0, *)
+public class MindsSDK_iOS13: ObservableObject {
+    static public let shared = MindsSDK_iOS13()
     
     public init() { }
 
@@ -18,14 +19,14 @@ public final class MindsSDK {
         case enrollment, verification
     }
 
-    public var token: String = ""
+    @Published public var token: String = ""
 
-    var cpf: String = ""
-    var externalId: String = ""
-    var phoneNumber: String = ""
-    var connectionTimeout: Float = 30.0
-    var processType: ProcessType = .enrollment
-    var liveness: RandomSentenceId = RandomSentenceId(id: 0)
+    @Published var cpf: String = ""
+    @Published var externalId: String = ""
+    @Published var phoneNumber: String = ""
+    @Published var connectionTimeout: Float = 30.0
+    @Published var processType: ProcessType = .enrollment
+    @Published var liveness: RandomSentenceId = RandomSentenceId(id: 0)
 
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
@@ -109,7 +110,11 @@ public final class MindsSDK {
 
     public func initializeUIKitFlow(on navigationController: UINavigationController?,
                                     delegate: MindsSDKDelegate? = nil) -> UIViewController {
+        let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
+                                   delegate: delegate,
+                                   completion: popToRootViewController)
         self.navigationController = navigationController
+        childView = UIHostingController(rootView: swiftUIView)
         return childView ?? UIViewController()
     }
 
@@ -118,5 +123,4 @@ public final class MindsSDK {
             self.navigationController?.popToRootViewController(animated: true)
         }
     }
-
 }

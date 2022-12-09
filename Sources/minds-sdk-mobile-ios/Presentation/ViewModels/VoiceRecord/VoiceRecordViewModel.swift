@@ -15,7 +15,7 @@ class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
     weak var mindsDelegate: MindsSDKDelegate?
     var completion: (() -> Void?)? = nil
-    private var sdk: MindsSDK = MindsSDK.shared
+    private var sdk: MindsSDK_iOS13 = MindsSDK_iOS13.shared
 
     @Published var audioDuration: Int = 0
     @Published var state: VoiceRecordState = .initial

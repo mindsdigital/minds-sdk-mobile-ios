@@ -11,7 +11,7 @@ import UIKit
 
 @available(iOS 13.0, *)
 public class MindsSDKInitializer {
-    private var sdk = MindsSDK.shared
+    private var sdk = MindsSDK_iOS13.shared
     @Binding var voiceRecordingFlowActive: Bool
     weak var delegate: MindsSDKDelegate?
     
@@ -91,7 +91,7 @@ public class MindsSDKInitializer {
 
 @available(iOS 13.0, *)
 class MainViewModel: ObservableObject {
-    @ObservedObject var sdk = MindsSDK.shared
+    @ObservedObject var sdk = MindsSDK_iOS13.shared
     @Published var state: ViewState = .loading
     weak var delegate: MindsSDKDelegate?
     @Published var voiceRecordModel = VoiceRecordViewModel(voiceRecordingFlowActive: .constant(false))
