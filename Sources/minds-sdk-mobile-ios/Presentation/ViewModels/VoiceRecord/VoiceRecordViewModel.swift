@@ -12,7 +12,7 @@ import SwiftUI
 
 class VoiceRecordViewModel: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
-    weak var mindsDelegate: MindsSDKDelegate?
+    var mindsDelegate: MindsSDKDelegate?
     var completion: (() -> Void?)? = nil
     private var sdk: MindsSDK = MindsSDK.shared
 
@@ -22,8 +22,8 @@ class VoiceRecordViewModel: ObservableObject {
     @Published var livenessText: RandomSentenceId
     @Binding var voiceRecordingFlowActive: Bool
     
-    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
-         mindsDelegate: MindsSDKDelegate? = nil,
+    public init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
+         mindsDelegate: MindsSDKDelegate?,
          voiceRecordingFlowActive: Binding<Bool>,
          completion: (() -> Void?)? = nil) {
         self.livenessText = sdk.liveness

@@ -83,7 +83,7 @@ public class MindsSDKInitializer {
 
     private func popToRootViewController() {
         DispatchQueue.main.async {
-            self.navigationController?.popToRootViewController(animated: true)
+            self.navigationController?.popToRootViewController(animated: false)
         }
     }
 }
@@ -92,7 +92,7 @@ class MainViewModel: ObservableObject {
     @ObservedObject var sdk = MindsSDK.shared
     @Published var state: ViewState = .loading
     weak var delegate: MindsSDKDelegate?
-    @Published var voiceRecordModel = VoiceRecordViewModel(voiceRecordingFlowActive: .constant(false))
+    @Published var voiceRecordModel = VoiceRecordViewModel(mindsDelegate: nil, voiceRecordingFlowActive: .constant(false))
     
     enum ViewState {
         case loaded
