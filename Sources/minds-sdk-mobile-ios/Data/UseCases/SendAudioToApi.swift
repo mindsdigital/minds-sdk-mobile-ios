@@ -29,15 +29,15 @@ struct SendAudioToApi {
             audios.append(audio)
 
             let request = AudioRequest(
-                    action: MindsSDK.shared.processType.rawValue,
-                    cpf: MindsSDK.shared.cpf,
-                    phoneNumber: MindsSDK.shared.phoneNumber,
-                    externalCustomerID: MindsSDK.shared.externalId,
+                    action: MindsSDK_old.shared.processType.rawValue,
+                    cpf: MindsSDK_old.shared.cpf,
+                    phoneNumber: MindsSDK_old.shared.phoneNumber,
+                    externalCustomerID: MindsSDK_old.shared.externalId,
                     audios: audios,
-                    liveness: MindsSDK.shared.liveness
+                    liveness: MindsSDK_old.shared.liveness
             )
 
-            biometricsService.sendAudio(token: MindsSDK.shared.token, request: request) { result in
+            biometricsService.sendAudio(token: MindsSDK_old.shared.token, request: request) { result in
                 completion(result)
             }
         } catch {

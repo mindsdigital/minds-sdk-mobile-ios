@@ -2,36 +2,31 @@
 //  File.swift
 //  
 //
-//  Created by Guilherme Domingues on 05/01/23.
+//  Created by Liviu Bosbiciu on 12.04.2022.
 //
 
 import Foundation
 import UIKit
+import SwiftUI
 
-public class MindsSDK {
+@available(iOS 13.0, *)
+public class MindsSDK_old: ObservableObject {
+    static public let shared = MindsSDK_old()
+    
+    public init() { }
 
     public enum ProcessType: String {
         case enrollment, verification
     }
 
-    public var token: String = ""
-    public weak var delegate: MindsSDKDelegate?
+    @Published public var token: String = ""
 
-    var cpf: String = ""
-    var externalId: String = ""
-    var phoneNumber: String = ""
-    var connectionTimeout: Float = 30.0
-    var processType: ProcessType = .enrollment
-    var liveness: RandomSentenceId = RandomSentenceId(id: 0)
-    var navigationController: UINavigationController?
-    
-    public init(cpf: String, externalId: String, phoneNumber: String, connectionTimeout: Float = 30.0, processType: ProcessType) {
-        self.cpf = cpf
-        self.externalId = externalId
-        self.phoneNumber = phoneNumber
-        self.connectionTimeout = connectionTimeout
-        self.processType = processType
-    }
+    @Published var cpf: String = ""
+    @Published var externalId: String = ""
+    @Published var phoneNumber: String = ""
+    @Published var connectionTimeout: Float = 30.0
+    @Published var processType: ProcessType = .enrollment
+    @Published var liveness: RandomSentenceId = RandomSentenceId(id: 0)
 
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
@@ -53,38 +48,8 @@ public class MindsSDK {
         self.connectionTimeout = connectionTimeout
     }
 
-    public func initialize(on navigationController: UINavigationController?, onReceive: @escaping ((Error?) -> Void)) {
-        self.navigationController = navigationController
-
-        verifyMicrophonePermission {
-            self.initializeSDK { result in
-                switch result {
-                case .success(let response):
-                    print("---> response: \(response)")
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else {
-                            return
-                        }
-
-                        let hostingController: UIViewController = self.createHostingController()
-                        self.liveness = response
-                        self.navigationController?.pushViewController(hostingController, animated: true)
-                    }
-                case .failure(let error):
-                    onReceive(error)
-                }
-            }
-        }
-    }
-
-    private func createHostingController() -> UIViewController {
-        let viewController: UIViewController = UIViewController(nibName: nil, bundle: nil)
-        viewController.view.backgroundColor = .red
-        return viewController
-    }
-
-    private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
-        validateDataInput { dataInputResult in
+    func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
+        self.validateDataInput { dataInputResult in
             switch dataInputResult {
             case .success:
                 self.getRandomSentences { sentenceResult in
@@ -107,6 +72,7 @@ public class MindsSDK {
                     completion(.success(RandomSentenceId(id: response.data.id, result: response.data.text)))
                 case .failure(let error):
                     completion(.failure(error))
+                    assertionFailure("Input de dados inválidos: \(error.localizedDescription)")
                 }
             }
     }
@@ -133,20 +99,28 @@ public class MindsSDK {
                     }
                 case .failure(let error):
                     completion(.failure(error))
+                    assertionFailure("Input de dados inválidos: \(error.localizedDescription)")
                 }
             }
     }
 
-    private func verifyMicrophonePermission(_ completion: (() -> Void)? = nil) {
-        let audioPermission: GetRecordPermission = GetRecordPermissionImpl()
-        switch audioPermission.execute() {
-        case .denied:
-            delegate?.microphonePermissionNotGranted()
-        case .undetermined:
-            delegate?.showMicrophonePermissionPrompt()
-        default:
-            completion?()
-        }
+    // MARK: Navigation for UIKit flow -
+    var childView: UIViewController?
+    var navigationController: UINavigationController?
+
+    public func initializeUIKitFlow(on navigationController: UINavigationController?,
+                                    delegate: MindsSDKDelegate? = nil) -> UIViewController {
+        let swiftUIView = MainView(voiceRecordingFlowActive: Binding(projectedValue: .constant(true)),
+                                   delegate: delegate,
+                                   completion: popToRootViewController)
+        self.navigationController = navigationController
+        childView = UIHostingController(rootView: swiftUIView)
+        return childView ?? UIViewController()
     }
 
+    private func popToRootViewController() {
+        DispatchQueue.main.async {
+            self.navigationController?.popToRootViewController(animated: true)
+        }
+    }
 }
