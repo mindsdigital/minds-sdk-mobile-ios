@@ -23,7 +23,8 @@ public class MindsSDK {
     var connectionTimeout: Float = 30.0
     var processType: ProcessType = .enrollment
     var liveness: RandomSentenceId = RandomSentenceId(id: 0)
-    var navigationController: UINavigationController?
+    
+    private var navigationController: UINavigationController?
     
     public init(cpf: String, externalId: String, phoneNumber: String, connectionTimeout: Float = 30.0, processType: ProcessType) {
         self.cpf = cpf
@@ -56,18 +57,15 @@ public class MindsSDK {
     public func initialize(on navigationController: UINavigationController?, onReceive: @escaping ((Error?) -> Void)) {
         self.navigationController = navigationController
 
-        verifyMicrophonePermission {
-            self.initializeSDK { result in
+        verifyMicrophonePermission { [weak self] in
+            self?.initializeSDK { result in
                 switch result {
                 case .success(let response):
-                    print("---> response: \(response)")
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else {
-                            return
-                        }
+                    guard let self = self else { return }
+                    self.liveness = response
 
+                    DispatchQueue.main.async {
                         let hostingController: UIViewController = self.createHostingController()
-                        self.liveness = response
                         self.navigationController?.pushViewController(hostingController, animated: true)
                     }
                 case .failure(let error):
@@ -78,8 +76,10 @@ public class MindsSDK {
     }
 
     private func createHostingController() -> UIViewController {
-        let viewController: UIViewController = UIViewController(nibName: nil, bundle: nil)
-        viewController.view.backgroundColor = .red
+        let viewModel: VoiceRecordViewModel = .init(mindsSDK: self, livenessText: liveness)
+        viewModel.mindsDelegate = delegate
+        let viewController: VoiceRecordViewController = .init(viewModel: viewModel)
+
         return viewController
     }
 
@@ -101,9 +101,6 @@ public class MindsSDK {
             .getRandomSentence(token: token) { result in
                 switch result {
                 case .success(let response):
-                    DispatchQueue.main.async {
-                        self.liveness = RandomSentenceId(id: response.data.id, result: response.data.text)
-                    }
                     completion(.success(RandomSentenceId(id: response.data.id, result: response.data.text)))
                 case .failure(let error):
                     completion(.failure(error))

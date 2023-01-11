@@ -8,8 +8,8 @@
 import Foundation
 
 struct SendAudioToApi {
-    @available(iOS 13.0, *)
-    func execute(biometricsService: BiometricProtocol, _ completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
+
+    func execute(mindsSDK: MindsSDK, biometricsService: BiometricProtocol, _ completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
         do {
             var audios: [AudioFile] = []
 
@@ -29,15 +29,15 @@ struct SendAudioToApi {
             audios.append(audio)
 
             let request = AudioRequest(
-                    action: MindsSDK_old.shared.processType.rawValue,
-                    cpf: MindsSDK_old.shared.cpf,
-                    phoneNumber: MindsSDK_old.shared.phoneNumber,
-                    externalCustomerID: MindsSDK_old.shared.externalId,
+                    action: mindsSDK.processType.rawValue,
+                    cpf: mindsSDK.cpf,
+                    phoneNumber: mindsSDK.phoneNumber,
+                    externalCustomerID: mindsSDK.externalId,
                     audios: audios,
-                    liveness: MindsSDK_old.shared.liveness
+                    liveness: mindsSDK.liveness
             )
 
-            biometricsService.sendAudio(token: MindsSDK_old.shared.token, request: request) { result in
+            biometricsService.sendAudio(token: mindsSDK.token, request: request) { result in
                 completion(result)
             }
         } catch {

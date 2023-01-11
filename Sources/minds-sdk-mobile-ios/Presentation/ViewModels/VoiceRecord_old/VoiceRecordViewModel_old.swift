@@ -1,6 +1,6 @@
 //
-//  VoiceRecordViewModel.swift
-//
+//  File.swift
+//  
 //
 //  Created by Divino Borges on 29/07/22.
 //
@@ -10,25 +10,28 @@ import AVFAudio
 import UIKit
 import SwiftUI
 
-final class VoiceRecordViewModel {
-    
+@available(iOS 13.0, *)
+class VoiceRecordViewModel_old: ObservableObject {
     private var recordingDelegate: VoiceRecordingServiceDelegate
     weak var mindsDelegate: MindsSDKDelegate?
+    var completion: (() -> Void?)? = nil
+    private var sdk: MindsSDK_old = MindsSDK_old.shared
 
-    var audioDuration: Int = 0
-    var state: VoiceRecordState = .initial
-    var biometricsResponse: BiometricResponse? = BiometricResponse()
-    var livenessText: RandomSentenceId
-    var mindsSDK: MindsSDK
+    @Published var audioDuration: Int = 0
+    @Published var state: VoiceRecordState = .initial
+    @Published var biometricsResponse: BiometricResponse? = BiometricResponse()
+    @Published var livenessText: RandomSentenceId
+    @Binding var voiceRecordingFlowActive: Bool
     
-    init(mindsSDK: MindsSDK,
-         livenessText: RandomSentenceId,
-         serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
-         mindsDelegate: MindsSDKDelegate? = nil) {
-        self.mindsSDK = mindsSDK
-        self.livenessText = livenessText
+    init(serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
+         mindsDelegate: MindsSDKDelegate? = nil,
+         voiceRecordingFlowActive: Binding<Bool>,
+         completion: (() -> Void?)? = nil) {
+        self.livenessText = sdk.liveness
         self.recordingDelegate = serviceDelegate
+        self.completion = completion
         self.mindsDelegate = mindsDelegate
+        self._voiceRecordingFlowActive = voiceRecordingFlowActive
     }
     
     func updateLivenessText(_ liveness: RandomSentenceId) {
@@ -52,7 +55,7 @@ final class VoiceRecordViewModel {
 
         DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse,
                                         delegate: mindsDelegate)
-//        closeFlow()
+        closeFlow()
     }
 
     func setAudioDuration(_ duration: Int) {
@@ -71,7 +74,9 @@ final class VoiceRecordViewModel {
     
     private func sendAudioToApi() {
 
-        SendAudioToApi().execute(mindsSDK: mindsSDK, biometricsService: makeBiometricService(mindsSDK: mindsSDK)) { result in
+        SendAudioToApi().execute(mindsSDK: .init(cpf: "", externalId: "", phoneNumber: "", processType: .enrollment),
+                                 biometricsService: makeBiometricService(mindsSDK: .init(cpf: "", externalId: "",
+                                                                                         phoneNumber: "", processType: .enrollment))) { result in
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
@@ -81,13 +86,15 @@ final class VoiceRecordViewModel {
                 if let success = response.success, success {
                     self.mindsDelegate?.onSuccess(response)
                     self.updateStateOnMainThread(to: .initial)
-//                    self.closeFlow()
+                    self.closeFlow()
                 } else {
                     self.mindsDelegate?.onError(response)
+                    self.completion?()
                 }
 
             case .failure(_):
                 self.mindsDelegate?.onError(self.biometricsResponse!)
+                self.completion?()
             }
         }
     }
@@ -98,24 +105,28 @@ final class VoiceRecordViewModel {
         }
     }
 
-//    func alert() -> Alert {
-//        if case let VoiceRecordState.error(errorType) = state {
-//            switch errorType {
-//            case .invalidLength:
-//                return invalidLengthAlert(errorType)
-//            }
-//        }
-//
-//        return Alert(title: Text(""),
-//                     message: Text(""),
-//                     primaryButton: .cancel(),
-//                     secondaryButton: .cancel())
-//    }
-//
-//    private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {
-//        return Alert(title: Text(errorType.title),
-//                     message: Text(errorType.subtitle),
-//                     dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
-//    }
+    func alert() -> Alert {
+        if case let VoiceRecordState.error(errorType) = state {
+            switch errorType {
+            case .invalidLength:
+                return invalidLengthAlert(errorType)
+            }
+        }
 
+        return Alert(title: Text(""),
+                     message: Text(""),
+                     primaryButton: .cancel(),
+                     secondaryButton: .cancel())
+    }
+
+    private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {
+        return Alert(title: Text(errorType.title),
+                     message: Text(errorType.subtitle),
+                     dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
+    }
+
+    private func closeFlow() {
+        self.voiceRecordingFlowActive = false
+        self.completion?()
+    }
 }
