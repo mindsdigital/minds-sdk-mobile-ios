@@ -9,7 +9,8 @@ import Foundation
 
 struct SendAudioToApi {
 
-    func execute(mindsSDK: MindsSDK, biometricsService: BiometricProtocol, _ completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
+    func execute(sdkDataRepository: SDKDataRepository = .shared,
+                 biometricsService: BiometricProtocol, _ completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
         do {
             var audios: [AudioFile] = []
 
@@ -29,15 +30,15 @@ struct SendAudioToApi {
             audios.append(audio)
 
             let request = AudioRequest(
-                    action: mindsSDK.processType.rawValue,
-                    cpf: mindsSDK.cpf,
-                    phoneNumber: mindsSDK.phoneNumber,
-                    externalCustomerID: mindsSDK.externalId,
+                    action: sdkDataRepository.processType.rawValue,
+                    cpf: sdkDataRepository.cpf,
+                    phoneNumber: sdkDataRepository.phoneNumber,
+                    externalCustomerID: sdkDataRepository.externalId,
                     audios: audios,
-                    liveness: mindsSDK.liveness
+                    liveness: sdkDataRepository.liveness
             )
 
-            biometricsService.sendAudio(token: mindsSDK.token, request: request) { result in
+            biometricsService.sendAudio(token: sdkDataRepository.token, request: request) { result in
                 completion(result)
             }
         } catch {

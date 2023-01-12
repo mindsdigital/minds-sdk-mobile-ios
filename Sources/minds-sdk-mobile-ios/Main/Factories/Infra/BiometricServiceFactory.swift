@@ -7,6 +7,15 @@
 
 import Foundation
 
-func makeBiometricService(mindsSDK: MindsSDK) -> BiometricProtocol {
-    return BiometricServices.init(networkRequest: NetworkManager(requestTimeout: mindsSDK.connectionTimeout))
+final class BiometricServiceFactory {
+    let sdkDataRepository: SDKDataRepository
+    
+    init(sdkDataRepository: SDKDataRepository = .shared) {
+        self.sdkDataRepository = sdkDataRepository
+    }
+
+    func makeBiometricService() -> BiometricProtocol {
+        return BiometricServices.init(networkRequest: NetworkManager(requestTimeout: sdkDataRepository.connectionTimeout))
+    }
+
 }

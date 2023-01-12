@@ -18,7 +18,17 @@ final class VoiceRecordView: UIView {
         return $0
     }(UILabel())
 
+    lazy var recordVoiceButton: UIButton = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.setTitle("Record Voice", for: .normal)
+        $0.addTarget(self, action: #selector(handleVoiceRecordButton), for: .touchDown)
+        $0.backgroundColor = .lightGray
+        return $0
+    }(UIButton(frame: .zero))
+
     let viewModel: VoiceRecordViewModel
+    
+    var isRecording: Bool = false
 
     init(viewModel: VoiceRecordViewModel) {
         self.viewModel = viewModel
@@ -33,14 +43,42 @@ final class VoiceRecordView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupViews() {
-        addSubview(voiceRecordLabel)
+    @objc func handleVoiceRecordButton() {
+        if !isRecording {
+            viewModel.startRecording()
+            isRecording = true
+        } else {
+            viewModel.stopRecording()
+            isRecording = false
+        }
+    }
+    
+}
 
+extension VoiceRecordView {
+
+    func setupViews() {
+        configureViewHierarchy()
+        setupConstraints()
+    }
+
+    func configureViewHierarchy() {
+        addSubview(voiceRecordLabel)
+        addSubview(recordVoiceButton)
+    }
+
+    func setupConstraints() {
         NSLayoutConstraint.activate([
             voiceRecordLabel.topAnchor.constraint(equalTo: topAnchor),
-            voiceRecordLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             voiceRecordLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            voiceRecordLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
+            voiceRecordLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            voiceRecordLabel.heightAnchor.constraint(equalToConstant: 150)
+        ])
+        
+        NSLayoutConstraint.activate([
+            recordVoiceButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -150),
+            recordVoiceButton.leadingAnchor.constraint(equalTo: leadingAnchor),
+            recordVoiceButton.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
     
