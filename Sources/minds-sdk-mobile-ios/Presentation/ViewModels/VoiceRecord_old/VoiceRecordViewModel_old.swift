@@ -74,9 +74,7 @@ class VoiceRecordViewModel_old: ObservableObject {
     
     private func sendAudioToApi() {
 
-        SendAudioToApi().execute(mindsSDK: .init(cpf: "", externalId: "", phoneNumber: "", processType: .enrollment),
-                                 biometricsService: makeBiometricService(mindsSDK: .init(cpf: "", externalId: "",
-                                                                                         phoneNumber: "", processType: .enrollment))) { result in
+        SendAudioToApi().execute(biometricsService: BiometricServiceFactory().makeBiometricService()) { result in
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {

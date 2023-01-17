@@ -14,44 +14,43 @@ public class MindsSDK {
         case enrollment, verification
     }
 
-    public var token: String = ""
+    public var token: String = "" {
+        didSet {
+            SDKDataRepository.shared.token = token
+        }
+    }
+
     public weak var delegate: MindsSDKDelegate?
 
-    var cpf: String = ""
-    var externalId: String = ""
-    var phoneNumber: String = ""
-    var connectionTimeout: Float = 30.0
-    var processType: ProcessType = .enrollment
-    var liveness: RandomSentenceId = RandomSentenceId(id: 0)
-    
     private var navigationController: UINavigationController?
     
     public init(cpf: String, externalId: String, phoneNumber: String, connectionTimeout: Float = 30.0, processType: ProcessType) {
-        self.cpf = cpf
-        self.externalId = externalId
-        self.phoneNumber = phoneNumber
-        self.connectionTimeout = connectionTimeout
-        self.processType = processType
+        SDKDataRepository.shared.cpf = cpf
+        SDKDataRepository.shared.externalId = externalId
+        SDKDataRepository.shared.phoneNumber = phoneNumber
+        SDKDataRepository.shared.connectionTimeout = connectionTimeout
+        SDKDataRepository.shared.processType = processType
+        SDKDataRepository.shared.token = token
     }
 
     public func setProcessType(processType: ProcessType) {
-        self.processType = processType
+        SDKDataRepository.shared.processType = processType
     }
 
     public func setCpf(_ cpf: String) {
-        self.cpf = cpf
+        SDKDataRepository.shared.cpf = cpf
     }
 
     public func setExternalId(_ externalId: String) {
-        self.externalId = externalId
+        SDKDataRepository.shared.externalId = externalId
     }
 
     public func setPhoneNumber(_ phoneNumber: String) {
-        self.phoneNumber = phoneNumber
+        SDKDataRepository.shared.phoneNumber = phoneNumber
     }
 
     public func setConnectionTimeout(_ connectionTimeout: Float) {
-        self.connectionTimeout = connectionTimeout
+        SDKDataRepository.shared.connectionTimeout = connectionTimeout
     }
 
     public func initialize(on navigationController: UINavigationController?, onReceive: @escaping ((Error?) -> Void)) {
@@ -62,7 +61,7 @@ public class MindsSDK {
                 switch result {
                 case .success(let response):
                     guard let self = self else { return }
-                    self.liveness = response
+                    SDKDataRepository.shared.liveness = response
 
                     DispatchQueue.main.async {
                         let hostingController: UIViewController = self.createHostingController()
@@ -76,8 +75,9 @@ public class MindsSDK {
     }
 
     private func createHostingController() -> UIViewController {
-        let viewModel: VoiceRecordViewModel = .init(mindsSDK: self, livenessText: liveness)
+        let viewModel: VoiceRecordViewModel = .init(livenessText: SDKDataRepository.shared.liveness)
         viewModel.mindsDelegate = delegate
+        viewModel.delegate = self
         let viewController: VoiceRecordViewController = .init(viewModel: viewModel)
 
         return viewController
@@ -110,14 +110,14 @@ public class MindsSDK {
 
     private func validateDataInput(completion: @escaping (Result<Void, Error>) -> Void) {
         let request = ValidateInputRequest(
-            cpf: cpf,
+            cpf: SDKDataRepository.shared.cpf,
             fileExtension: "ogg",
-            checkForVerification: processType == .verification,
-            phoneNumber: phoneNumber,
+            checkForVerification: SDKDataRepository.shared.processType == .verification,
+            phoneNumber: SDKDataRepository.shared.phoneNumber,
             rate: Constants.defaultSampleRate
         )
 
-        BiometricServices.init(networkRequest: NetworkManager(requestTimeout: connectionTimeout))
+        BiometricServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
             .validateInput(token: token, request: request) { result in
                 switch result {
                 case .success(let response):
@@ -146,4 +146,14 @@ public class MindsSDK {
         }
     }
 
+}
+
+extension MindsSDK: VoiceRecordViewModelDelegate {
+
+    func closeFlow() {
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
+        }
+    }
+    
 }

@@ -10,25 +10,31 @@ import AVFAudio
 import UIKit
 import SwiftUI
 
+protocol VoiceRecordViewModelDelegate: AnyObject {
+    func closeFlow()
+}
+
 final class VoiceRecordViewModel {
     
-    private var recordingDelegate: VoiceRecordingServiceDelegate
     weak var mindsDelegate: MindsSDKDelegate?
+    weak var delegate: VoiceRecordViewModelDelegate?
 
     var audioDuration: Int = 0
     var state: VoiceRecordState = .initial
     var biometricsResponse: BiometricResponse? = BiometricResponse()
     var livenessText: RandomSentenceId
-    var mindsSDK: MindsSDK
+
+    private var recordingDelegate: VoiceRecordingServiceDelegate
+    private var biometricServiceFactory: BiometricServiceFactory
     
-    init(mindsSDK: MindsSDK,
-         livenessText: RandomSentenceId,
+    init(livenessText: RandomSentenceId,
          serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
-         mindsDelegate: MindsSDKDelegate? = nil) {
-        self.mindsSDK = mindsSDK
+         mindsDelegate: MindsSDKDelegate? = nil,
+         biometricServiceFactory: BiometricServiceFactory = BiometricServiceFactory()) {
         self.livenessText = livenessText
         self.recordingDelegate = serviceDelegate
         self.mindsDelegate = mindsDelegate
+        self.biometricServiceFactory = biometricServiceFactory
     }
     
     func updateLivenessText(_ liveness: RandomSentenceId) {
@@ -43,6 +49,8 @@ final class VoiceRecordViewModel {
     func stopRecording() {
         recordingDelegate.stopRecording()
         self.updateStateOnMainThread(to: .loading)
+        
+//        sendAudioToApi()
     }
     
     func doBiometricsLater() {
@@ -52,7 +60,7 @@ final class VoiceRecordViewModel {
 
         DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse,
                                         delegate: mindsDelegate)
-//        closeFlow()
+        closeFlow()
     }
 
     func setAudioDuration(_ duration: Int) {
@@ -70,24 +78,25 @@ final class VoiceRecordViewModel {
     }
     
     private func sendAudioToApi() {
-
-        SendAudioToApi().execute(mindsSDK: mindsSDK, biometricsService: makeBiometricService(mindsSDK: mindsSDK)) { result in
+        SendAudioToApi().execute(biometricsService: biometricServiceFactory.makeBiometricService()) { [weak self] result in
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
-                    self.biometricsResponse = response
+                    self?.biometricsResponse = response
                 }
-                
+
                 if let success = response.success, success {
-                    self.mindsDelegate?.onSuccess(response)
-                    self.updateStateOnMainThread(to: .initial)
-//                    self.closeFlow()
+                    self?.mindsDelegate?.onSuccess(response)
+                    self?.updateStateOnMainThread(to: .initial)
+                    self?.closeFlow()
                 } else {
-                    self.mindsDelegate?.onError(response)
+                    self?.mindsDelegate?.onError(response)
                 }
 
             case .failure(_):
-                self.mindsDelegate?.onError(self.biometricsResponse!)
+                guard let self = self,
+                      let biometricsResponse: BiometricResponse = self.biometricsResponse else { return }
+                self.mindsDelegate?.onError(biometricsResponse)
             }
         }
     }
@@ -98,6 +107,10 @@ final class VoiceRecordViewModel {
         }
     }
 
+    private func closeFlow() {
+        delegate?.closeFlow()
+    }
+    
 //    func alert() -> Alert {
 //        if case let VoiceRecordState.error(errorType) = state {
 //            switch errorType {
