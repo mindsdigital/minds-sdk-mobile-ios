@@ -74,10 +74,10 @@ public struct VoiceRecordView_old: View {
 
                 VStack(spacing: 24) {
                     VStack(spacing: 16) {
-                        RecordingButton(longPressMinDuration: 0.3,
-                                        onLongPress: viewModel.startRecording,
-                                        onTap: { self.showTooltip = true },
-                                        onRelease: viewModel.stopRecording)
+                        RecordingButton_old(longPressMinDuration: 0.3,
+                                            onLongPress: viewModel.startRecording,
+                                            onTap: { self.showTooltip = true },
+                                            onRelease: viewModel.stopRecording)
                     }
 
                     VStack {

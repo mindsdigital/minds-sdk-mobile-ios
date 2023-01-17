@@ -57,12 +57,12 @@ public class MindsSDK {
         self.navigationController = navigationController
 
         verifyMicrophonePermission { [weak self] in
-            self?.initializeSDK { result in
+            guard let self = self else { return }
+
+            self.initializeSDK { result in
                 switch result {
                 case .success(let response):
-                    guard let self = self else { return }
                     SDKDataRepository.shared.liveness = response
-
                     DispatchQueue.main.async {
                         let hostingController: UIViewController = self.createHostingController()
                         self.navigationController?.pushViewController(hostingController, animated: true)
@@ -84,10 +84,10 @@ public class MindsSDK {
     }
 
     private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
-        validateDataInput { dataInputResult in
+        validateDataInput { [weak self] dataInputResult in
             switch dataInputResult {
             case .success:
-                self.getRandomSentences { sentenceResult in
+                self?.getRandomSentences { sentenceResult in
                     completion(sentenceResult)
                 }
             case .failure(let error):
