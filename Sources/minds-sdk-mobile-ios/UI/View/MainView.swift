@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 public struct MainView: View {
-    @StateObject var viewModel = MainViewModel()
+    @StateObject var viewModel = MainViewModel_old()
     @Binding var voiceRecordingFlowActive: Bool
     weak var delegate: MindsSDKDelegate?
     var completion: (() -> Void)?
