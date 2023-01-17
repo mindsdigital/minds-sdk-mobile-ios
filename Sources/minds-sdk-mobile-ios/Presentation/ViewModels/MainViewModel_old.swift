@@ -75,9 +75,9 @@ public class MindsSDKInitializer_old {
 
     private func createUIHostingController(_ delegate: MindsSDKDelegate?,
                                            _ response: RandomSentenceId) -> UIViewController {
-        let swiftUIView = VoiceRecordView(delegate: delegate,
-                                          voiceRecordingFlowActive: .constant(true),
-                                          completion: popToRootViewController)
+        let swiftUIView = VoiceRecordView_old(delegate: delegate,
+                                              voiceRecordingFlowActive: .constant(true),
+                                              completion: popToRootViewController)
         swiftUIView.viewModel.updateLivenessText(response)
         return UIHostingController(rootView: swiftUIView)
     }
@@ -94,7 +94,7 @@ class MainViewModel_old: ObservableObject {
     @ObservedObject var sdk = MindsSDK_old.shared
     @Published var state: ViewState = .loading
     weak var delegate: MindsSDKDelegate?
-    @Published var voiceRecordModel = VoiceRecordViewModel(voiceRecordingFlowActive: .constant(false))
+    @Published var voiceRecordModel = VoiceRecordViewModel_old(voiceRecordingFlowActive: .constant(false))
     
     enum ViewState {
         case loaded

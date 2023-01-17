@@ -9,8 +9,8 @@ import SwiftUI
 import AVFAudio
 
 @available(iOS 13.0, *)
-public struct VoiceRecordView: View {
-    @ObservedObject var viewModel: VoiceRecordViewModel
+public struct VoiceRecordView_old: View {
+    @ObservedObject var viewModel: VoiceRecordViewModel_old
     @State var fadeIn: Bool = false
     @State var showTooltip: Bool = false
     @Binding var voiceRecordingFlowActive: Bool
@@ -19,9 +19,9 @@ public struct VoiceRecordView: View {
                 voiceRecordingFlowActive: Binding<Bool>,
                 completion: (() -> Void)? = nil) {
         self._voiceRecordingFlowActive = voiceRecordingFlowActive
-        self.viewModel = VoiceRecordViewModel(mindsDelegate: delegate,
-                                              voiceRecordingFlowActive: voiceRecordingFlowActive,
-                                              completion: completion)
+        self.viewModel = VoiceRecordViewModel_old(mindsDelegate: delegate,
+                                                  voiceRecordingFlowActive: voiceRecordingFlowActive,
+                                                  completion: completion)
     }
 
     @ViewBuilder
