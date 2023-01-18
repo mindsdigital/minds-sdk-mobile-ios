@@ -40,13 +40,13 @@ public struct VoiceRecordView_old: View {
                     HStack {
                         Text(MindsSDKConfigs.shared.voiceRecordingTitle())
                             .font(.headline)
-                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordTitleColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordTitleColor_old())
                         Spacer()
                     }
                     HStack {
                         Text(MindsSDKConfigs.shared.voiceRecordingSubtitle())
                             .font(.subheadline)
-                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordSubtitleColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordSubtitleColor_old())
                         Spacer()
                     }
                 }
@@ -59,7 +59,7 @@ public struct VoiceRecordView_old: View {
                             .font(.largeTitle)
                             .lineLimit(nil)
                             .minimumScaleFactor(0.6)
-                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordMainTextColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordMainTextColor_old())
                         Spacer()
                     }
 

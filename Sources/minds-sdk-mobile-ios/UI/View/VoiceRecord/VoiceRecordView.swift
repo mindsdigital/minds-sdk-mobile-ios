@@ -16,8 +16,8 @@ final class VoiceRecordView: UIView {
     
     private lazy var headerTitleLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.text = "Olá! Autentique sua voz"
-        $0.textColor = .black
+        $0.text = MindsSDKConfigs.shared.voiceRecordingTitle()
+        $0.textColor = MindsSDKConfigs.shared.voiceRecordTitleColor()
         $0.textAlignment = .left
         $0.font = .systemFont(ofSize: 14, weight: .medium)
         return $0
@@ -25,8 +25,8 @@ final class VoiceRecordView: UIView {
 
     private lazy var headerSubtitleLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.text = "Segure o botão para iniciar a gravação \ne leia o texto abaixo"
-        $0.textColor = .black
+        $0.text = MindsSDKConfigs.shared.voiceRecordingSubtitle()
+        $0.textColor = MindsSDKConfigs.shared.voiceRecordSubtitleColor()
         $0.textAlignment = .left
         $0.numberOfLines = 0
         $0.font = .systemFont(ofSize: 12, weight: .light)
@@ -35,7 +35,7 @@ final class VoiceRecordView: UIView {
 
     private lazy var voiceRecordLabel: UILabel = {
         $0.text = viewModel.livenessText.result
-        $0.textColor = .black
+        $0.textColor = MindsSDKConfigs.shared.voiceRecordMainTextColor()
         $0.numberOfLines = 0
         $0.lineBreakMode = .byWordWrapping
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -43,13 +43,13 @@ final class VoiceRecordView: UIView {
         return $0
     }(UILabel())
 
-    private lazy var recordVoiceButton: UIButton = {
+    private lazy var recordVoiceButton: RecordingButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.setTitle("Record Voice", for: .normal)
-        $0.addTarget(self, action: #selector(handleVoiceRecordButton), for: .touchDown)
-        $0.backgroundColor = .lightGray
+        $0.onLongPressStart = viewModel.startRecording
+        $0.onLongPressEnd = viewModel.stopRecording
+        $0.onButtonTapped = tapHandler
         return $0
-    }(UIButton(frame: .zero))
+    }(RecordingButton())
 
     private lazy var footerView: VoiceRecordFooterView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -72,15 +72,9 @@ final class VoiceRecordView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    @objc func handleVoiceRecordButton() {
-        if !isRecording {
-            viewModel.startRecording()
-            isRecording = true
-        } else {
-            viewModel.stopRecording()
-            isRecording = false
-        }
+
+    private func tapHandler() {
+        
     }
     
 }
@@ -119,8 +113,9 @@ extension VoiceRecordView: ViewConfiguration {
         
         NSLayoutConstraint.activate([
             recordVoiceButton.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -48),
-            recordVoiceButton.leadingAnchor.constraint(equalTo: leadingAnchor),
-            recordVoiceButton.trailingAnchor.constraint(equalTo: trailingAnchor)
+            recordVoiceButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            recordVoiceButton.heightAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue),
+            recordVoiceButton.widthAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue)
         ])
 
         NSLayoutConstraint.activate([

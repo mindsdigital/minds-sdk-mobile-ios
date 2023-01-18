@@ -50,7 +50,7 @@ final class VoiceRecordViewModel {
         recordingDelegate.stopRecording()
         self.updateStateOnMainThread(to: .loading)
         
-//        sendAudioToApi()
+        sendAudioToApi()
     }
     
     func doBiometricsLater() {
