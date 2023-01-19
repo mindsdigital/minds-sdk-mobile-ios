@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(iOS 13.0, *)
-struct TimerComponent: View {
+struct TimerComponent_old: View {
     private var timer = Timer.publish(every: 1,
                                       on: .main,
                                       in: .common).autoconnect()

@@ -55,17 +55,25 @@ final class VoiceRecordView: UIView {
         return $0
     }(AnimationView(frame: .zero))
 
+    private lazy var timerComponent: TimerComponent = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.isHidden = true
+        return $0
+    }(TimerComponent(viewModel: viewModel.timerViewModel))
+
     private lazy var recordVoiceButton: RecordingButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
 
         $0.onLongPressStart = { [weak self] in
-            self?.viewModel.startRecording()
+            self?.viewModel.longPressStarted()
             self?.lottieView.isHidden = false
+            self?.timerComponent.isHidden = false
         }
 
         $0.onLongPressEnd = { [weak self] in
-            self?.viewModel.stopRecording()
+            self?.viewModel.longPressReleased()
             self?.lottieView.isHidden = true
+            self?.timerComponent.isHidden = true
         }
 
         $0.onButtonTapped = tapHandler
@@ -109,6 +117,7 @@ extension VoiceRecordView: ViewConfiguration {
         addSubview(headerSubtitleLabel)
         addSubview(voiceRecordLabel)
         addSubview(lottieView)
+        addSubview(timerComponent)
         addSubview(recordVoiceButton)
         addSubview(footerView)
     }
@@ -134,10 +143,16 @@ extension VoiceRecordView: ViewConfiguration {
         ])
 
         NSLayoutConstraint.activate([
-            lottieView.topAnchor.constraint(equalTo: voiceRecordLabel.bottomAnchor, constant: -20),
+            lottieView.topAnchor.constraint(equalTo: voiceRecordLabel.bottomAnchor, constant: 32),
             lottieView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
             lottieView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
-            footerView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.05)
+            lottieView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.05)
+        ])
+
+        NSLayoutConstraint.activate([
+            timerComponent.topAnchor.constraint(equalTo: lottieView.bottomAnchor, constant: 4),
+            timerComponent.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
+            timerComponent.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
         ])
         
         NSLayoutConstraint.activate([
