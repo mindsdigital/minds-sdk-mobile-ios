@@ -35,12 +35,13 @@ final class VoiceRecordView: UIView {
     }(UILabel())
 
     private lazy var voiceRecordLabel: UILabel = {
-        $0.text = viewModel.livenessText.result
+        $0.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vitae venenatis felis. Cras consequat vel mauris vitae mollis. Suspendisse nisi purus, eleifend sed viverra id, gravida at orci. Proin non ultricies magna. Cras eget dui maximus, cursus nulla vel, consequat felis. Maecenas vestibulum."
         $0.textColor = MindsSDKConfigs.shared.voiceRecordMainTextColor()
         $0.numberOfLines = 0
         $0.lineBreakMode = .byWordWrapping
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.font = .systemFont(ofSize: 30, weight: .regular)
+        $0.minimumScaleFactor = 0.7
         return $0
     }(UILabel())
 
@@ -139,14 +140,14 @@ extension VoiceRecordView: ViewConfiguration {
             voiceRecordLabel.topAnchor.constraint(equalTo: headerSubtitleLabel.bottomAnchor, constant: 100),
             voiceRecordLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
             voiceRecordLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
-            voiceRecordLabel.heightAnchor.constraint(equalToConstant: 150)
+            voiceRecordLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 250)
         ])
 
         NSLayoutConstraint.activate([
-            lottieView.topAnchor.constraint(equalTo: voiceRecordLabel.bottomAnchor, constant: 32),
+            lottieView.topAnchor.constraint(equalTo: voiceRecordLabel.bottomAnchor),
             lottieView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
             lottieView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
-            lottieView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.05)
+            lottieView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.1)
         ])
 
         NSLayoutConstraint.activate([

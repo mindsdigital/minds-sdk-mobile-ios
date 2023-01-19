@@ -10,6 +10,7 @@ import Lottie
 
 protocol TimerComponentViewModelDelegate: AnyObject {
     func updateTo(newValue: Int)
+    func timerInvalidated()
 }
 
 final class TimerComponentViewModel {
@@ -27,13 +28,14 @@ final class TimerComponentViewModel {
     }
     
     func startTicking() {
+        timerTicks = 0
         timer = .scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(handleTimerTick), userInfo: nil, repeats: true)
     }
 
     func invalidateTimer() {
         timerTicksWhenInvalidated?(timerTicks)
-        timerTicks = 0
         timer?.invalidate()
+        delegate?.timerInvalidated()
     }
 
     @objc private func handleTimerTick() {
@@ -49,7 +51,7 @@ final class TimerComponent: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.textColor = .black
         $0.textAlignment = .center
-        $0.font = .systemFont(ofSize: 16, weight: .regular)
+        $0.font = .systemFont(ofSize: 14, weight: .regular)
         return $0
     }(UILabel())
 
@@ -81,6 +83,10 @@ extension TimerComponent: TimerComponentViewModelDelegate {
     func updateTo(newValue: Int) {
         let maskedTimer: String = maskTimer(value: newValue)
         timerLabel.text = maskedTimer
+    }
+
+    func timerInvalidated() {
+        timerLabel.text = maskTimer(value: 0)
     }
 
 }
