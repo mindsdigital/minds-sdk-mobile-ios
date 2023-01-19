@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Lottie
 
 final class VoiceRecordView: UIView {
 
@@ -40,13 +41,42 @@ final class VoiceRecordView: UIView {
         $0.lineBreakMode = .byWordWrapping
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.font = .systemFont(ofSize: 30, weight: .regular)
+        $0.minimumScaleFactor = 0.7
         return $0
     }(UILabel())
 
+    private lazy var lottieView: AnimationView = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        let animation = Animation.named(LottieAnimations.audioRecordingLottieAnimation, bundle: Bundle.module)
+        $0.animation = animation
+        $0.contentMode = .scaleAspectFit
+        $0.loopMode = .loop
+        $0.play()
+        $0.isHidden = true
+        return $0
+    }(AnimationView(frame: .zero))
+
+    private lazy var timerComponent: TimerComponent = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.isHidden = true
+        return $0
+    }(TimerComponent(viewModel: viewModel.timerViewModel))
+
     private lazy var recordVoiceButton: RecordingButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.onLongPressStart = viewModel.startRecording
-        $0.onLongPressEnd = viewModel.stopRecording
+
+        $0.onLongPressStart = { [weak self] in
+            self?.viewModel.longPressStarted()
+            self?.lottieView.isHidden = false
+            self?.timerComponent.isHidden = false
+        }
+
+        $0.onLongPressEnd = { [weak self] in
+            self?.viewModel.longPressReleased()
+            self?.lottieView.isHidden = true
+            self?.timerComponent.isHidden = true
+        }
+
         $0.onButtonTapped = tapHandler
         return $0
     }(RecordingButton())
@@ -87,6 +117,8 @@ extension VoiceRecordView: ViewConfiguration {
         addSubview(headerTitleLabel)
         addSubview(headerSubtitleLabel)
         addSubview(voiceRecordLabel)
+        addSubview(lottieView)
+        addSubview(timerComponent)
         addSubview(recordVoiceButton)
         addSubview(footerView)
     }
@@ -108,11 +140,24 @@ extension VoiceRecordView: ViewConfiguration {
             voiceRecordLabel.topAnchor.constraint(equalTo: headerSubtitleLabel.bottomAnchor, constant: 100),
             voiceRecordLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
             voiceRecordLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
-            voiceRecordLabel.heightAnchor.constraint(equalToConstant: 150)
+            voiceRecordLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 250)
+        ])
+
+        NSLayoutConstraint.activate([
+            lottieView.topAnchor.constraint(equalTo: voiceRecordLabel.bottomAnchor),
+            lottieView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
+            lottieView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
+            lottieView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.1)
+        ])
+
+        NSLayoutConstraint.activate([
+            timerComponent.topAnchor.constraint(equalTo: lottieView.bottomAnchor, constant: 4),
+            timerComponent.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
+            timerComponent.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
         ])
         
         NSLayoutConstraint.activate([
-            recordVoiceButton.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -48),
+            recordVoiceButton.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -36),
             recordVoiceButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             recordVoiceButton.heightAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue),
             recordVoiceButton.widthAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue)

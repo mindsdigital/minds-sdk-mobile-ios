@@ -116,7 +116,7 @@ public struct VoiceRecordView_old: View {
     private func recordingWaveAndTimer() -> some View {
         VStack {
             LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
-            TimerComponent(stoped: viewModel.setAudioDuration)
+            TimerComponent_old(stoped: viewModel.setAudioDuration)
         }
     }
 
