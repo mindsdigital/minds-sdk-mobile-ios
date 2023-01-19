@@ -22,11 +22,21 @@ public class MindsSDK: ObservableObject {
 
     @Published var cpf: String = ""
     @Published var externalId: String = ""
+    @Published var externalCustomerId: String = ""
+    @Published var showDetails: Bool = true
     @Published var phoneNumber: String = ""
     @Published var connectionTimeout: Float = 30.0
     @Published var processType: ProcessType = .enrollment
     @Published var liveness: RandomSentenceId = RandomSentenceId(id: 0)
 
+    public func setExternalCustomerId(externalCustomerId: String) {
+        self.externalCustomerId = externalCustomerId
+    }
+    
+    public func setShowDetails(showDetails: Bool) {
+        self.showDetails = showDetails
+    }
+    
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
     }

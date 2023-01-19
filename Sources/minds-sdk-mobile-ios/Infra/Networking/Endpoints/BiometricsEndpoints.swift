@@ -12,12 +12,11 @@ typealias Headers = [String: String]
 
 enum BiometricsEndpoints {
     
-    case biometrics(requestBody: AudioRequest)
     case validateDataInput(requestBody: ValidateInputRequest)
     
     var httpMethod: HTTPMethod {
         switch self {
-        case .biometrics, .validateDataInput:
+        case .validateDataInput:
             return .POST
         }
     }
@@ -31,18 +30,14 @@ enum BiometricsEndpoints {
     
     var requestBody: Encodable? {
         switch self {
-        case .biometrics(let request):
-            return request
         case .validateDataInput(let request):
             return request
         }
     }
     
     func getURL(from environment: APIEnvironment) -> String {
-        let baseUrl = environment.baseURL
+        let baseUrl = environment.speakerApi
         switch self {
-        case .biometrics:
-            return "\(baseUrl)/v2/biometrics"
         case .validateDataInput:
             return "\(baseUrl)/v2/biometrics/validate-sdk-init"
         }
