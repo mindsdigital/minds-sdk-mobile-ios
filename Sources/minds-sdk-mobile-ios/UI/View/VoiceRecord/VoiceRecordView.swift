@@ -35,7 +35,7 @@ final class VoiceRecordView: UIView {
     }(UILabel())
 
     private lazy var voiceRecordLabel: UILabel = {
-        $0.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vitae venenatis felis. Cras consequat vel mauris vitae mollis. Suspendisse nisi purus, eleifend sed viverra id, gravida at orci. Proin non ultricies magna. Cras eget dui maximus, cursus nulla vel, consequat felis. Maecenas vestibulum."
+        $0.text = viewModel.livenessText.result
         $0.textColor = MindsSDKConfigs.shared.voiceRecordMainTextColor()
         $0.numberOfLines = 0
         $0.lineBreakMode = .byWordWrapping
