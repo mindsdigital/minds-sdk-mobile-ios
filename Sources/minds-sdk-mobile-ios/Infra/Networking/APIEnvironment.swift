@@ -27,10 +27,10 @@ extension APIEnvironment {
     }
     
     var speakerApi: String? {
-        return _baseURL["SPEAKER_API"] ?? ""
+        return _baseURL["SPEAKER_API"]
     }
     var voiceApi: String? {
-        return _baseURL["VOICE_API"] ?? ""
+        return _baseURL["VOICE_API"]
     }
     
 }
