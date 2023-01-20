@@ -15,7 +15,7 @@ public class MindsSDK: ObservableObject {
     public init() { }
 
     public enum ProcessType: String {
-        case enrollment, verification
+        case enrollment, authentication
     }
 
     @Published public var token: String = ""
@@ -23,7 +23,7 @@ public class MindsSDK: ObservableObject {
     @Published var cpf: String = ""
     @Published var externalId: String = ""
     @Published var externalCustomerId: String = ""
-    @Published var showDetails: Bool = true
+    @Published var showDetails: Bool = false
     @Published var phoneNumber: String = ""
     @Published var connectionTimeout: Float = 30.0
     @Published var processType: ProcessType = .enrollment
@@ -90,7 +90,7 @@ public class MindsSDK: ObservableObject {
         let request = ValidateInputRequest(
             cpf: cpf,
             fileExtension: "ogg",
-            checkForVerification: processType == .verification,
+            checkForVerification: processType == .authentication,
             phoneNumber: phoneNumber,
             rate: Constants.defaultSampleRate
         )

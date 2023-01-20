@@ -22,7 +22,7 @@ class VoiceApiServices: VoiceApiProtocol {
     func sendAudio(token: String, request: AudioRequest,
                    completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
         var endpoint: VoiceApiEndpoints
-        if(MindsSDK.shared.processType.rawValue ==  MindsSDK.ProcessType.verification.rawValue){
+        if(MindsSDK.shared.processType.rawValue ==  MindsSDK.ProcessType.authentication.rawValue){
             endpoint = VoiceApiEndpoints.authentication(requestBody: request)
         }else {
             endpoint = VoiceApiEndpoints.enrollment(requestBody: request)
@@ -60,8 +60,8 @@ public struct AudioRequest: Codable {
 
 
 public struct BiometricResponse: Codable {
-    public let success: Bool?
-    public let error: ErrorResponse?
+    public var success: Bool?
+    public var error: ErrorResponse?
     public let id: Int64?
     public let cpf: String?
     public let externalID: String?
@@ -138,7 +138,7 @@ public struct Details: Codable {
     }
  }
 public struct ErrorResponse: Codable {
-    public let code: String
-    public let description: String
+    public var code: String
+    public var description: String
  }
 
