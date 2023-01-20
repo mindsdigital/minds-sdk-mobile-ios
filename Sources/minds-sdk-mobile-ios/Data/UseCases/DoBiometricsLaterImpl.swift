@@ -10,7 +10,9 @@ import Foundation
 struct DoBiometricsLaterImpl: DoBiometricsLater {
     func execute(biometricResponse: BiometricResponse, delegate: MindsSDKDelegate?) {
         var response = biometricResponse
-        response.status = "do_biometric_later"
+        response.success = false
+        response.error?.code = "do_biometric_later"
+        response.error?.description = "O usuário optou por tentar realizar o processo de biometria mais tarde"
         delegate?.onError(response)
     }
 }

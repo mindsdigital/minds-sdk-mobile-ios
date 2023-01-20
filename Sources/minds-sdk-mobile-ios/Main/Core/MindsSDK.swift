@@ -15,18 +15,28 @@ public class MindsSDK: ObservableObject {
     public init() { }
 
     public enum ProcessType: String {
-        case enrollment, verification
+        case enrollment, authentication
     }
 
     @Published public var token: String = ""
 
     @Published var cpf: String = ""
     @Published var externalId: String = ""
+    @Published var externalCustomerId: String = ""
+    @Published var showDetails: Bool = false
     @Published var phoneNumber: String = ""
     @Published var connectionTimeout: Float = 30.0
     @Published var processType: ProcessType = .enrollment
     @Published var liveness: RandomSentenceId = RandomSentenceId(id: 0)
 
+    public func setExternalCustomerId(externalCustomerId: String) {
+        self.externalCustomerId = externalCustomerId
+    }
+    
+    public func setShowDetails(showDetails: Bool) {
+        self.showDetails = showDetails
+    }
+    
     public func setProcessType(processType: ProcessType) {
         self.processType = processType
     }
@@ -80,7 +90,7 @@ public class MindsSDK: ObservableObject {
         let request = ValidateInputRequest(
             cpf: cpf,
             fileExtension: "ogg",
-            checkForVerification: processType == .verification,
+            checkForVerification: processType == .authentication,
             phoneNumber: phoneNumber,
             rate: Constants.defaultSampleRate
         )

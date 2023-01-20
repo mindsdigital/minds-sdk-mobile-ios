@@ -14,14 +14,23 @@ enum APIEnvironment: String, CaseIterable {
 }
 
 extension APIEnvironment {
-    var baseURL: String {
+    
+    var _baseURL: [String: String] {
         switch self {
         case .sandbox:
-            return "https://sandbox-speaker-api.minds.digital"
+            return ["SPEAKER_API": "https://sandbox-speaker-api.minds.digital","VOICE_API": "https://sandbox-voice-api.minds.digital"]
         case .staging:
-            return "https://staging-speaker-api.minds.digital"
+            return ["SPEAKER_API": "https://staging-speaker-api.minds.digital","VOICE_API": "https://staging-voice-api.minds.digital"]
         case .production:
-            return "https://speaker-api.minds.digital"
+            return ["SPEAKER_API": "https://speaker-api.minds.digital","VOICE_API": "https://voice-api.minds.digital"]
         }
     }
+    
+    var speakerApi: String {
+        return _baseURL["SPEAKER_API"] ?? ""
+    }
+    var voiceApi: String {
+        return _baseURL["VOICE_API"] ?? ""
+    }
+    
 }

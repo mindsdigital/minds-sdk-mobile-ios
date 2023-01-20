@@ -73,7 +73,7 @@ class VoiceRecordViewModel: ObservableObject {
     
     private func sendAudioToApi() {
 
-        SendAudioToApi().execute(biometricsService: makeBiometricService()) { result in
+        SendAudioToApi().execute(voiceApiService: makeVoiceApiService()) { result in
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
