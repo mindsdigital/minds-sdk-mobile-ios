@@ -44,7 +44,6 @@ public struct AudioRequest: Codable {
     let showDetails: Bool
     let sourceName: String
     
-    
     enum CodingKeys: String, CodingKey {
         case cpf
         case externalId = "external_id"
@@ -56,8 +55,6 @@ public struct AudioRequest: Codable {
         case sourceName = "source_name"
     }
 }
-
-
 
 public struct BiometricResponse: Codable {
     public var success: Bool?
@@ -112,8 +109,8 @@ public struct ResultAction: Codable {
         case recommendedAction = "recommended_action"
         case reasons
     }
- }
- 
+}
+
 public struct Details: Codable {
     
     enum CodingKeys: String, CodingKey {
@@ -123,22 +120,23 @@ public struct Details: Codable {
     
     public let flag: Flag?
     public let voiceMatch: VoiceMatch?
-     
-     public struct Flag: Codable {
-         public let id: Int64
-         public let type: String
-         public let description: String
-         public let status: String
-     }
+    
+    public struct Flag: Codable {
+        public let id: Int64
+        public let type: String
+        public let description: String
+        public let status: String
+    }
     
     public struct VoiceMatch: Codable {
         public let result: String
         public let confidence: String
         public let status: String
     }
- }
+}
+
 public struct ErrorResponse: Codable {
     public var code: String
     public var description: String
- }
+}
 
