@@ -26,11 +26,11 @@ extension APIEnvironment {
         }
     }
     
-    var speakerApi: String? {
-        return _baseURL["SPEAKER_API"]
+    var speakerApi: String {
+        return _baseURL["SPEAKER_API"] ?? ""
     }
-    var voiceApi: String? {
-        return _baseURL["VOICE_API"]
+    var voiceApi: String {
+        return _baseURL["VOICE_API"] ?? ""
     }
     
 }
