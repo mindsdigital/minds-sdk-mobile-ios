@@ -77,8 +77,8 @@ public class MindsSDK {
     private func createHostingController() -> UIViewController {
         let viewModel: VoiceRecordViewModel = .init(livenessText: SDKDataRepository.shared.liveness)
         viewModel.mindsDelegate = delegate
-        viewModel.delegate = self
         let viewController: VoiceRecordViewController = .init(viewModel: viewModel)
+        viewController.delegate = self
 
         return viewController
     }
@@ -148,7 +148,7 @@ public class MindsSDK {
 
 }
 
-extension MindsSDK: VoiceRecordViewModelDelegate {
+extension MindsSDK: VoiceRecordViewControllerDelegate {
 
     func closeFlow() {
         DispatchQueue.main.async { [weak self] in

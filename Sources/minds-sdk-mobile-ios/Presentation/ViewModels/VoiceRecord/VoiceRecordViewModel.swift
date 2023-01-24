@@ -12,6 +12,7 @@ import SwiftUI
 
 protocol VoiceRecordViewModelDelegate: AnyObject {
     func closeFlow()
+    func showAlert()
 }
 
 final class VoiceRecordViewModel {
@@ -57,12 +58,10 @@ final class VoiceRecordViewModel {
 
     private func startRecording() {
         recordingDelegate.startRecording()
-        self.updateStateOnMainThread(to: .recording)
     }
     
     private func stopRecording() {
         recordingDelegate.stopRecording()
-        self.updateStateOnMainThread(to: .loading)
     }
     
     private func doBiometricsLater() {
@@ -82,7 +81,7 @@ final class VoiceRecordViewModel {
 
     private func sendAudioToApiIfReachedMinDuration() {
         guard audioDuration >= 5 else {
-            self.updateStateOnMainThread(to: .error(.invalidLength))
+            self.delegate?.showAlert()
             return
         }
 
@@ -99,7 +98,6 @@ final class VoiceRecordViewModel {
 
                 if let success = response.success, success {
                     self?.mindsDelegate?.onSuccess(response)
-                    self?.updateStateOnMainThread(to: .initial)
                     self?.closeFlow()
                 } else {
                     self?.mindsDelegate?.onError(response)
@@ -112,17 +110,11 @@ final class VoiceRecordViewModel {
             }
         }
     }
-    
-    private func updateStateOnMainThread(to newState: VoiceRecordState) {
-        DispatchQueue.main.async {
-            self.state = newState
-        }
-    }
 
     private func closeFlow() {
         delegate?.closeFlow()
     }
-    
+
 //    func alert() -> Alert {
 //        if case let VoiceRecordState.error(errorType) = state {
 //            switch errorType {
