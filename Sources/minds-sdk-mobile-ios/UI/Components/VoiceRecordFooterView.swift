@@ -30,7 +30,7 @@ final class VoiceRecordFooterView: UIView {
     private var stackView: UIStackView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.axis = .vertical
-        $0.spacing = -16
+        $0.spacing = -34
         $0.distribution = .fillEqually
         $0.alignment = .center
         return $0
