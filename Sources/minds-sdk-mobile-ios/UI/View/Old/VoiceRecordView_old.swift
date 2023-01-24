@@ -94,7 +94,7 @@ public struct VoiceRecordView_old: View {
                 }
             }
             if showTooltip {
-                Tooltip(text: MindsSDKConfigs.shared.voiceRecordingButtonInstruction()) {
+                Tooltip_old(text: MindsSDKConfigs.shared.voiceRecordingButtonInstruction()) {
                     self.showTooltip = false
                 }
                 .padding(.bottom, 160)
