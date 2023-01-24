@@ -12,7 +12,7 @@ import SwiftUI
 
 protocol VoiceRecordViewModelDelegate: AnyObject {
     func closeFlow()
-    func showAlert()
+    func showAlert(for errorType: VoiceRecordErrorType)
 }
 
 final class VoiceRecordViewModel {
@@ -81,7 +81,7 @@ final class VoiceRecordViewModel {
 
     private func sendAudioToApiIfReachedMinDuration() {
         guard audioDuration >= 5 else {
-            self.delegate?.showAlert()
+            self.delegate?.showAlert(for: .invalidLength)
             return
         }
 

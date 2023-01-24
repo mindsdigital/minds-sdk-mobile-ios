@@ -37,11 +37,11 @@ final class VoiceRecordViewController: UIViewController {
 
 extension VoiceRecordViewController: VoiceRecordViewModelDelegate {
 
-    func showAlert() {
-        let alertView: UIAlertController = .init(title: VoiceRecordErrorType.invalidLength.title,
-                                                 message: VoiceRecordErrorType.invalidLength.subtitle,
+    func showAlert(for errorType: VoiceRecordErrorType) {
+        let alertView: UIAlertController = .init(title: errorType.title,
+                                                 message: errorType.subtitle,
                                                  preferredStyle: .alert)
-        let dismissAction: UIAlertAction = UIAlertAction(title: NSLocalizedString(VoiceRecordErrorType.invalidLength.dismissButtonLabel, comment: ""),
+        let dismissAction: UIAlertAction = UIAlertAction(title: NSLocalizedString(errorType.dismissButtonLabel, comment: ""),
                                                          style: .default,
                                                          handler: { _ in })
         alertView.addAction(dismissAction)
