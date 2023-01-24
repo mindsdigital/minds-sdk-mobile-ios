@@ -2,71 +2,56 @@
 //  Tooltip.swift
 //  
 //
-//  Created by Guilherme Domingues on 03/08/22.
+//  Created by Guilherme Domingues on 24/01/23.
 //
 
-import SwiftUI
+import Foundation
+import UIKit
 
-@available(iOS 13.0, *)
-struct Tooltip: View {
+final class Tooltip: UIView {
 
-    private var timer = Timer.publish(every: 1,
-                                      on: .main,
-                                      in: .common).autoconnect()
-    @State private var seconds: Int = 0
-    @State private var animate: Bool = false
+    private lazy var textLabel: UILabel = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.text = text
+        $0.textAlignment = .center
+        $0.font = .systemFont(ofSize: 12, weight: .light)
+        $0.numberOfLines = 0
+       return $0
+    }(UILabel())
+    
+    let text: String
 
-    var text: String
-    var secondsOnScreen: Int
-    var onTimeReached: (() -> Void)?
-    var animationDuration: Double = 0.5
-
-    init(text: String, secondsOnScreen: Int = 3,
-         onTimeReached: (() -> Void)? = nil) {
+    init(text: String) {
         self.text = text
-        self.secondsOnScreen = secondsOnScreen
-        self.onTimeReached = onTimeReached
+        super.init(frame: .zero)
+        setupViews()
     }
 
-    var body: some View {
-        Rectangle()
-            .fill(Color.baselinePrimary)
-            .cornerRadius(10)
-            .overlay(
-                Text(text)
-                    .font(.subheadline)
-                    .foregroundColor(.black)
-                    .lineLimit(nil)
-                    .minimumScaleFactor(0.8)
-                    .multilineTextAlignment(.center)
-            )
-            .frame(width: 240, height: 50)
-            .onReceive(timer) { value in
-                seconds += 1
-                if seconds >= secondsOnScreen {
-                    onTimeReached?()
-                }
-            }
-            .onAppear(perform: {
-                self.dispatchAnimationOnMainThread()
-            })
-            .opacity(animate ? 0.8 : 0)
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    private func dispatchAnimationOnMainThread() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-            withAnimation(Animation.easeIn(duration: animationDuration)) {
-                self.animate = true
-            }
-            withAnimation(Animation
-                            .easeIn(duration: animationDuration)
-                            .delay(animationDelay())) {
-                self.animate = false
-            }
-        }
+}
+
+extension Tooltip: ViewConfiguration {
+
+    func configureViews() {
+        backgroundColor = .baselinePrimary
+        layer.cornerRadius = 12
+    }
+    
+    func setupViewHierarchy() {
+        addSubview(textLabel)
+    }
+    
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            textLabel.topAnchor.constraint(equalTo: topAnchor),
+            textLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            textLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
 
-    private func animationDelay() -> Double {
-        return Double(secondsOnScreen) - animationDuration
-    }
 }

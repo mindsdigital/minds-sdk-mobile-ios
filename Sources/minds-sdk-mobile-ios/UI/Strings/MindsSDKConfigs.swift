@@ -77,19 +77,34 @@ struct MindsSDKConfigs {
     }
 
     @available(iOS 13.0, *)
-    func voiceRecordTitleColor() -> Color {
+    func voiceRecordTitleColor_old() -> Color {
         let colorCode: String = getProperty(name: "VoiceRecordingTitleColor")
         return .init(hex: colorCode)
     }
 
     @available(iOS 13.0, *)
-    func voiceRecordSubtitleColor() -> Color {
+    func voiceRecordSubtitleColor_old() -> Color {
         let colorCode: String = getProperty(name: "VoiceRecordingSubtitleColor")
         return .init(hex: colorCode)
     }
 
     @available(iOS 13.0, *)
-    func voiceRecordMainTextColor() -> Color {
+    func voiceRecordMainTextColor_old() -> Color {
+        let colorCode: String = getProperty(name: "VoiceRecordingMainTextColor")
+        return .init(hex: colorCode)
+    }
+
+    func voiceRecordTitleColor() -> UIColor {
+        let colorCode: String = getProperty(name: "VoiceRecordingTitleColor")
+        return .init(hex: colorCode)
+    }
+
+    func voiceRecordSubtitleColor() -> UIColor {
+        let colorCode: String = getProperty(name: "VoiceRecordingSubtitleColor")
+        return .init(hex: colorCode)
+    }
+
+    func voiceRecordMainTextColor() -> UIColor {
         let colorCode: String = getProperty(name: "VoiceRecordingMainTextColor")
         return .init(hex: colorCode)
     }

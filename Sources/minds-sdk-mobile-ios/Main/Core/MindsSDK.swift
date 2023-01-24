@@ -65,12 +65,12 @@ public class MindsSDK {
         self.navigationController = navigationController
 
         verifyMicrophonePermission { [weak self] in
-            self?.initializeSDK { result in
+            guard let self = self else { return }
+
+            self.initializeSDK { result in
                 switch result {
                 case .success(let response):
-                    guard let self = self else { return }
                     SDKDataRepository.shared.liveness = response
-
                     DispatchQueue.main.async {
                         let hostingController: UIViewController = self.createHostingController()
                         self.navigationController?.pushViewController(hostingController, animated: true)
@@ -85,17 +85,17 @@ public class MindsSDK {
     private func createHostingController() -> UIViewController {
         let viewModel: VoiceRecordViewModel = .init(livenessText: SDKDataRepository.shared.liveness)
         viewModel.mindsDelegate = delegate
-        viewModel.delegate = self
         let viewController: VoiceRecordViewController = .init(viewModel: viewModel)
+        viewController.delegate = self
 
         return viewController
     }
 
     private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
-        validateDataInput { dataInputResult in
+        validateDataInput { [weak self] dataInputResult in
             switch dataInputResult {
             case .success:
-                self.getRandomSentences { sentenceResult in
+                self?.getRandomSentences { sentenceResult in
                     completion(sentenceResult)
                 }
             case .failure(let error):
@@ -156,7 +156,7 @@ public class MindsSDK {
 
 }
 
-extension MindsSDK: VoiceRecordViewModelDelegate {
+extension MindsSDK: VoiceRecordViewControllerDelegate {
 
     func closeFlow() {
         DispatchQueue.main.async { [weak self] in

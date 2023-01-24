@@ -12,6 +12,7 @@ import SwiftUI
 
 protocol VoiceRecordViewModelDelegate: AnyObject {
     func closeFlow()
+    func showAlert(for errorType: VoiceRecordErrorType)
 }
 
 final class VoiceRecordViewModel {
@@ -23,6 +24,7 @@ final class VoiceRecordViewModel {
     var state: VoiceRecordState = .initial
     var biometricsResponse: BiometricResponse? = BiometricResponse()
     var livenessText: RandomSentenceId
+    var timerViewModel: TimerComponentViewModel
 
     private var recordingDelegate: VoiceRecordingServiceDelegate
     private var biometricServiceFactory: BiometricServiceFactory
@@ -30,30 +32,39 @@ final class VoiceRecordViewModel {
     init(livenessText: RandomSentenceId,
          serviceDelegate: VoiceRecordingServiceDelegate = VoiceRecordingServiceDelegateImpl(),
          mindsDelegate: MindsSDKDelegate? = nil,
-         biometricServiceFactory: BiometricServiceFactory = BiometricServiceFactory()) {
+         biometricServiceFactory: BiometricServiceFactory = BiometricServiceFactory(),
+         timerViewModel: TimerComponentViewModel = .init()) {
         self.livenessText = livenessText
         self.recordingDelegate = serviceDelegate
         self.mindsDelegate = mindsDelegate
         self.biometricServiceFactory = biometricServiceFactory
+        self.timerViewModel = timerViewModel
+        self.timerViewModel.timerTicksWhenInvalidated = setAudioDuration
     }
     
     func updateLivenessText(_ liveness: RandomSentenceId) {
         self.livenessText = liveness
     }
 
-    func startRecording() {
+    func longPressStarted() {
+        startRecording()
+        timerViewModel.startTicking()
+    }
+
+    func longPressReleased() {
+        stopRecording()
+        timerViewModel.invalidateTimer()
+    }
+
+    private func startRecording() {
         recordingDelegate.startRecording()
-        self.updateStateOnMainThread(to: .recording)
     }
     
-    func stopRecording() {
+    private func stopRecording() {
         recordingDelegate.stopRecording()
-        self.updateStateOnMainThread(to: .loading)
-        
-//        sendAudioToApi()
     }
     
-    func doBiometricsLater() {
+    private func doBiometricsLater() {
         guard let biometricsResponse = biometricsResponse else {
             return
         }
@@ -63,14 +74,14 @@ final class VoiceRecordViewModel {
         closeFlow()
     }
 
-    func setAudioDuration(_ duration: Int) {
+    private func setAudioDuration(_ duration: Int) {
         self.audioDuration = duration
         sendAudioToApiIfReachedMinDuration()
     }
 
-    func sendAudioToApiIfReachedMinDuration() {
+    private func sendAudioToApiIfReachedMinDuration() {
         guard audioDuration >= 5 else {
-            self.updateStateOnMainThread(to: .error(.invalidLength))
+            self.delegate?.showAlert(for: .invalidLength)
             return
         }
 
@@ -88,7 +99,6 @@ final class VoiceRecordViewModel {
 
                 if let success = response.success, success {
                     self?.mindsDelegate?.onSuccess(response)
-                    self?.updateStateOnMainThread(to: .initial)
                     self?.closeFlow()
                 } else {
                     self?.mindsDelegate?.onError(response)
@@ -101,17 +111,11 @@ final class VoiceRecordViewModel {
             }
         }
     }
-    
-    private func updateStateOnMainThread(to newState: VoiceRecordState) {
-        DispatchQueue.main.async {
-            self.state = newState
-        }
-    }
 
     private func closeFlow() {
         delegate?.closeFlow()
     }
-    
+
 //    func alert() -> Alert {
 //        if case let VoiceRecordState.error(errorType) = state {
 //            switch errorType {

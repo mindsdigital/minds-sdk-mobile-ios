@@ -40,13 +40,13 @@ public struct VoiceRecordView_old: View {
                     HStack {
                         Text(MindsSDKConfigs.shared.voiceRecordingTitle())
                             .font(.headline)
-                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordTitleColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordTitleColor_old())
                         Spacer()
                     }
                     HStack {
                         Text(MindsSDKConfigs.shared.voiceRecordingSubtitle())
                             .font(.subheadline)
-                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordSubtitleColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordSubtitleColor_old())
                         Spacer()
                     }
                 }
@@ -59,7 +59,7 @@ public struct VoiceRecordView_old: View {
                             .font(.largeTitle)
                             .lineLimit(nil)
                             .minimumScaleFactor(0.6)
-                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordMainTextColor())
+                            .foregroundColor(MindsSDKConfigs.shared.voiceRecordMainTextColor_old())
                         Spacer()
                     }
 
@@ -74,10 +74,10 @@ public struct VoiceRecordView_old: View {
 
                 VStack(spacing: 24) {
                     VStack(spacing: 16) {
-                        RecordingButton(longPressMinDuration: 0.3,
-                                        onLongPress: viewModel.startRecording,
-                                        onTap: { self.showTooltip = true },
-                                        onRelease: viewModel.stopRecording)
+                        RecordingButton_old(longPressMinDuration: 0.3,
+                                            onLongPress: viewModel.startRecording,
+                                            onTap: { self.showTooltip = true },
+                                            onRelease: viewModel.stopRecording)
                     }
 
                     VStack {
@@ -94,7 +94,7 @@ public struct VoiceRecordView_old: View {
                 }
             }
             if showTooltip {
-                Tooltip(text: MindsSDKConfigs.shared.voiceRecordingButtonInstruction()) {
+                Tooltip_old(text: MindsSDKConfigs.shared.voiceRecordingButtonInstruction()) {
                     self.showTooltip = false
                 }
                 .padding(.bottom, 160)
@@ -116,7 +116,7 @@ public struct VoiceRecordView_old: View {
     private func recordingWaveAndTimer() -> some View {
         VStack {
             LottieView(name: LottieAnimations.audioRecordingLottieAnimation)
-            TimerComponent(stoped: viewModel.setAudioDuration)
+            TimerComponent_old(stoped: viewModel.setAudioDuration)
         }
     }
 

@@ -2,92 +2,112 @@
 //  RecordingButton.swift
 //  
 //
-//  Created by Guilherme Domingues on 22/06/22.
+//  Created by Guilherme Domingues on 17/01/23.
 //
 
-import SwiftUI
+import UIKit
 
-enum RecordingButtonState {
-    case idle, recording
-}
+final class RecordingButton: UIButton {
 
-@available(iOS 13.0, *)
-struct RecordingButton: View {
-    @State private var state: RecordingButtonState = .idle
-    @State private var isHolding = false
-
-    var onLongPress: (() -> Void)?
-    var onTap: (() -> Void)?
-    var onRelease: (() -> Void)?
-
-    private var longPressMinDuration: Double
-
-    init(longPressMinDuration: Double = 0.5,
-         onLongPress: (() -> Void)? = nil,
-         onTap: (() -> Void)? = nil,
-         onRelease: (() -> Void)? = nil) {
-        self.longPressMinDuration = longPressMinDuration
-        self.onLongPress = onLongPress
-        self.onTap = onTap
-        self.onRelease = onRelease
+    enum RecordingButtonSizes: CGFloat {
+        case regular = 60
     }
 
-    var body: some View {
-        buttonLabel
-            .onTapGesture {
-                isHolding = false
-                onTap?()
-            }
-            .simultaneousGesture(
-                LongPressGesture(minimumDuration: longPressMinDuration)
-                    .onEnded({ _ in
-                        isHolding = true
-                        state = .recording
-                        onLongPress?()
-                    })
-            )
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0)
-                    .onEnded({ _ in
-                        if isHolding {
-                            onRelease?()
-                            isHolding = false
-                            state = .idle
-                        }
-                    })
-            )
+    private lazy var microphoneIconImageView: UIImageView = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.image = UIImage(named: "voice", in: Bundle.module, compatibleWith: nil)
+        $0.contentMode = .scaleToFill
+        return $0
+    }(UIImageView(image: nil))
+
+    var onButtonTapped: (() -> Void)?
+    var onLongPressStart: (() -> Void)?
+    var onLongPressEnd: (() -> Void)?
+    
+    private let size: RecordingButtonSizes
+    private let minimumPressDuration: CGFloat
+    private let feedbackGenerator: UIImpactFeedbackGenerator
+
+    init(size: RecordingButtonSizes = .regular, minimumPressDuration: CGFloat = 0.5,
+         feedbackGenerator: UIImpactFeedbackGenerator = .init()) {
+        self.size = size
+        self.minimumPressDuration = minimumPressDuration
+        self.feedbackGenerator = feedbackGenerator
+        super.init(frame: .zero)
+        setupViews()
+        setupGestures()
     }
 
-    private var buttonLabel: some View {
-        ZStack(alignment: .center) {
-            Circle()
-                .fill(Color.baselinePrimary)
-                .scaleEffect(state ==  .recording ? 1.25 : 1)
-                .frame(width: 76, height: 76)
-            buttonImage
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupGestures() {
+        setLongPressGesture()
+        setTapGesture()
+    }
+
+    private func setTapGesture() {
+        let tapGesture: UITapGestureRecognizer = .init(target: self, action: #selector(handleTapGesture))
+        addGestureRecognizer(tapGesture)
+    }
+
+    @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            onLongPressStart?()
+            applyScale(isIdentity: false)
+            feedbackGenerator.impactOccurred()
+        case .ended, .cancelled:
+            onLongPressEnd?()
+            applyScale(isIdentity: true)
+        default:
+            _ = 0
         }
     }
 
-    private var buttonImage: some View {
-        Group {
-            if state == .recording {
-                Image(systemName: "stop.fill")
-                    .resizable()
-                    .frame(width: 25, height: 25)
-                    .foregroundColor(.white)
+    private func setLongPressGesture() {
+        let longPressGesture: UILongPressGestureRecognizer = .init(target: self, action: #selector(handleLongPress(gesture:)))
+        longPressGesture.minimumPressDuration = minimumPressDuration
+        addGestureRecognizer(longPressGesture)
+    }
+    
+    @objc func handleTapGesture() {
+        onButtonTapped?()
+    }
+
+    private func applyScale(isIdentity: Bool) {
+        UIView.animate(withDuration: 0.1, delay: 0) { [weak self] in
+            if isIdentity {
+                self?.transform = .identity
             } else {
-                Image(systemName: "mic.fill")
-                    .resizable()
-                    .frame(width: 24, height: 34)
-                    .foregroundColor(.white)
+                self?.transform = .init(scaleX: 1.25, y: 1.25)
             }
         }
     }
+
 }
 
-@available(iOS 13.0, *)
-struct RecordingButton_Previews: PreviewProvider {
-    static var previews: some View {
-        RecordingButton()
+extension RecordingButton: ViewConfiguration {
+
+    func configureViews() {
+        backgroundColor = .baselinePrimary
+        clipsToBounds = true
+        layer.cornerRadius = size.rawValue * 0.5
     }
+    
+    func setupViewHierarchy() {
+        addSubview(microphoneIconImageView)
+    }
+    
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            microphoneIconImageView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            microphoneIconImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            microphoneIconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            microphoneIconImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+        ])
+    }
+
 }

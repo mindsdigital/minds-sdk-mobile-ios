@@ -8,7 +8,8 @@
 import Foundation
 
 struct LottieAnimations {
+
     static let audioRecordingLottieAnimation = "audio_recording_lottie_animation"
-    
     static let loadingLottieAnimation = "loading_lottie_animation"
+    
 }
