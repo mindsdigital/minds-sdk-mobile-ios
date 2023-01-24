@@ -11,7 +11,7 @@ import UIKit
 public class MindsSDK {
 
     public enum ProcessType: String {
-        case enrollment, verification
+        case enrollment, authentication
     }
 
     public var token: String = "" {
@@ -33,6 +33,14 @@ public class MindsSDK {
         SDKDataRepository.shared.token = token
     }
 
+    public func setExternalCustomerId(externalCustomerId: String) {
+        SDKDataRepository.shared.externalCustomerId = externalCustomerId
+    }
+    
+    public func setShowDetails(showDetails: Bool) {
+        SDKDataRepository.shared.showDetails = showDetails
+    }
+    
     public func setProcessType(processType: ProcessType) {
         SDKDataRepository.shared.processType = processType
     }
@@ -112,7 +120,7 @@ public class MindsSDK {
         let request = ValidateInputRequest(
             cpf: SDKDataRepository.shared.cpf,
             fileExtension: "ogg",
-            checkForVerification: SDKDataRepository.shared.processType == .verification,
+            checkForVerification: SDKDataRepository.shared.processType == .authentication,
             phoneNumber: SDKDataRepository.shared.phoneNumber,
             rate: Constants.defaultSampleRate
         )

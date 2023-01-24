@@ -8,12 +8,10 @@
 import Foundation
 
 struct SendAudioToApi {
-
     func execute(sdkDataRepository: SDKDataRepository = .shared,
-                 biometricsService: BiometricProtocol, _ completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
+                 voiceApiService: VoiceApiProtocol,
+                 _ completion: @escaping (Result<BiometricResponse, NetworkError>) -> Void) {
         do {
-            var audios: [AudioFile] = []
-
             let documentPath = FileManager.default.temporaryDirectory
 
             let audioFilename = documentPath.appendingPathComponent("audio.wav")
@@ -24,21 +22,20 @@ struct SendAudioToApi {
 
             let encodedString = convertedAudioData.base64EncodedString()
 
-            let audio = AudioFile(
-                    content: encodedString
-            )
-            audios.append(audio)
+         
 
             let request = AudioRequest(
-                    action: sdkDataRepository.processType.rawValue,
+                    audios: encodedString,
                     cpf: sdkDataRepository.cpf,
+                    externalId: sdkDataRepository.externalId,
+                    externalCustomerID: sdkDataRepository.externalCustomerId,
+                    extensionAudio: "ogg",
                     phoneNumber: sdkDataRepository.phoneNumber,
-                    externalCustomerID: sdkDataRepository.externalId,
-                    audios: audios,
-                    liveness: sdkDataRepository.liveness
+                    showDetails: sdkDataRepository.showDetails,
+                    sourceName: "SDK_IOS"
             )
 
-            biometricsService.sendAudio(token: sdkDataRepository.token, request: request) { result in
+            voiceApiService.sendAudio(token: sdkDataRepository.token, request: request) { result in
                 completion(result)
             }
         } catch {

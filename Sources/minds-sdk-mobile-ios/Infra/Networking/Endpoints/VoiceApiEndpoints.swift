@@ -2,24 +2,24 @@
 //  File.swift
 //  
 //
-//  Created by Guilherme Domingues on 03/07/22.
+//  Created by Wennys on 18/01/23.
 //
+
+import Foundation
+
 
 import Foundation
 import Alamofire
 
-enum LivenessEndpoints {
+enum VoiceApiEndpoints {
     
-    case randomSentences
-    
-    var requestTimeOut: Int {
-        return 20
-    }
+    case authentication(requestBody: AudioRequest)
+    case enrollment(requestBody: AudioRequest)
     
     var httpMethod: HTTPMethod {
         switch self {
-        case .randomSentences:
-            return .GET
+        case .authentication, .enrollment:
+            return .POST
         }
     }
     
@@ -32,16 +32,20 @@ enum LivenessEndpoints {
     
     var requestBody: Encodable? {
         switch self {
-        case .randomSentences:
-            return nil
+        case .authentication(let request):
+            return request
+        case .enrollment(let request):
+            return request
         }
     }
     
     func getURL(from environment: APIEnvironment) -> String {
-        let baseUrl = environment.speakerApi
+        let baseUrl = environment.voiceApi
         switch self {
-        case .randomSentences:
-            return "\(baseUrl)/v2/liveness/random-sentence"
+        case .authentication:
+            return "\(baseUrl)/v2.1/authentication"
+        case .enrollment:
+            return "\(baseUrl)/v2.1/enrollment"
         }
     }
 }
