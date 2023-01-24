@@ -27,6 +27,15 @@ final class VoiceRecordFooterView: UIView {
         return $0
     }(UILabel())
 
+    private var stackView: UIStackView = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.axis = .vertical
+        $0.spacing = -16
+        $0.distribution = .fillEqually
+        $0.alignment = .center
+        return $0
+    }(UIStackView())
+
     private let versionNumber: String
 
     init(versionNumber: String) {
@@ -47,21 +56,17 @@ extension VoiceRecordFooterView: ViewConfiguration {
     func configureViews() { }
     
     func setupViewHierarchy() {
-        addSubview(signatureLabel)
-        addSubview(versionNumberLabel)
+        addSubview(stackView)
+        stackView.addArrangedSubview(signatureLabel)
+        stackView.addArrangedSubview(versionNumberLabel)
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            signatureLabel.topAnchor.constraint(equalTo: topAnchor),
-            signatureLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            signatureLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-        ])
-
-        NSLayoutConstraint.activate([
-            versionNumberLabel.topAnchor.constraint(equalTo: signatureLabel.bottomAnchor, constant: 1),
-            versionNumberLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            versionNumberLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
     
