@@ -111,7 +111,6 @@ final class VoiceRecordView: UIView {
         self.viewModel = viewModel
         super.init(frame: .zero)
         
-        backgroundColor = .white
         setupViews()
     }
     
@@ -136,7 +135,9 @@ final class VoiceRecordView: UIView {
 
 extension VoiceRecordView: ViewConfiguration {
 
-    func configureViews() { }
+    func configureViews() {
+        backgroundColor = .white
+    }
 
     func setupViewHierarchy() {
         addSubview(headerTitleLabel)

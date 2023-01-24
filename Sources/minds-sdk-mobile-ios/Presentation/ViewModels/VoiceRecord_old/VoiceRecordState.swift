@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum VoiceRecordErrorType {
+
     case invalidLength
 
     var title: String {
