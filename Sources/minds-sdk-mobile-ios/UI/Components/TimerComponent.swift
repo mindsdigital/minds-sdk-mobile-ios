@@ -52,6 +52,7 @@ final class TimerComponent: UIView {
         $0.textColor = .black
         $0.textAlignment = .center
         $0.font = .systemFont(ofSize: 14, weight: .regular)
+        $0.text = maskTimer(value: 0)
         return $0
     }(UILabel())
 

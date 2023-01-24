@@ -16,7 +16,7 @@ final class RecordingButton: UIButton {
     private lazy var microphoneIconImageView: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.image = UIImage(named: "voice", in: Bundle.module, compatibleWith: nil)
-        $0.contentMode = .center
+        $0.contentMode = .scaleToFill
         return $0
     }(UIImageView(image: nil))
 

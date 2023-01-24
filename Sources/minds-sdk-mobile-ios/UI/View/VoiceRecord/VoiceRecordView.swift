@@ -13,14 +13,26 @@ final class VoiceRecordView: UIView {
     private enum Layout: CGFloat {
         case horizontalPadding = 24
         case verticalPadding = 48
+        case voiceRecordTopAnchor = 16
+        case voiceRecordBottomAnchor = 24.0000001
+        case topAnchorFromRecordButton = 12
+        case footerViewBottomAnchor = 4
+        case tooltipWidth = 200
+        case tooltipHeight = 50
     }
     
+    private enum FontSizes: CGFloat {
+        case header = 14
+        case headerSubtitle = 12
+        case voiceRecordLabel = 30
+    }
+
     private lazy var headerTitleLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.text = MindsSDKConfigs.shared.voiceRecordingTitle()
         $0.textColor = MindsSDKConfigs.shared.voiceRecordTitleColor()
         $0.textAlignment = .left
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .systemFont(ofSize: FontSizes.header.rawValue, weight: .medium)
         return $0
     }(UILabel())
 
@@ -30,17 +42,17 @@ final class VoiceRecordView: UIView {
         $0.textColor = MindsSDKConfigs.shared.voiceRecordSubtitleColor()
         $0.textAlignment = .left
         $0.numberOfLines = 0
-        $0.font = .systemFont(ofSize: 12, weight: .light)
+        $0.font = .systemFont(ofSize: FontSizes.headerSubtitle.rawValue, weight: .light)
         return $0
     }(UILabel())
 
     private lazy var voiceRecordLabel: UILabel = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
         $0.text = viewModel.livenessText.result
         $0.textColor = MindsSDKConfigs.shared.voiceRecordMainTextColor()
         $0.numberOfLines = 0
-        $0.lineBreakMode = .byWordWrapping
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.font = .systemFont(ofSize: 30, weight: .regular)
+        $0.font = .systemFont(ofSize: FontSizes.voiceRecordLabel.rawValue, weight: .regular)
         $0.minimumScaleFactor = 0.7
         return $0
     }(UILabel())
@@ -69,6 +81,7 @@ final class VoiceRecordView: UIView {
             self?.viewModel.longPressStarted()
             self?.lottieView.isHidden = false
             self?.timerComponent.isHidden = false
+            self?.tooltip.alpha = 0
         }
 
         $0.onLongPressEnd = { [weak self] in
@@ -81,14 +94,18 @@ final class VoiceRecordView: UIView {
         return $0
     }(RecordingButton())
 
+    private lazy var tooltip: Tooltip = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.alpha = 0
+        return $0
+    }(Tooltip(text: MindsSDKConfigs.shared.voiceRecordingButtonInstruction()))
+
     private lazy var footerView: VoiceRecordFooterView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
     }(VoiceRecordFooterView(versionNumber: Version.versionCode))
 
-    let viewModel: VoiceRecordViewModel
-    
-    var isRecording: Bool = false
+    private let viewModel: VoiceRecordViewModel
 
     init(viewModel: VoiceRecordViewModel) {
         self.viewModel = viewModel
@@ -104,7 +121,15 @@ final class VoiceRecordView: UIView {
     }
 
     private func tapHandler() {
-        
+        UIView.animate(withDuration: 1, delay: 0) { [weak self] in
+            self?.tooltip.alpha = 1
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            UIView.animate(withDuration: 1, delay: 0) {
+                self?.tooltip.alpha = 0
+            }
+        }
     }
     
 }
@@ -119,6 +144,7 @@ extension VoiceRecordView: ViewConfiguration {
         addSubview(voiceRecordLabel)
         addSubview(lottieView)
         addSubview(timerComponent)
+        addSubview(tooltip)
         addSubview(recordVoiceButton)
         addSubview(footerView)
     }
@@ -137,37 +163,44 @@ extension VoiceRecordView: ViewConfiguration {
         ])
         
         NSLayoutConstraint.activate([
-            voiceRecordLabel.topAnchor.constraint(equalTo: headerSubtitleLabel.bottomAnchor, constant: 100),
+            voiceRecordLabel.topAnchor.constraint(equalTo: headerSubtitleLabel.bottomAnchor, constant: Layout.voiceRecordTopAnchor.rawValue),
             voiceRecordLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
             voiceRecordLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
-            voiceRecordLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 250)
+            voiceRecordLabel.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.5)
         ])
 
         NSLayoutConstraint.activate([
-            lottieView.topAnchor.constraint(equalTo: voiceRecordLabel.bottomAnchor),
             lottieView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
             lottieView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
-            lottieView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.1)
+            lottieView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.1),
+            lottieView.bottomAnchor.constraint(equalTo: timerComponent.topAnchor)
         ])
 
         NSLayoutConstraint.activate([
-            timerComponent.topAnchor.constraint(equalTo: lottieView.bottomAnchor, constant: 4),
             timerComponent.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Layout.horizontalPadding.rawValue),
             timerComponent.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Layout.horizontalPadding.rawValue),
+            timerComponent.bottomAnchor.constraint(equalTo: recordVoiceButton.topAnchor, constant: -Layout.topAnchorFromRecordButton.rawValue)
         ])
         
         NSLayoutConstraint.activate([
-            recordVoiceButton.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -36),
-            recordVoiceButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            recordVoiceButton.heightAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue),
-            recordVoiceButton.widthAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue)
+            tooltip.widthAnchor.constraint(equalToConstant: Layout.tooltipWidth.rawValue),
+            tooltip.heightAnchor.constraint(equalToConstant: Layout.tooltipHeight.rawValue),
+            tooltip.centerXAnchor.constraint(equalTo: centerXAnchor),
+            tooltip.bottomAnchor.constraint(equalTo: recordVoiceButton.topAnchor, constant: -Layout.topAnchorFromRecordButton.rawValue)
         ])
 
         NSLayoutConstraint.activate([
-            footerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            recordVoiceButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            recordVoiceButton.heightAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue),
+            recordVoiceButton.widthAnchor.constraint(equalToConstant: RecordingButton.RecordingButtonSizes.regular.rawValue),
+            recordVoiceButton.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -Layout.voiceRecordBottomAnchor.rawValue)
+        ])
+
+        NSLayoutConstraint.activate([
+            footerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Layout.footerViewBottomAnchor.rawValue),
             footerView.leadingAnchor.constraint(equalTo: leadingAnchor),
             footerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            footerView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.1)
+            footerView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 0.08)
         ])
     }
     
