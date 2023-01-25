@@ -22,15 +22,17 @@ public class MindsSDK {
 
     public weak var delegate: MindsSDKDelegate?
 
-    private var navigationController: UINavigationController?
+    private var mainCoordinator: MainCoordinator?
     
-    public init(cpf: String, externalId: String, phoneNumber: String, connectionTimeout: Float = 30.0, processType: ProcessType) {
+    public init(cpf: String, externalId: String, phoneNumber: String, connectionTimeout: Float = 30.0,
+                processType: ProcessType, showDetails: Bool) {
         SDKDataRepository.shared.cpf = cpf
         SDKDataRepository.shared.externalId = externalId
         SDKDataRepository.shared.phoneNumber = phoneNumber
         SDKDataRepository.shared.connectionTimeout = connectionTimeout
         SDKDataRepository.shared.processType = processType
         SDKDataRepository.shared.token = token
+        SDKDataRepository.shared.showDetails = showDetails
     }
 
     public func setExternalCustomerId(externalCustomerId: String) {
@@ -61,8 +63,8 @@ public class MindsSDK {
         SDKDataRepository.shared.connectionTimeout = connectionTimeout
     }
 
-    public func initialize(on navigationController: UINavigationController?, onReceive: @escaping ((Error?) -> Void)) {
-        self.navigationController = navigationController
+    public func initialize(on navigationController: UINavigationController, onReceive: @escaping ((Error?) -> Void)) {
+        mainCoordinator = .init(navigationController: navigationController)
 
         verifyMicrophonePermission { [weak self] in
             guard let self = self else { return }
@@ -71,24 +73,12 @@ public class MindsSDK {
                 switch result {
                 case .success(let response):
                     SDKDataRepository.shared.liveness = response
-                    DispatchQueue.main.async {
-                        let hostingController: UIViewController = self.createHostingController()
-                        self.navigationController?.pushViewController(hostingController, animated: true)
-                    }
+                    self.mainCoordinator?.showVoiceRecordView(delegate: self.delegate)
                 case .failure(let error):
                     onReceive(error)
                 }
             }
         }
-    }
-
-    private func createHostingController() -> UIViewController {
-        let viewModel: VoiceRecordViewModel = .init(livenessText: SDKDataRepository.shared.liveness)
-        viewModel.mindsDelegate = delegate
-        let viewController: VoiceRecordViewController = .init(viewModel: viewModel)
-        viewController.delegate = self
-
-        return viewController
     }
 
     private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
@@ -154,14 +144,4 @@ public class MindsSDK {
         }
     }
 
-}
-
-extension MindsSDK: VoiceRecordViewControllerDelegate {
-
-    func closeFlow() {
-        DispatchQueue.main.async { [weak self] in
-            self?.navigationController?.popToRootViewController(animated: true)
-        }
-    }
-    
 }

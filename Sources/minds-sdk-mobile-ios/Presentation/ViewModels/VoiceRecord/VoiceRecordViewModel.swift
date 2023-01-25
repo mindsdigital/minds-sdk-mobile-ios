@@ -13,6 +13,8 @@ import SwiftUI
 protocol VoiceRecordViewModelDelegate: AnyObject {
     func closeFlow()
     func showAlert(for errorType: VoiceRecordErrorType)
+    func showLoading()
+    func hideLoading()
 }
 
 final class VoiceRecordViewModel {
@@ -89,6 +91,7 @@ final class VoiceRecordViewModel {
     }
     
     private func sendAudioToApi() {
+        delegate?.showLoading()
 
         SendAudioToApi().execute(voiceApiService: VoiceApiServiceFactory().makeVoiceApiService()) { [weak self] result in
             switch result {
@@ -115,25 +118,5 @@ final class VoiceRecordViewModel {
     private func closeFlow() {
         delegate?.closeFlow()
     }
-
-//    func alert() -> Alert {
-//        if case let VoiceRecordState.error(errorType) = state {
-//            switch errorType {
-//            case .invalidLength:
-//                return invalidLengthAlert(errorType)
-//            }
-//        }
-//
-//        return Alert(title: Text(""),
-//                     message: Text(""),
-//                     primaryButton: .cancel(),
-//                     secondaryButton: .cancel())
-//    }
-//
-//    private func invalidLengthAlert(_ errorType: VoiceRecordErrorType) -> Alert {
-//        return Alert(title: Text(errorType.title),
-//                     message: Text(errorType.subtitle),
-//                     dismissButton: .cancel(Text(errorType.dismissButtonLabel)))
-//    }
 
 }

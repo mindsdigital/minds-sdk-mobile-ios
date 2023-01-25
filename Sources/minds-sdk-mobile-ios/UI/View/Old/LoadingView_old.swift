@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(iOS 13.0, *)
-public struct LoadingView: View {
+public struct LoadingView_old: View {
 
     public var body: some View {
         HStack {
