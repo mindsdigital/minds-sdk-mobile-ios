@@ -14,36 +14,27 @@ public class MindsSDK {
         case enrollment, authentication
     }
 
+    public weak var delegate: MindsSDKDelegate?
+
     public var token: String = "" {
         didSet {
             SDKDataRepository.shared.token = token
         }
     }
 
-    public weak var delegate: MindsSDKDelegate?
-
     private var mainCoordinator: MainCoordinator?
     
-    public init(cpf: String, externalId: String, phoneNumber: String, connectionTimeout: Float = 30.0,
-                processType: ProcessType, showDetails: Bool) {
-        SDKDataRepository.shared.cpf = cpf
-        SDKDataRepository.shared.externalId = externalId
-        SDKDataRepository.shared.phoneNumber = phoneNumber
-        SDKDataRepository.shared.connectionTimeout = connectionTimeout
-        SDKDataRepository.shared.processType = processType
-        SDKDataRepository.shared.token = token
-        SDKDataRepository.shared.showDetails = showDetails
-    }
+    public init() { }
 
-    public func setExternalCustomerId(externalCustomerId: String) {
+    public func setExternalCustomerId(_ externalCustomerId: String) {
         SDKDataRepository.shared.externalCustomerId = externalCustomerId
     }
     
-    public func setShowDetails(showDetails: Bool) {
+    public func setShowDetails(_ showDetails: Bool) {
         SDKDataRepository.shared.showDetails = showDetails
     }
     
-    public func setProcessType(processType: ProcessType) {
+    public func setProcessType(_ processType: ProcessType) {
         SDKDataRepository.shared.processType = processType
     }
 
