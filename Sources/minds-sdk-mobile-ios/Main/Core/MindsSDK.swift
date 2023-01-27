@@ -16,15 +16,13 @@ public class MindsSDK {
 
     public weak var delegate: MindsSDKDelegate?
 
-    public var token: String = "" {
-        didSet {
-            SDKDataRepository.shared.token = token
-        }
-    }
-
     private var mainCoordinator: MainCoordinator?
     
     public init() { }
+
+    public func setToken(_ token: String) {
+        SDKDataRepository.shared.token = token
+    }
 
     public func setExternalCustomerId(_ externalCustomerId: String) {
         SDKDataRepository.shared.externalCustomerId = externalCustomerId
@@ -87,7 +85,7 @@ public class MindsSDK {
 
     private func getRandomSentences(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
         LivenessService.init(networkRequest: NetworkManager(requestTimeout: 30))
-            .getRandomSentence(token: token) { result in
+            .getRandomSentence(token: SDKDataRepository.shared.token) { result in
                 switch result {
                 case .success(let response):
                     completion(.success(RandomSentenceId(id: response.data.id, result: response.data.text)))
@@ -107,7 +105,7 @@ public class MindsSDK {
         )
 
         BiometricServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
-            .validateInput(token: token, request: request) { result in
+            .validateInput(token: SDKDataRepository.shared.token, request: request) { result in
                 switch result {
                 case .success(let response):
                     if !response.success {

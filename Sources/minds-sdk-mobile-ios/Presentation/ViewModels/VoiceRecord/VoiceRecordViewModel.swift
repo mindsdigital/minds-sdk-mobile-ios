@@ -22,13 +22,13 @@ final class VoiceRecordViewModel {
     weak var mindsDelegate: MindsSDKDelegate?
     weak var delegate: VoiceRecordViewModelDelegate?
 
-    var audioDuration: Int = 0
-    var state: VoiceRecordState = .initial
-    var biometricsResponse: BiometricResponse? = BiometricResponse()
     var livenessText: RandomSentenceId
     var timerViewModel: TimerComponentViewModel
-
-    private var recordingDelegate: VoiceRecordingServiceDelegate
+    
+    private var audioDuration: Int = 0
+    private var state: VoiceRecordState = .initial
+    private var biometricsResponse: BiometricResponse? = BiometricResponse()
+    private var recordingDelegate: VoiceRecordingServiceDelegate?
     private var biometricServiceFactory: BiometricServiceFactory
     
     init(livenessText: RandomSentenceId,
@@ -59,11 +59,11 @@ final class VoiceRecordViewModel {
     }
 
     private func startRecording() {
-        recordingDelegate.startRecording()
+        recordingDelegate?.startRecording()
     }
     
     private func stopRecording() {
-        recordingDelegate.stopRecording()
+        recordingDelegate?.stopRecording()
     }
     
     private func doBiometricsLater() {
