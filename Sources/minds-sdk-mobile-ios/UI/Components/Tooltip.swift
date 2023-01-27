@@ -15,6 +15,7 @@ final class Tooltip: UIView {
         $0.text = text
         $0.textAlignment = .center
         $0.font = .systemFont(ofSize: 12, weight: .light)
+        $0.textColor = .black
         $0.numberOfLines = 0
        return $0
     }(UILabel())
