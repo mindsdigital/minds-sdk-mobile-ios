@@ -80,6 +80,7 @@ final class VoiceRecordView: UIView {
         $0.onLongPressStart = { [weak self] in
             self?.viewModel.longPressStarted()
             self?.lottieView.isHidden = false
+            self?.lottieView.play()
             self?.timerComponent.isHidden = false
             self?.tooltip.alpha = 0
         }

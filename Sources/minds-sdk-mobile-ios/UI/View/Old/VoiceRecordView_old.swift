@@ -27,7 +27,7 @@ public struct VoiceRecordView_old: View {
     @ViewBuilder
     public var body: some View {
         if viewModel.state == .loading {
-            LoadingView()
+            LoadingView_old()
         } else {
             defaultView()
         }

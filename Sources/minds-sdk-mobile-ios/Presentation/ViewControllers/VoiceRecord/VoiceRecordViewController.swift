@@ -9,6 +9,8 @@ import UIKit
 
 protocol VoiceRecordViewControllerDelegate: AnyObject {
     func closeFlow()
+    func showLoading()
+    func hideLoading()
 }
 
 final class VoiceRecordViewController: UIViewController {
@@ -51,6 +53,14 @@ extension VoiceRecordViewController: VoiceRecordViewModelDelegate {
 
     func closeFlow() {
         delegate?.closeFlow()
+    }
+
+    func showLoading() {
+        delegate?.showLoading()
+    }
+
+    func hideLoading() {
+        delegate?.hideLoading()
     }
     
 }
