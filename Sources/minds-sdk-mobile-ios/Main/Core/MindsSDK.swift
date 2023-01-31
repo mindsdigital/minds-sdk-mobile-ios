@@ -24,7 +24,7 @@ public class MindsSDK {
         SDKDataRepository.shared.token = token
     }
 
-    public func setExternalCustomerId(_ externalCustomerId: String) {
+    public func setExternalCustomerId(_ externalCustomerId: String?) {
         SDKDataRepository.shared.externalCustomerId = externalCustomerId
     }
     
@@ -40,7 +40,7 @@ public class MindsSDK {
         SDKDataRepository.shared.cpf = cpf
     }
 
-    public func setExternalId(_ externalId: String) {
+    public func setExternalId(_ externalId: String?) {
         SDKDataRepository.shared.externalId = externalId
     }
 
