@@ -37,8 +37,8 @@ class VoiceApiServices: VoiceApiProtocol {
 public struct AudioRequest: Codable {
     let audios: String
     let cpf: String
-    let externalId: String
-    let externalCustomerID: String
+    let externalId: String?
+    let externalCustomerID: String?
     let extensionAudio: String
     let phoneNumber: String
     let showDetails: Bool
@@ -122,16 +122,16 @@ public struct Details: Codable {
     public let voiceMatch: VoiceMatch?
     
     public struct Flag: Codable {
-        public let id: Int64
-        public let type: String
-        public let description: String
-        public let status: String
+        public let id: Int64?
+        public let type: String?
+        public let description: String?
+        public let status: String?
     }
     
     public struct VoiceMatch: Codable {
-        public let result: String
-        public let confidence: String
-        public let status: String
+        public let result: String?
+        public let confidence: String?
+        public let status: String?
     }
 }
 
@@ -139,4 +139,3 @@ public struct ErrorResponse: Codable {
     public var code: String
     public var description: String
 }
-
