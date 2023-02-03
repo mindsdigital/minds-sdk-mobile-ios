@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, *)
-public extension Color {
+extension Color {
 
     init(hex string: String) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
@@ -90,7 +90,7 @@ public extension Color {
 
 }
 
-public extension UIColor {
+extension UIColor {
 
     convenience init(hex string: String) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

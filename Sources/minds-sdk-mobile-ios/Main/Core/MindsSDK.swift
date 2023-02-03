@@ -111,7 +111,6 @@ public class MindsSDK {
                     if !response.success {
                         let error = DomainError(response.status, message: response.message)
                         completion(.failure(error))
-                        assertionFailure("\(response.status) - \(response.message ?? "")")
                     } else {
                         completion(.success(()))
                     }
