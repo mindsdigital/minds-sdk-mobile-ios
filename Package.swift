@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.5.0")),
         .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", .upToNextMajor(from: "3.4.1")),
-        .package(name: "SwiftOGG", url: "https://github.com/vector-im/swift-ogg", .revision("e9a9e7601da662fd8b97d93781ff5c60b4becf88"))
+        .package(name: "SwiftOGG", url: "https://github.com/mindsdigital/swift-ogg", .branch("main"))
     ],
     targets: [
         .target(
