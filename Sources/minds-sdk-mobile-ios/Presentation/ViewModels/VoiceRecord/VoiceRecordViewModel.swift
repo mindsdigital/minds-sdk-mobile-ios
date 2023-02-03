@@ -26,7 +26,6 @@ final class VoiceRecordViewModel {
     var timerViewModel: TimerComponentViewModel
     
     private var audioDuration: Int = 0
-    private var state: VoiceRecordState = .initial
     private var biometricsResponse: BiometricResponse? = BiometricResponse()
     private var recordingDelegate: VoiceRecordingServiceDelegate?
     private var biometricServiceFactory: BiometricServiceFactory
