@@ -101,10 +101,12 @@ final class VoiceRecordViewModel {
 
                 if let success = response.success, success {
                     self?.mindsDelegate?.onSuccess(response)
-                    self?.closeFlow()
+                   
                 } else {
                     self?.mindsDelegate?.onError(response)
                 }
+                
+                self?.closeFlow()
 
             case .failure(_):
                 guard let self = self,

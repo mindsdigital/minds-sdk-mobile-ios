@@ -55,7 +55,7 @@ enum HTTPMethod: String {
     case DELETE
 }
 
-public enum NetworkError: Error, Equatable {
+enum NetworkError: Error, Equatable {
     case badURL
     case apiError(error: String)
     case invalidJSON(error: String)
@@ -80,11 +80,11 @@ protocol Requestable {
 class NetworkManager: Requestable {
     var requestTimeout: Float
 
-    public init(requestTimeout: Float) {
+    init(requestTimeout: Float) {
         self.requestTimeout = requestTimeout
     }
     
-    public func request<T>(_ request: NetworkRequest, completion: @escaping (Result<T, NetworkError>) -> Void) where T: Decodable, T: Encodable {
+    func request<T>(_ request: NetworkRequest, completion: @escaping (Result<T, NetworkError>) -> Void) where T: Decodable, T: Encodable {
         let sessionConfiguration = URLSessionConfiguration.default
         sessionConfiguration.timeoutIntervalForRequest = TimeInterval(request.requestTimeout ?? requestTimeout)
         
@@ -118,6 +118,7 @@ class NetworkManager: Requestable {
 }
 
 extension Encodable {
+
     func encode() -> Data? {
         do {
             return try JSONEncoder().encode(self)
@@ -125,4 +126,5 @@ extension Encodable {
             return nil
         }
     }
+
 }
