@@ -53,6 +53,7 @@ public class MindsSDK {
     }
 
     public func initialize(on navigationController: UINavigationController, onReceive: @escaping ((Error?) -> Void)) {
+        navigationController.interactivePopGestureRecognizer?.isEnabled = false
         mainCoordinator = .init(navigationController: navigationController)
 
         verifyMicrophonePermission { [weak self] in
