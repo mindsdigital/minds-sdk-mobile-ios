@@ -10,8 +10,8 @@ import Foundation
 struct AudioRequest: Codable {
     let audios: String
     let cpf: String
-    let externalId: String
-    let externalCustomerID: String
+    let externalId: String?
+    let externalCustomerID: String?
     let extensionAudio: String
     let phoneNumber: String
     let showDetails: Bool
