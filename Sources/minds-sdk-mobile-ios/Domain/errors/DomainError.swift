@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum DomainError: Error, Equatable {
+enum DomainError: Error, Equatable {
     case invalidCPF(String?)
     case invalidPhoneNumber(String?)
     case invalidAudioFormat(String?)
@@ -16,7 +16,7 @@ public enum DomainError: Error, Equatable {
     case customerNotCertified(String?)
     case internalServerException
 
-    public init(_ serverResponse: String, message: String?) {
+    init(_ serverResponse: String, message: String?) {
         switch serverResponse {
         case "invalid_cpf":
             self = DomainError.invalidCPF(message)
@@ -35,7 +35,7 @@ public enum DomainError: Error, Equatable {
         }
     }
 
-    public static func ==(lhs: DomainError, rhs: DomainError) -> Bool {
+    static func ==(lhs: DomainError, rhs: DomainError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidCPF, .invalidCPF),
             (.invalidPhoneNumber, .invalidPhoneNumber),

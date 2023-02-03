@@ -12,7 +12,7 @@ final class VoiceRecordView: UIView {
 
     private enum Layout: CGFloat {
         case horizontalPadding = 24
-        case verticalPadding = 48
+        case verticalPadding = 64
         case voiceRecordTopAnchor = 16
         case voiceRecordBottomAnchor = 24.0000001
         case topAnchorFromRecordButton = 12
@@ -22,8 +22,8 @@ final class VoiceRecordView: UIView {
     }
     
     private enum FontSizes: CGFloat {
-        case header = 14
-        case headerSubtitle = 12
+        case header = 18
+        case headerSubtitle = 16
         case voiceRecordLabel = 30
     }
 

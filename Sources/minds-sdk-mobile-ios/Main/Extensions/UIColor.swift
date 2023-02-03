@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public extension UIColor {
+extension UIColor {
 
     convenience init(hex string: String) {
         var string: String = string.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
