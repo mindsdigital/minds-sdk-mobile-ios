@@ -1,0 +1,112 @@
+//
+//  TimerComponent.swift
+//  
+//
+//  Created by Guilherme Domingues on 19/01/23.
+//
+
+import UIKit
+import Lottie
+
+protocol TimerComponentViewModelDelegate: AnyObject {
+    func updateTo(newValue: Int)
+    func timerInvalidated()
+}
+
+final class TimerComponentViewModel {
+    
+    weak var delegate: TimerComponentViewModelDelegate?
+    
+    var timerTicksWhenInvalidated: ((Int) -> Void)?
+    
+    private var timer: Timer?
+    private var timerTicks: Int = 0
+    private let timeInterval: TimeInterval
+    
+    init(timeInterval: TimeInterval = 1.0) {
+        self.timeInterval = timeInterval
+    }
+    
+    func startTicking() {
+        timerTicks = 0
+        timer = .scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(handleTimerTick), userInfo: nil, repeats: true)
+    }
+
+    func invalidateTimer() {
+        timerTicksWhenInvalidated?(timerTicks)
+        timer?.invalidate()
+        delegate?.timerInvalidated()
+    }
+
+    @objc private func handleTimerTick() {
+        timerTicks += 1
+        delegate?.updateTo(newValue: timerTicks)
+    }
+
+}
+
+final class TimerComponent: UIView {
+
+    private lazy var timerLabel: UILabel = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.textColor = .black
+        $0.textAlignment = .center
+        $0.font = .systemFont(ofSize: 14, weight: .regular)
+        $0.text = maskTimer(value: 0)
+        return $0
+    }(UILabel())
+
+    private var viewModel: TimerComponentViewModel
+    
+    init(viewModel: TimerComponentViewModel) {
+        self.viewModel = viewModel
+
+        super.init(frame: .zero)
+        setupViews()
+        viewModel.delegate = self
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func maskTimer(value counter: Int) -> String {
+        let seconds = String(format: "%.2d", counter % 60)
+        let minutes = String(format: "%.2d", (counter / 60) % 60)
+        return "\(minutes):\(seconds)"
+    }
+
+}
+
+extension TimerComponent: TimerComponentViewModelDelegate {
+
+    func updateTo(newValue: Int) {
+        let maskedTimer: String = maskTimer(value: newValue)
+        timerLabel.text = maskedTimer
+    }
+
+    func timerInvalidated() {
+        timerLabel.text = maskTimer(value: 0)
+    }
+
+}
+
+extension TimerComponent: ViewConfiguration {
+
+    func configureViews() { }
+    
+    func setupViewHierarchy() {
+        addSubview(timerLabel)
+    }
+    
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            timerLabel.topAnchor.constraint(equalTo: topAnchor),
+            timerLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            timerLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+    
+}

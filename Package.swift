@@ -6,26 +6,21 @@ import PackageDescription
 let package = Package(
     name: "minds-sdk-mobile-ios",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v11),
     ],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "minds-sdk-mobile-ios",
-            targets: ["minds-sdk-mobile-ios"]),
+            name: "MindsSDK",
+            targets: ["MindsSDK"]),
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
         .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.5.0")),
         .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", .upToNextMajor(from: "3.4.1")),
-        .package(name: "SwiftOGG", path: "../swift-ogg")
+        .package(name: "SwiftOGG", url: "https://github.com/mindsdigital/swift-ogg", .branch("main"))
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "minds-sdk-mobile-ios",
+            name: "MindsSDK",
             dependencies: ["Alamofire", "SwiftOGG", "Lottie"],
             resources: [
                 .process("resources")
