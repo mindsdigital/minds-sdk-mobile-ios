@@ -17,9 +17,10 @@ final class VoiceRecordViewController: UIViewController {
     
     private let viewModel: VoiceRecordViewModel
     private let voiceRecordView: VoiceRecordView
-    weak var delegate: VoiceRecordViewControllerDelegate?
+    private let delegate: VoiceRecordViewControllerDelegate
 
-    init(viewModel: VoiceRecordViewModel) {
+    init(viewModel: VoiceRecordViewModel, delegate: VoiceRecordViewControllerDelegate) {
+        self.delegate = delegate
         self.viewModel = viewModel
         self.voiceRecordView = .init(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
@@ -52,15 +53,15 @@ extension VoiceRecordViewController: VoiceRecordViewModelDelegate {
     }
 
     func closeFlow() {
-        delegate?.closeFlow()
+        delegate.closeFlow()
     }
 
     func showLoading() {
-        delegate?.showLoading()
+        delegate.showLoading()
     }
 
     func hideLoading() {
-        delegate?.hideLoading()
+        delegate.hideLoading()
     }
     
 }
