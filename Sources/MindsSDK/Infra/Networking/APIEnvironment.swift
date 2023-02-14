@@ -33,4 +33,14 @@ extension APIEnvironment {
         return _baseURL["VOICE_API"] ?? ""
     }
     
+    var currentEnvironment: String {
+        switch self {
+        case .sandbox:
+            return APIEnvironment.sandbox.rawValue
+        case .staging:
+            return APIEnvironment.staging.rawValue
+        case .production:
+            return APIEnvironment.production.rawValue
+        }
+    }
 }

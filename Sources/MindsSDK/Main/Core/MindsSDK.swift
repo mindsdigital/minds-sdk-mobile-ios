@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Sentry
 
 public class MindsSDK {
 
@@ -104,20 +105,35 @@ public class MindsSDK {
             phoneNumber: SDKDataRepository.shared.phoneNumber,
             rate: Constants.defaultSampleRate
         )
-
-        BiometricServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
-            .validateInput(token: SDKDataRepository.shared.token, request: request) { result in
+        
+        VoiceApiServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
+            .getDsn(token: SDKDataRepository.shared.token) { result in
                 switch result {
                 case .success(let response):
-                    if !response.success {
-                        let error = DomainError(response.status, message: response.message)
-                        completion(.failure(error))
-                    } else {
-                        completion(.success(()))
+                    if response.success && !(response.data.isEmpty){
+                        SentrySDK.start { options in
+                            options.dsn = response.data
+                            options.environment = response.apiEnvironment
+                        }
                     }
                 case .failure(let error):
                     completion(.failure(error))
                 }
+                
+                BiometricServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
+                    .validateInput(token: SDKDataRepository.shared.token, request: request) { result in
+                        switch result {
+                        case .success(let response):
+                            if !response.success {
+                                let error = DomainError(response.status, message: response.message)
+                                completion(.failure(error))
+                            } else {
+                                completion(.success(()))
+                            }
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
             }
     }
 
