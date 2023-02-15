@@ -1,3 +1,10 @@
+//
+//  DsnUrlResponse.swift
+//  
+//
+//  Created by Wennys on 14/02/23.
+//
+
 struct DsnUrlResponse: Codable {
     let success: Bool
     let message: String?
@@ -5,6 +12,7 @@ struct DsnUrlResponse: Codable {
     let requestHasValidationErrors: Bool?
     let status: String?
     var apiEnvironment: String
+    var apiEnvironment: String = ""
 
     init(success: Bool = false, message: String?, data: String = "", requestHasValidationErrors: Bool?, status: String?, apiEnvironment: String = "") {
         self.success = success
@@ -30,6 +38,5 @@ struct DsnUrlResponse: Codable {
         data = try container.decode(String.self, forKey: .data)
         requestHasValidationErrors = try container.decodeIfPresent(Bool.self, forKey: .requestHasValidationErrors)
         status = try container.decodeIfPresent(String.self, forKey: .status)
-        apiEnvironment = ""
     }
 }

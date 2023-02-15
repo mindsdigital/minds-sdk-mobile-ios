@@ -72,6 +72,23 @@ public class MindsSDK {
         }
     }
 
+     private func initializeSentry(completion: @escaping (Result<Void, Error>) -> Void) {
+        VoiceApiServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
+            .getDsn(token: SDKDataRepository.shared.token) { result in
+                switch result {
+                case .success(let response):
+                    if response.success && !(response.data.isEmpty){
+                        SentrySDK.start { options in
+                            options.dsn = response.data
+                            options.environment = response.apiEnvironment
+                        }
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+    }
+   
+
     private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
         validateDataInput { [weak self] dataInputResult in
             switch dataInputResult {
@@ -106,20 +123,7 @@ public class MindsSDK {
             rate: Constants.defaultSampleRate
         )
         
-        VoiceApiServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
-            .getDsn(token: SDKDataRepository.shared.token) { result in
-                switch result {
-                case .success(let response):
-                    if response.success && !(response.data.isEmpty){
-                        SentrySDK.start { options in
-                            options.dsn = response.data
-                            options.environment = response.apiEnvironment
-                        }
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-                
+
                 BiometricServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
                     .validateInput(token: SDKDataRepository.shared.token, request: request) { result in
                         switch result {
