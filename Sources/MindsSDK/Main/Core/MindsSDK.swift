@@ -15,11 +15,13 @@ public class MindsSDK {
         case enrollment, authentication
     }
 
-    public weak var delegate: MindsSDKDelegate?
+    private var delegate: MindsSDKDelegate?
 
     private var mainCoordinator: MainCoordinator?
     
-    public init() { }
+    public init(delegate: MindsSDKDelegate) {
+        self.delegate = delegate
+    }
 
     public func setToken(_ token: String) {
         SDKDataRepository.shared.token = token
