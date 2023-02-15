@@ -11,9 +11,8 @@ struct DsnUrlResponse: Codable {
     let data: String
     let requestHasValidationErrors: Bool?
     let status: String?
-    var apiEnvironment: String
     var apiEnvironment: String = ""
-
+    
     init(success: Bool = false, message: String?, data: String = "", requestHasValidationErrors: Bool?, status: String?, apiEnvironment: String = "") {
         self.success = success
         self.message = message

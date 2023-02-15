@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Guilherme Domingues on 05/01/23.
 //
@@ -74,7 +74,31 @@ public class MindsSDK {
         }
     }
 
-     private func initializeSentry(completion: @escaping (Result<Void, Error>) -> Void) {
+    private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
+        initializeSentry { result in
+            switch result {
+            case .success:
+                print("Sentry initialized successfully.")
+            case .failure(_):
+                print("Failed to initialize Sentry")
+            }
+        }
+        
+        validateDataInput { [weak self] dataInputResult in
+            switch dataInputResult {
+            case .success:
+                self?.getRandomSentences { sentenceResult in
+                    completion(sentenceResult)
+                }
+            case .failure(let error):
+                SentrySDK.capture(error: error)
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    
+    private func initializeSentry(completion: @escaping (Result<Void, Error>) -> Void) {
         VoiceApiServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
             .getDsn(token: SDKDataRepository.shared.token) { result in
                 switch result {
@@ -88,20 +112,7 @@ public class MindsSDK {
                 case .failure(let error):
                     completion(.failure(error))
                 }
-    }
-   
-
-    private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
-        validateDataInput { [weak self] dataInputResult in
-            switch dataInputResult {
-            case .success:
-                self?.getRandomSentences { sentenceResult in
-                    completion(sentenceResult)
-                }
-            case .failure(let error):
-                completion(.failure(error))
             }
-        }
     }
 
     private func getRandomSentences(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
@@ -111,6 +122,7 @@ public class MindsSDK {
                 case .success(let response):
                     completion(.success(RandomSentenceId(id: response.data.id, result: response.data.text)))
                 case .failure(let error):
+                    SentrySDK.capture(error: error)
                     completion(.failure(error))
                 }
             }
@@ -124,22 +136,21 @@ public class MindsSDK {
             phoneNumber: SDKDataRepository.shared.phoneNumber,
             rate: Constants.defaultSampleRate
         )
-        
 
-                BiometricServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
-                    .validateInput(token: SDKDataRepository.shared.token, request: request) { result in
-                        switch result {
-                        case .success(let response):
-                            if !response.success {
-                                let error = DomainError(response.status, message: response.message)
-                                completion(.failure(error))
-                            } else {
-                                completion(.success(()))
-                            }
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
+        BiometricServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
+            .validateInput(token: SDKDataRepository.shared.token, request: request) { result in
+                switch result {
+                case .success(let response):
+                    if !response.success {
+                        let error = DomainError(response.status, message: response.message)
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
                     }
+                case .failure(let error):
+                    SentrySDK.capture(error: error)
+                    completion(.failure(error))
+                }
             }
     }
 
