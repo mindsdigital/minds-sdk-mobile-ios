@@ -78,21 +78,21 @@ public class MindsSDK {
         initializeSentry { result in
             switch result {
             case .success:
-                print("Sentry initialized successfully.")
+                debugPrint("Sentry initialized successfully.")
             case .failure(_):
-                print("Failed to initialize Sentry")
+                debugPrint("Failed to initialize Sentry")
             }
-        }
-        
-        validateDataInput { [weak self] dataInputResult in
-            switch dataInputResult {
-            case .success:
-                self?.getRandomSentences { sentenceResult in
-                    completion(sentenceResult)
+            
+            self.validateDataInput { [weak self] dataInputResult in
+                switch dataInputResult {
+                case .success:
+                    self?.getRandomSentences { sentenceResult in
+                        completion(sentenceResult)
+                    }
+                case .failure(let error):
+                    SentrySDK.capture(error: error)
+                    completion(.failure(error))
                 }
-            case .failure(let error):
-                SentrySDK.capture(error: error)
-                completion(.failure(error))
             }
         }
     }
