@@ -15,11 +15,14 @@ enum VoiceApiEndpoints {
     
     case authentication(requestBody: AudioRequest)
     case enrollment(requestBody: AudioRequest)
+    case setryDsn
     
     var httpMethod: HTTPMethod {
         switch self {
         case .authentication, .enrollment:
             return .POST
+        case .setryDsn:
+            return .GET
         }
     }
     
@@ -36,6 +39,8 @@ enum VoiceApiEndpoints {
             return request
         case .enrollment(let request):
             return request
+        case .setryDsn:
+            return nil
         }
     }
     
@@ -46,6 +51,8 @@ enum VoiceApiEndpoints {
             return "\(baseUrl)/v2.1/authentication"
         case .enrollment:
             return "\(baseUrl)/v2.1/enrollment"
+        case .setryDsn:
+            return "\(baseUrl)/trial-api/external/system-config/app-dsn?systemOS=ios"
         }
     }
 }

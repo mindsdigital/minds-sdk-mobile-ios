@@ -1,12 +1,13 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Guilherme Domingues on 05/01/23.
 //
 
 import Foundation
 import UIKit
+import Sentry
 
 public class MindsSDK {
 
@@ -74,16 +75,44 @@ public class MindsSDK {
     }
 
     private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
-        validateDataInput { [weak self] dataInputResult in
-            switch dataInputResult {
+        initializeSentry { result in
+            switch result {
             case .success:
-                self?.getRandomSentences { sentenceResult in
-                    completion(sentenceResult)
+                debugPrint("Sentry initialized successfully.")
+            case .failure(_):
+                debugPrint("Failed to initialize Sentry")
+            }
+            
+            self.validateDataInput { [weak self] dataInputResult in
+                switch dataInputResult {
+                case .success:
+                    self?.getRandomSentences { sentenceResult in
+                        completion(sentenceResult)
+                    }
+                case .failure(let error):
+                    SentrySDK.capture(error: error)
+                    completion(.failure(error))
                 }
-            case .failure(let error):
-                completion(.failure(error))
             }
         }
+    }
+    
+    
+    private func initializeSentry(completion: @escaping (Result<Void, Error>) -> Void) {
+        VoiceApiServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
+            .getDsn(token: SDKDataRepository.shared.token) { result in
+                switch result {
+                case .success(let response):
+                    if response.success && !(response.data.isEmpty){
+                        SentrySDK.start { options in
+                            options.dsn = response.data
+                            options.environment = response.apiEnvironment
+                        }
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
     }
 
     private func getRandomSentences(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
@@ -93,6 +122,7 @@ public class MindsSDK {
                 case .success(let response):
                     completion(.success(RandomSentenceId(id: response.data.id, result: response.data.text)))
                 case .failure(let error):
+                    SentrySDK.capture(error: error)
                     completion(.failure(error))
                 }
             }
@@ -118,6 +148,7 @@ public class MindsSDK {
                         completion(.success(()))
                     }
                 case .failure(let error):
+                    SentrySDK.capture(error: error)
                     completion(.failure(error))
                 }
             }

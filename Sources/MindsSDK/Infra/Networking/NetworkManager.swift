@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Sentry
 
 struct NetworkRequest {
     let url: String
@@ -96,6 +97,7 @@ class NetworkManager: Requestable {
         return URLSession.shared.dataTask(with: request.buildURLRequest(with: url)) { data, response, error in
             if let error = error {
                 print(#function, "🧨 Request: \(request)\nError: \(error)")
+                SentrySDK.capture(error: error)
                 completion(.failure(.apiError(error: String(describing: error))))
                 return
             }
@@ -110,6 +112,7 @@ class NetworkManager: Requestable {
                 completion(.success(response))
             } catch let error {
                 print(#function, "🧨 Request: \(request)\nError: \(error)")
+                SentrySDK.capture(error: error)
                 completion(.failure(.invalidJSON(error: String(describing: error))))
             }
         }
