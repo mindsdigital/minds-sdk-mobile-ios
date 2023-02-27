@@ -82,33 +82,34 @@ public class MindsSDK {
             case .failure(_):
                 debugPrint("Failed to initialize Sentry")
             }
-            
-            self.validateDataInput { [weak self] dataInputResult in
-                switch dataInputResult {
-                case .success:
-                    self?.getRandomSentences { sentenceResult in
-                        completion(sentenceResult)
-                    }
-                case .failure(let error):
-                    SentrySDK.capture(error: error)
-                    completion(.failure(error))
+        }
+        
+        self.validateDataInput { [weak self] dataInputResult in
+            switch dataInputResult {
+            case .success:
+                self?.getRandomSentences { sentenceResult in
+                    completion(sentenceResult)
                 }
+            case .failure(let error):
+                SentrySDK.capture(error: error)
+                completion(.failure(error))
             }
         }
     }
     
     
-    private func initializeSentry(completion: @escaping (Result<Void, Error>) -> Void) {
+    private func initializeSentry(completion: @escaping (Result<Void?, Error>) -> Void) {
         VoiceApiServices.init(networkRequest: NetworkManager(requestTimeout: SDKDataRepository.shared.connectionTimeout))
             .getDsn(token: SDKDataRepository.shared.token) { result in
                 switch result {
                 case .success(let response):
-                    if response.success && !(response.data.isEmpty){
+                    if response.success && !(response.data.isEmpty) {
                         SentrySDK.start { options in
                             options.dsn = response.data
                             options.environment = response.apiEnvironment
                         }
                     }
+                    completion(.success(nil))
                 case .failure(let error):
                     completion(.failure(error))
                 }
