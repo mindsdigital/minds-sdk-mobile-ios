@@ -29,7 +29,7 @@ final class VoiceRecordView: UIView {
 
     private lazy var headerTitleLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.text = SDKDataRepository.shared.processType == MindsSDK.ProcessType.authentication ? MindsSDKConfigs.shared.voiceRecordingAuthenticationTitle() : MindsSDKConfigs.shared.voiceRecordingEnrollmentTitle()
+        $0.text = viewModel.getVoiceRecordingTitle()
         $0.textColor = MindsSDKConfigs.shared.voiceRecordTitleColor()
         $0.textAlignment = .left
         $0.font = .systemFont(ofSize: FontSizes.header.rawValue, weight: .medium)

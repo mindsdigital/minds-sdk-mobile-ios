@@ -43,6 +43,13 @@ final class VoiceRecordViewModel {
         self.timerViewModel.timerTicksWhenInvalidated = setAudioDuration
     }
     
+    func getVoiceRecordingTitle() -> String {
+        if(SDKDataRepository.shared.processType == MindsSDK.ProcessType.authentication){
+            return MindsSDKConfigs.shared.voiceRecordingAuthenticationTitle()
+        }
+        return MindsSDKConfigs.shared.voiceRecordingEnrollmentTitle()
+    }
+    
     func updateLivenessText(_ liveness: RandomSentenceId) {
         self.livenessText = liveness
     }

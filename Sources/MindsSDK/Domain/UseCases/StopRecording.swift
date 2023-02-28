@@ -9,5 +9,5 @@ import Foundation
 import AVFoundation
 
 protocol StopRecording {
-    func execute(avAudioRecorder: AVAudioRecorder) -> Void
+    func execute(avAudioRecorder: AVAudioRecorder, avAudioSession: AVAudioSession) -> Void
 }
