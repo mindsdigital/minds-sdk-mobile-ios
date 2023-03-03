@@ -98,28 +98,27 @@ final class VoiceRecordViewModel {
     
     private func sendAudioToApi() {
         delegate?.showLoading()
-
+        
         SendAudioToApi().execute(voiceApiService: VoiceApiServiceFactory().makeVoiceApiService()) { [weak self] result in
             switch result {
             case .success(let response):
                 DispatchQueue.main.async {
                     self?.biometricsResponse = response
                 }
-
+                
                 if let success = response.success, success {
                     self?.mindsDelegate?.onSuccess(response)
-                   
+                    
                 } else {
                     self?.mindsDelegate?.onError(response)
                 }
                 
-                self?.closeFlow()
-
-            case .failure(_):
-                guard let self = self,
-                      let biometricsResponse: BiometricResponse = self.biometricsResponse else { return }
-                self.mindsDelegate?.onError(biometricsResponse)
+            case .failure(let errorResponse):
+                let biometricsResponse: BiometricResponse = BiometricResponse(success: false, error: ErrorResponse(code: errorResponse.code.description, description: errorResponse.description))
+                self?.mindsDelegate?.onError(biometricsResponse)
             }
+            
+            self?.closeFlow()
         }
     }
 
