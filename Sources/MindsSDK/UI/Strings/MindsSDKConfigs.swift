@@ -36,8 +36,12 @@ struct MindsSDKConfigs {
         }
     }
 
-    func voiceRecordingTitle() -> String {
-        return getProperty(name: "VoiceRecordingTitle")
+    func voiceRecordingAuthenticationTitle() -> String {
+        return getProperty(name: "VoiceRecordingAuthenticationTitle")
+    }
+    
+    func voiceRecordingEnrollmentTitle() -> String {
+        return getProperty(name: "VoiceRecordingEnrollmentTitle")
     }
 
     func voiceRecordingSubtitle() -> String {
@@ -103,7 +107,8 @@ struct MindsSDKConfigs {
 fileprivate struct DefaultMindsSDKConfigs {
 
     static var config: [String: String] = [
-        "VoiceRecordingTitle": "Olá! Autentique sua voz",
+        "VoiceRecordingAuthenticationTitle": "Olá! Autentique sua voz",
+        "VoiceRecordingEnrollmentTitle": "Olá! Cadastre sua voz",
         "VoiceRecordingSubtitle": "Segure o botão para iniciar a gravação \ne leia o texto abaixo",
         "VoiceRecordingButtonInstruction": "Segure para gravar, solte para enviar",
         "GenericErrorAlertTitle": "Ocorreu um erro",

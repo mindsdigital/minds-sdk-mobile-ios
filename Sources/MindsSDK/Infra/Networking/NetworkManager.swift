@@ -70,6 +70,24 @@ enum NetworkError: Error, Equatable {
         case .serverError: return "MINDS SDK: ❌ Server Error ❌"
         }
     }
+
+    var description: String {
+        switch self {
+        case .badURL: return "Invalid URL"
+        case .apiError: return "API error"
+        case .invalidJSON: return "Invalid JSON"
+        case .serverError: return "Server error"
+        }
+    }
+
+    var code: Int {
+        switch self {
+        case .badURL: return 1001
+        case .apiError: return 1002
+        case .invalidJSON: return 1003
+        case .serverError: return 1004
+        }
+    }
 }
 
 protocol Requestable {

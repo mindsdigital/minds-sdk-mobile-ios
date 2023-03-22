@@ -9,7 +9,12 @@ import Foundation
 import AVFoundation
 
 struct StopRecordingImpl : StopRecording {    
-    func execute(avAudioRecorder: AVAudioRecorder) {
+    func execute(avAudioRecorder: AVAudioRecorder, avAudioSession: AVAudioSession) {
         avAudioRecorder.stop()
+        do {
+            try avAudioSession.setActive(false)
+        } catch {
+            debugPrint("Error stopping recording: \(error.localizedDescription)")
+        }
     }
 }

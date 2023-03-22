@@ -15,21 +15,32 @@ protocol VoiceRecordingServiceDelegate: AnyObject {
 }
 
 class VoiceRecordingServiceDelegateImpl: VoiceRecordingServiceDelegate {
-    var avrecorder: AVAudioRecorder? = nil
-
+    private var avRecorder: AVAudioRecorder?
+    
     func startRecording() {
         do {
-            let avsession = try GetAVAudioSessionImpl().execute()
-            avrecorder = try GetAVAudioRecorderImpl().execute()
-            StartRecordingImpl().execute(avAudioRecorder: avrecorder!, avAudioSession: avsession)
+            let avSession = try GetAVAudioSessionImpl().execute()
+            avRecorder = try GetAVAudioRecorderImpl().execute()
+            StartRecordingImpl().execute(avAudioRecorder: avRecorder!, avAudioSession: avSession)
                 
         } catch {
-            print("error")
+            debugPrint("Error starting recording: \(error)")
         }
     }
     
     func stopRecording() {
-        StopRecordingImpl().execute(avAudioRecorder: avrecorder!)
+        guard let avRecorder = avRecorder else {
+            return
+        }
+        
+        do {
+            let avSession = try GetAVAudioSessionImpl().execute()
+            StopRecordingImpl().execute(avAudioRecorder: avRecorder, avAudioSession: avSession)
+        } catch {
+            debugPrint("Error stopping recording: \(error)")
+        }
+        
+        self.avRecorder = nil
     }
     
     func audioDuration() -> Double {
