@@ -73,19 +73,19 @@ enum NetworkError: Error, Equatable {
 
     var description: String {
         switch self {
-        case .badURL: return "Invalid URL"
+        case .badURL: return "Invalid url"
         case .apiError: return "API error"
-        case .invalidJSON: return "Invalid JSON"
+        case .invalidJSON: return "Invalid Json"
         case .serverError: return "Server error"
         }
     }
 
     var code: Int {
         switch self {
-        case .badURL: return 1001
-        case .apiError: return 1002
-        case .invalidJSON: return 1003
-        case .serverError: return 1004
+        case .badURL: return 400
+        case .apiError: return 500
+        case .invalidJSON: return 500
+        case .serverError: return 500
         }
     }
 }
