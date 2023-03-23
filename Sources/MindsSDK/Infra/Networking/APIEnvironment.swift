@@ -7,16 +7,24 @@
 
 import Foundation
 
-enum APIEnvironment: String, CaseIterable {
+public enum Environment: String {
     case sandbox
     case staging
     case production
 }
 
-extension APIEnvironment {
+class EnvironmentManager {
     
-    var _baseURL: [String: String] {
-        switch self {
+    static let shared = EnvironmentManager()
+    
+    private var currentEnvironment: Environment = .sandbox
+    
+    func setEnvironment(_ environment: Environment) {
+         currentEnvironment = environment
+     }
+    
+    func _baseURL() -> [String: String] {
+        switch currentEnvironment {
         case .sandbox:
             return ["SPEAKER_API": "https://sandbox-speaker-api.minds.digital","VOICE_API": "https://sandbox-voice-api.minds.digital"]
         case .staging:
@@ -27,20 +35,13 @@ extension APIEnvironment {
     }
     
     var speakerApi: String {
-        return _baseURL["SPEAKER_API"] ?? ""
+        return _baseURL()["SPEAKER_API"] ?? ""
     }
     var voiceApi: String {
-        return _baseURL["VOICE_API"] ?? ""
+        return _baseURL()["VOICE_API"] ?? ""
     }
     
-    var currentEnvironment: String {
-        switch self {
-        case .sandbox:
-            return APIEnvironment.sandbox.rawValue
-        case .staging:
-            return APIEnvironment.staging.rawValue
-        case .production:
-            return APIEnvironment.production.rawValue
-        }
+    func getCurrentEnvironment() -> Environment {
+        return currentEnvironment
     }
 }
