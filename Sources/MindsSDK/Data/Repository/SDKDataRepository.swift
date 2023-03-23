@@ -18,6 +18,7 @@ struct SDKDataRepository {
     var liveness: RandomSentenceId = RandomSentenceId(id: 0)
     var externalCustomerId: String? = ""
     var showDetails: Bool = false
+    var environment: Environment? = nil
     
     static var shared: SDKDataRepository = .init()
 

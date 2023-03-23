@@ -13,16 +13,14 @@ protocol LivenessServiceProtocol {
 
 class LivenessService: LivenessServiceProtocol {
     private var networkRequest: Requestable
-    private var env: APIEnvironment
     
-    init(networkRequest: Requestable, env: APIEnvironment = .sandbox) {
+    init(networkRequest: Requestable) {
         self.networkRequest = networkRequest
-        self.env = env
     }
 
     func getRandomSentence(token: String, completion: @escaping (Result<RandomSentenceResponse, NetworkError>) -> Void) {
         let endpoint = LivenessEndpoints.randomSentences
-        let request = endpoint.createRequest(token: token, environment: env)
+        let request = endpoint.createRequest(token: token)
         self.networkRequest.request(request) { result in
             completion(result)
         }

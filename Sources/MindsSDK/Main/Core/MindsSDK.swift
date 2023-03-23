@@ -26,6 +26,11 @@ public class MindsSDK {
     public func setToken(_ token: String) {
         SDKDataRepository.shared.token = token
     }
+    
+    public func setEnvironment(_ environment: Environment) {
+        SDKDataRepository.shared.environment = environment
+        EnvironmentManager.shared.setEnvironment(environment)
+    }
 
     public func setExternalCustomerId(_ externalCustomerId: String?) {
         SDKDataRepository.shared.externalCustomerId = externalCustomerId
@@ -75,6 +80,11 @@ public class MindsSDK {
     }
 
     private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
+        
+        if(SDKDataRepository.shared.environment == nil){
+            fatalError("Environment not defined")
+        }
+        
         initializeSentry { result in
             switch result {
             case .success:
@@ -106,7 +116,7 @@ public class MindsSDK {
                     if response.success && !(response.data.isEmpty) {
                         SentrySDK.start { options in
                             options.dsn = response.data
-                            options.environment = response.apiEnvironment
+                            options.environment = EnvironmentManager.shared.getCurrentEnvironment().rawValue
                         }
                     }
                     completion(.success(nil))

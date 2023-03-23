@@ -21,11 +21,11 @@ enum BiometricsEndpoints {
         }
     }
     
-    func createRequest(token: String, environment: APIEnvironment) -> NetworkRequest {
+    func createRequest(token: String) -> NetworkRequest {
         var headers: Headers = [:]
         headers["Content-Type"] = "application/json"
         headers["authorization"] = "Bearer \(token)"
-        return NetworkRequest(url: getURL(from: environment), headers: headers, body: requestBody, httpMethod: httpMethod)
+        return NetworkRequest(url: getURL(), headers: headers, body: requestBody, httpMethod: httpMethod)
     }
     
     var requestBody: Encodable? {
@@ -35,8 +35,8 @@ enum BiometricsEndpoints {
         }
     }
     
-    func getURL(from environment: APIEnvironment) -> String {
-        let baseUrl = environment.speakerApi
+    func getURL() -> String {
+        let baseUrl = EnvironmentManager.shared.speakerApi
         switch self {
         case .validateDataInput:
             return "\(baseUrl)/v2/biometrics/validate-sdk-init"
