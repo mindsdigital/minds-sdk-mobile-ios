@@ -63,6 +63,13 @@ final class VoiceRecordView: UIView {
         $0.animation = animation
         $0.contentMode = .scaleAspectFit
         $0.loopMode = .loop
+        if let (red, green, blue) = UIColor.hexToRGB(MindsSDKConfigs.shared.voiceRecordingLootieAnimationColor()) {
+            let colorProvider = ColorValueProvider(Color(r: (Double(red)/255), g: (Double(green)/255), b: (Double(blue)/255), a: 1))
+            $0.setValueProvider(colorProvider, keypath: AnimationKeypath(keypath: "**.矩形 1.填充 1.Color"))
+        } else {
+            debugPrint("Invalid hex string")
+        }
+        $0.logHierarchyKeypaths()
         $0.play()
         $0.isHidden = true
         return $0

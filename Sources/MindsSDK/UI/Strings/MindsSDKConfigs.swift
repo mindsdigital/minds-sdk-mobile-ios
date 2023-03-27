@@ -94,6 +94,21 @@ struct MindsSDKConfigs {
         let colorCode: String = getProperty(name: "VoiceRecordingMainTextColor")
         return .init(hex: colorCode)
     }
+    
+    func loadingLootieAnimationColor() -> String {
+        let colorCode: String = getProperty(name: "LoadingLootieAnimationColor")
+        return colorCode
+    }
+    
+    func voiceRecordingLootieAnimationColor() -> String {
+        let colorCode: String = getProperty(name: "VoiceRecordingLootieAnimationColor")
+        return colorCode
+    }
+    
+    func voiceRecordingButtonColor() -> UIColor {
+        let colorCode: String = getProperty(name: "VoiceRecordingButtonColor")
+        return .init(hex: colorCode)
+    }
 
     private func getProperty(name infoName: String) -> String {
         guard let property = config?[infoName] as? String else {
@@ -120,7 +135,10 @@ fileprivate struct DefaultMindsSDKConfigs {
         "InvalidLengthAlertErrorButtonLabel": "Tentar novamente",
         "VoiceRecordingTitleColor": "#252525",
         "VoiceRecordingSubtitleColor": "#5F5F5F",
-        "VoiceRecordingMainTextColor": "#252525"
+        "VoiceRecordingMainTextColor": "#252525",
+        "LoadingLootieAnimationColor": "#FF03DAC5",
+        "VoiceRecordingLootieAnimationColor": "#FF03DAC5",
+        "VoiceRecordingButtonColor": "#00DDB8"
     ]
 
 }

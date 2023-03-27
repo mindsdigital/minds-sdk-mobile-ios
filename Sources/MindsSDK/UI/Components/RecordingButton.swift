@@ -92,7 +92,7 @@ final class RecordingButton: UIButton {
 extension RecordingButton: ViewConfiguration {
 
     func configureViews() {
-        backgroundColor = .baselinePrimary
+        backgroundColor = MindsSDKConfigs.shared.voiceRecordingButtonColor()
         clipsToBounds = true
         layer.cornerRadius = size.rawValue * 0.5
     }

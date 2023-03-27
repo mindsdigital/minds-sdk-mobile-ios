@@ -86,5 +86,30 @@ extension UIColor {
     static var baselinePrimary: UIColor {
         return UIColor(hex: "00DDB8")
     }
+    
+    static func hexToRGB(_ hex: String) -> (red: Int, green: Int, blue: Int)? {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
+        if hexSanitized.hasPrefix("#") {
+            hexSanitized.remove(at: hexSanitized.startIndex)
+        }
+
+        if hexSanitized.count != 6 && hexSanitized.count != 8 {
+            return nil
+        }
+
+        if hexSanitized.count == 8 {
+            hexSanitized.remove(at: hexSanitized.startIndex)
+            hexSanitized.remove(at: hexSanitized.startIndex)
+        }
+
+        var rgb: UInt32 = 0
+        Scanner(string: hexSanitized).scanHexInt32(&rgb)
+
+        let red = Int((rgb & 0xFF0000) >> 16)
+        let green = Int((rgb & 0x00FF00) >> 8)
+        let blue = Int(rgb & 0x0000FF)
+
+        return (red, green, blue)
+    }
 }
