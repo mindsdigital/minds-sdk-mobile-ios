@@ -153,6 +153,9 @@ public class MindsSDK {
                 switch result {
                 case .success(let response):
                     if !response.success {
+                        if(response.status == "invalid_phone_number" && SDKDataRepository.shared.phoneNumber.isEmpty){
+                            completion(.success(()))
+                        }
                         let error = DomainError(response.status, message: response.message)
                         completion(.failure(error))
                     } else {
