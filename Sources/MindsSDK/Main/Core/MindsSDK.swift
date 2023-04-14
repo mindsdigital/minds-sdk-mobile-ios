@@ -61,28 +61,36 @@ public class MindsSDK {
     }
 
     public func initialize(on navigationController: UINavigationController, onReceive: @escaping ((Error?) -> Void)) {
-        navigationController.interactivePopGestureRecognizer?.isEnabled = false
-        mainCoordinator = .init(navigationController: navigationController)
+            navigationController.interactivePopGestureRecognizer?.isEnabled = false
+            mainCoordinator = .init(navigationController: navigationController)
 
-        verifyMicrophonePermission { [weak self] in
-            guard let self = self else { return }
+            verifyMicrophonePermission { [weak self] in
+                guard let self = self else { return }
 
-            self.initializeSDK { result in
-                switch result {
-                case .success(let response):
-                    SDKDataRepository.shared.liveness = response
-                    self.mainCoordinator?.showVoiceRecordView(delegate: self.delegate)
-                case .failure(let error):
+                do {
+                    try self.initializeSDK { result in
+                        switch result {
+                        case .success(let response):
+                            SDKDataRepository.shared.liveness = response
+                            self.mainCoordinator?.showVoiceRecordView(delegate: self.delegate)
+                        case .failure(let error):
+                            onReceive(error)
+                        }
+                    }
+                } catch {
                     onReceive(error)
                 }
             }
         }
-    }
 
-    private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) {
+    private func initializeSDK(completion: @escaping (Result<RandomSentenceId, Error>) -> Void) throws {
         
-        if(SDKDataRepository.shared.environment == nil){
-            fatalError("Environment not defined")
+        if(SDKDataRepository.shared.environment == nil) {
+            throw DomainError.undefinedEnvironment
+        }
+
+        guard !SDKDataRepository.shared.token.isEmpty else {
+            throw DomainError.invalidToken
         }
         
         initializeSentry { result in
