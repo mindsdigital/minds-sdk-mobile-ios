@@ -61,6 +61,7 @@ enum NetworkError: Error, Equatable {
     case apiError(error: String)
     case invalidJSON(error: String)
     case serverError
+    case invalidToken
 
     var message: String {
         switch self {
@@ -68,6 +69,7 @@ enum NetworkError: Error, Equatable {
         case .apiError(let error): return "API ERROR 🧨💥ERROR: \(error)"
         case .invalidJSON(let error): return "MINDS SDK: ❌ Invalid JSON: \(error)"
         case .serverError: return "MINDS SDK: ❌ Server Error ❌"
+        case .invalidToken: return "Invalid Token"
         }
     }
 
@@ -77,6 +79,7 @@ enum NetworkError: Error, Equatable {
         case .apiError: return "API error"
         case .invalidJSON: return "Invalid Json"
         case .serverError: return "Server error"
+        case .invalidToken: return "Invalid token"
         }
     }
 
@@ -86,6 +89,7 @@ enum NetworkError: Error, Equatable {
         case .apiError: return 500
         case .invalidJSON: return 500
         case .serverError: return 500
+        case .invalidToken: return 401
         }
     }
 }
@@ -119,6 +123,17 @@ class NetworkManager: Requestable {
                 completion(.failure(.apiError(error: String(describing: error))))
                 return
             }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(.serverError))
+                return
+            }
+
+            if httpResponse.statusCode == 401 {
+                completion(.failure(.invalidToken))
+                return
+            }
+
 
             guard let data = data else {
                 completion(.failure(.serverError))

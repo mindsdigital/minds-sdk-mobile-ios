@@ -23,7 +23,6 @@ final class LoadingView: UIView {
         } else {
             debugPrint("Invalid hex string")
         }
-        $0.logHierarchyKeypaths()
         $0.play()
         return $0
     }(AnimationView(frame: .zero))

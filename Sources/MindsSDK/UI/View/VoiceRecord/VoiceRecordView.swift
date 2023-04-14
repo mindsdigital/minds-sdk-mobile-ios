@@ -69,7 +69,6 @@ final class VoiceRecordView: UIView {
         } else {
             debugPrint("Invalid hex string")
         }
-        $0.logHierarchyKeypaths()
         $0.play()
         $0.isHidden = true
         return $0
