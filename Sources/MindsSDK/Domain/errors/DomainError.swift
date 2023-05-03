@@ -31,7 +31,7 @@ public enum DomainError: Error, Equatable {
         case "customer_not_enrolled":
             self = DomainError.customerNotEnrolled(message)
         case "customer_not_certified":
-            self = DomainError.invalidAudioFormat(message)
+            self = DomainError.customerNotCertified(message)
         default:
             self = DomainError.internalServerException
         }
