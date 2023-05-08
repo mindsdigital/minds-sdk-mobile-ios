@@ -67,10 +67,12 @@ public struct Details: Codable {
     enum CodingKeys: String, CodingKey {
         case flag
         case voiceMatch = "voice_match"
+        case antispoofing
     }
     
     public let flag: Flag?
     public let voiceMatch: VoiceMatch?
+    public let antispoofing: Antispoofing?
     
     public struct Flag: Codable {
         public let id: Int64?
@@ -83,6 +85,11 @@ public struct Details: Codable {
         public let result: String?
         public let confidence: String?
         public let status: String?
+    }
+    
+    public struct Antispoofing: Codable {
+        public var result: String?
+        public var status: String?
     }
 }
 
