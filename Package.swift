@@ -17,7 +17,7 @@ let package = Package(
         .package(name: "Alamofire", url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.5.0")),
         .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", .upToNextMajor(from: "3.4.1")),
         .package(name: "SwiftOGG", url: "https://github.com/mindsdigital/swift-ogg", .branch("main")),
-        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "8.1.0"),
+        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "8.7.0"),
     ],
     targets: [
         .target(

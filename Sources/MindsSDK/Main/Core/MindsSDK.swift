@@ -127,6 +127,14 @@ public class MindsSDK {
                             options.environment = EnvironmentManager.shared.getCurrentEnvironment().rawValue
                         }
                     }
+                    do {
+                        let decodedToken = try decode(jwtToken: SDKDataRepository.shared.token)
+                        SentrySDK.configureScope { scope in
+                            scope.setTag(value: String(decodedToken["company_id"] as! Int), key: "company_id")
+                        }
+                    } catch {
+                        debugPrint("Error decoding JWT: \(error)")
+                    }
                     completion(.success(nil))
                 case .failure(let error):
                     completion(.failure(error))
