@@ -53,6 +53,18 @@ final class VoiceRecordViewModel {
     func updateLivenessText(_ liveness: RandomSentenceId) {
         self.livenessText = liveness
     }
+    
+    func isPhraseSet() -> Bool {
+        return SDKDataRepository.shared.phrase != nil && !SDKDataRepository.shared.phrase!.isEmpty
+    }
+    
+    func getPhrase() -> String {
+        if (isPhraseSet()) {
+            return SDKDataRepository.shared.phrase!
+        }
+        return livenessText.result!
+    }
+
 
     func longPressStarted() {
         startRecording()

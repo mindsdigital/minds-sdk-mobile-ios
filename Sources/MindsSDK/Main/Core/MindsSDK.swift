@@ -59,6 +59,10 @@ public class MindsSDK {
     public func setConnectionTimeout(_ connectionTimeout: Float) {
         SDKDataRepository.shared.connectionTimeout = connectionTimeout
     }
+    
+    public func setUserVerbalizationPhrase(_ phrase: String) {
+        SDKDataRepository.shared.phrase = phrase
+    }
 
     public func initialize(on navigationController: UINavigationController, onReceive: @escaping ((Error?) -> Void)) {
             navigationController.interactivePopGestureRecognizer?.isEnabled = false
@@ -105,8 +109,12 @@ public class MindsSDK {
         self.validateDataInput { [weak self] dataInputResult in
             switch dataInputResult {
             case .success:
-                self?.getRandomSentences { sentenceResult in
-                    completion(sentenceResult)
+                if SDKDataRepository.shared.phrase == nil {
+                    self?.getRandomSentences { sentenceResult in
+                        completion(sentenceResult)
+                    }
+                } else {
+                    completion(.success(RandomSentenceId(id: 0, result: "")))
                 }
             case .failure(let error):
                 SentrySDK.capture(error: error)

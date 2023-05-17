@@ -48,7 +48,7 @@ final class VoiceRecordView: UIView {
 
     private lazy var voiceRecordLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.text = viewModel.livenessText.result
+        $0.text = viewModel.getPhrase()
         $0.textColor = MindsSDKConfigs.shared.voiceRecordMainTextColor()
         $0.numberOfLines = 0
         $0.translatesAutoresizingMaskIntoConstraints = false

@@ -19,7 +19,7 @@ struct SDKDataRepository {
     var externalCustomerId: String? = ""
     var showDetails: Bool = false
     var environment: Environment? = nil
-    
+    var phrase: String? = nil
     static var shared: SDKDataRepository = .init()
 
 }
