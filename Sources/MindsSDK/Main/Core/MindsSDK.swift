@@ -63,6 +63,10 @@ public class MindsSDK {
     public func setUserVerbalizationPhrase(_ phrase: String) {
         SDKDataRepository.shared.phrase = phrase
     }
+    
+    public func setAllowBackAction(_ allowBackAction: Bool) {
+        SDKDataRepository.shared.allowBackAction = allowBackAction
+    }
 
     public func initialize(on navigationController: UINavigationController, onReceive: @escaping ((Error?) -> Void)) {
             navigationController.interactivePopGestureRecognizer?.isEnabled = false

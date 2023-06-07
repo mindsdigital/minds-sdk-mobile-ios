@@ -20,6 +20,7 @@ struct SDKDataRepository {
     var showDetails: Bool = false
     var environment: Environment? = nil
     var phrase: String? = nil
+    var allowBackAction: Bool = false
     static var shared: SDKDataRepository = .init()
 
 }

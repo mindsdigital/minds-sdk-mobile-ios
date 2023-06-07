@@ -13,6 +13,7 @@ final class MainCoordinator {
     private let navigationController: UINavigationController
     private let loadingViewController: LoadingViewController = .init()
     private var voiceRecordViewController: VoiceRecordViewController?
+    let allowBackAction: Bool = SDKDataRepository.shared.allowBackAction
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -37,7 +38,9 @@ final class MainCoordinator {
     }
     
     private func hideBackButton(_ controller: UIViewController) {
-        controller.navigationItem.setHidesBackButton(true, animated: false)
+        if (!allowBackAction) {
+            controller.navigationItem.setHidesBackButton(true, animated: false)
+        }
     }
 
 }
@@ -56,18 +59,19 @@ extension MainCoordinator: VoiceRecordViewControllerDelegate {
     func showLoading() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            self.hideBackButton(self.loadingViewController)
             self.navigationController.pushViewController(self.loadingViewController, animated: false)
         }
     }
 
     func hideLoading() {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self,
-                  let voiceRecordViewController: VoiceRecordViewController = self.voiceRecordViewController else { return }
-
-            self.navigationController.popToViewController(voiceRecordViewController, animated: false)
+            guard let voiceRecordViewController = self?.voiceRecordViewController,
+                  let navigationController = self?.navigationController,
+                  navigationController.viewControllers.contains(voiceRecordViewController) else {
+                return
+            }
+            
+            navigationController.popToViewController(voiceRecordViewController, animated: false)
         }
     }
-
 }

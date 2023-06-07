@@ -84,13 +84,14 @@ final class VoiceRecordViewModel {
         recordingDelegate?.stopRecording()
     }
     
-    private func doBiometricsLater() {
+    func doBiometricsLater() {
         guard let biometricsResponse = biometricsResponse else {
             return
         }
-
+        
         DoBiometricsLaterImpl().execute(biometricResponse: biometricsResponse,
                                         delegate: mindsDelegate)
+        
         closeFlow()
     }
 
@@ -137,5 +138,4 @@ final class VoiceRecordViewModel {
     private func closeFlow() {
         delegate?.closeFlow()
     }
-
 }
