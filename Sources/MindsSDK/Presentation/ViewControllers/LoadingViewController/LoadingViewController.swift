@@ -10,6 +10,7 @@ import UIKit
 final class LoadingViewController: UIViewController {
     
     let loadingView: LoadingView
+    
 
     init() {
         self.loadingView = .init()
@@ -27,6 +28,7 @@ final class LoadingViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         loadingView.viewDidAppear()
     }
 
