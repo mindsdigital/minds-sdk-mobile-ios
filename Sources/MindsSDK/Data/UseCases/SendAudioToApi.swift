@@ -32,7 +32,8 @@ struct SendAudioToApi {
                     extensionAudio: "ogg",
                     phoneNumber: sdkDataRepository.phoneNumber,
                     showDetails: sdkDataRepository.showDetails,
-                    sourceName: "SDK_IOS"
+                    sourceName: "SDK_IOS",
+                    liveness: Liveness(sentenceId: sdkDataRepository.liveness.id)
             )
 
             voiceApiService.sendAudio(token: sdkDataRepository.token, request: request) { result in
