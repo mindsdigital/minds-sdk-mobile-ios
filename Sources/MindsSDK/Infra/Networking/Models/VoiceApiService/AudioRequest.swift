@@ -16,6 +16,7 @@ struct AudioRequest: Codable {
     let phoneNumber: String
     let showDetails: Bool
     let sourceName: String
+    let liveness: Liveness
     
     enum CodingKeys: String, CodingKey {
         case cpf
@@ -26,5 +27,15 @@ struct AudioRequest: Codable {
         case extensionAudio = "extension"
         case showDetails = "show_details"
         case sourceName = "source_name"
+        case liveness
     }
 }
+
+struct Liveness: Codable {
+    let sentenceId: Int
+
+    enum CodingKeys: String, CodingKey {
+        case sentenceId = "sentence_id"
+    }
+}
+
