@@ -17,6 +17,7 @@ public enum DomainError: Error, Equatable {
     case internalServerException
     case undefinedEnvironment
     case invalidToken
+    case sentenceTooLongException
 
     init(_ serverResponse: String, message: String?) {
         switch serverResponse {
@@ -47,7 +48,8 @@ public enum DomainError: Error, Equatable {
             (.customerNotCertified, .customerNotCertified),
             (.internalServerException, .internalServerException),
             (.undefinedEnvironment, .undefinedEnvironment),
-            (.invalidToken, .invalidToken):
+            (.invalidToken, .invalidToken),
+            (.sentenceTooLongException, .sentenceTooLongException):
             return true
         default: return false
         }

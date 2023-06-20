@@ -96,6 +96,10 @@ public class MindsSDK {
         if(SDKDataRepository.shared.environment == nil) {
             throw DomainError.undefinedEnvironment
         }
+        
+        if(SDKDataRepository.shared.phrase != nil && !SDKDataRepository.shared.phrase!.isEmpty && SDKDataRepository.shared.phrase!.count > 300) {
+            throw DomainError.sentenceTooLongException
+        }
 
         guard !SDKDataRepository.shared.token.isEmpty else {
             throw DomainError.invalidToken
