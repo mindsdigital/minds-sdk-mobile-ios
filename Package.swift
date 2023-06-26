@@ -28,3 +28,9 @@ let package = Package(
             ]),
     ]
 )
+
+#if canImport(CDarwin)
+package.targets[0].cSettings = [
+    .unsafeFlags(["-arch", "x86_64", "-arch", "arm64"]),
+]
+#endif
