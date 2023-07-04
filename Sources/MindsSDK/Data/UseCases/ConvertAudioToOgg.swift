@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if !COCOAPODS
 import SwiftOGG
+#endif
 
 class ConvertAudioToOgg {
     static func convert(src: URL) -> URL {

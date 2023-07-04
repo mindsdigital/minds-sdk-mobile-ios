@@ -23,21 +23,19 @@ Pod::Spec.new do |spec|
   spec.dependency 'YbridOpus'
   spec.dependency 'YbridOgg'
   
-  #spec.ios.source_files = 'Sources/SupportingFiles/Dependencies/Copustools/*.{h,m,swift}'
-  #spec.ios.resource_bundle = { 'Copustools' => ['Sources/SupportingFiles/Dependencies/Copustools/*.xib'] }
-  
   spec.ios.dependency 'YbridOpus'
   spec.ios.dependency 'YbridOgg'
-  #spec.ios.dependency 'Copustools'
 
-  spec.subspec 'Copustools' do |target|
-    target.source_files = 'Sources/SupportingFiles/Dependencies/Copustools/**/*.{h,m,swift}'
+  spec.subspec 'Copustools' do |subspec|
+    subspec.source_files = 'Sources/SupportingFiles/Dependencies/Copustools'
+    subspec.public_header_files =
+    "Sources/SupportingFiles/Dependencies/Copustools/*h"
   end
-  
-  spec.subspec 'SwiftOGG' do |target|
-    target.source_files = 'Sources/SwiftOGG/*.{h,m,swift}'
-    target.dependency 'YbridOpus'
-    target.dependency 'YbridOgg'
-    #target.dependency 'Copustools'
+
+  spec.subspec 'SwiftOGG' do |subspec|
+    subspec.dependency 'YbridOpus'
+    subspec.dependency 'MindsSDK/Copustools'
+    subspec.dependency 'YbridOgg'
+    subspec.source_files = 'Sources/SwiftOGG'
   end
 end
