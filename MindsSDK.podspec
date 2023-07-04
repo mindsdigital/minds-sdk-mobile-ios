@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
     spec.name         = "MindsSDK"
-    spec.version      = "1.0.2"
+    spec.version      = "1.0.3"
     spec.summary      = "SDK Mobile da Minds Digital para incorporar a Biometria de Voz em seu aplicativo"
     spec.description  = <<-DESC
     O SDK iOS da Minds Digital busca proporcionar de forma rápida, simplificada e abstraída as jornadas de autenticação e cadastro por meio da biometria de voz em suas aplicações.
