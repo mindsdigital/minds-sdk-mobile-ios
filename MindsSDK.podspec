@@ -24,7 +24,7 @@ Pod::Spec.new do |spec|
     }
   
     spec.dependency 'Alamofire', '~> 5.5'
-    spec.dependency 'Lottie', '~> 3.4'
+    spec.dependency 'lottie-ios', '~> 3.4.1'
     spec.dependency 'Sentry', '~> 8.7'
     spec.vendored_frameworks = 'Sources/Frameworks/*.xcframework'  # Path to your xcframeworks
   end
