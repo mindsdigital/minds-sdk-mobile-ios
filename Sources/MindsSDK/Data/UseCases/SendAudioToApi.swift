@@ -21,8 +21,8 @@ struct SendAudioToApi {
             let convertedAudioData = try Data(contentsOf: convertedAudioURL)
 
             let encodedString = convertedAudioData.base64EncodedString()
-
-         
+            
+            ClearCacheImpl().execute(url: convertedAudioURL)
 
             let request = AudioRequest(
                     audios: encodedString,

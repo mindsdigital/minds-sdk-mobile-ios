@@ -6,17 +6,28 @@
 //
 
 import Foundation
-import SwiftOGG
+import AVFAudio
+import ffmpegkit
 
 class ConvertAudioToOgg {
     static func convert(src: URL) -> URL {
+        let cacheManager: ClearCache
         let convertedAudio = URL(fileURLWithPath: NSTemporaryDirectory() + "audio.ogg")
-        
-        do {
-            try OGGConverter.convertM4aFileToOpusOGG(src: src, dest: convertedAudio)
-        } catch {
-            print(false, "Failed to convert from wav to ogg with error \(error)")
-        }
+        cacheManager = ClearCacheImpl()
+        cacheManager.execute(url: convertedAudio)
+        let arguments = "-f s16le -ar 48000 -ac 1 -i \(src) -c:a libopus \(convertedAudio)"
+        let session = FFmpegKit.execute(arguments)
+        let returnCode = session?.getReturnCode()
+
+             if ReturnCode.isSuccess(returnCode) {
+                 print("Successful conversion")
+                 // SUCCESS
+             } else if ReturnCode.isCancel(returnCode) {
+                 print(false, "Canceled")
+             } else {
+                 // FAILURE
+                 print(false, "Failed to convert from wav to ogg with error")
+             }
         
         return convertedAudio
     }
