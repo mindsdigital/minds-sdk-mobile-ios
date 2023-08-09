@@ -20,39 +20,12 @@
         }
       },
       {
-        "package": "YbridOgg",
-        "repositoryURL": "https://github.com/vector-im/ogg-swift.git",
-        "state": {
-          "branch": null,
-          "revision": "9d82ed838404f10b607a1a1689f404563e9115c3",
-          "version": "0.8.3"
-        }
-      },
-      {
-        "package": "YbridOpus",
-        "repositoryURL": "https://github.com/vector-im/opus-swift",
-        "state": {
-          "branch": null,
-          "revision": "11f1887767cbc87c4b64b789ee830b779cc744cb",
-          "version": "0.8.4"
-        }
-      },
-      {
         "package": "Sentry",
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
           "revision": "d277532e1c8af813981ba01f591b15bbdd735615",
           "version": "8.8.0"
-        }
-      },
-      {
-        "package": "SwiftOGG",
-        "repositoryURL": "https://github.com/mindsdigital/swift-ogg",
-        "state": {
-          "branch": "main",
-          "revision": "e9a9e7601da662fd8b97d93781ff5c60b4becf88",
-          "version": null
         }
       }
     ]
