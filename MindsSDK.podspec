@@ -12,11 +12,11 @@ Pod::Spec.new do |spec|
     spec.author             = { "Minds Digital" => "meajuda@mindsdigital.net" }
     spec.social_media_url   = "https://minds.digital/"
   
-    spec.ios.deployment_target = "11.0"
+    spec.ios.deployment_target = "12.1"
     spec.swift_version = "5.0"
     spec.source       = { :git => 'https://github.com/yourusername/minds-sdk-mobile-ios.git', :tag => spec.version.to_s }
 
-    spec.platform     = :ios, '12.0'  # Minimum supported iOS version
+    spec.platform     = :ios, '12.1' 
   
     spec.source_files = 'Sources/**/*.swift'
 
