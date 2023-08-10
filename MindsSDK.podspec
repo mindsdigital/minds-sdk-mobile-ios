@@ -21,7 +21,7 @@ Pod::Spec.new do |spec|
     spec.source_files = 'Sources/**/*.swift'
 
     spec.resource_bundles = {
-    'MindsSDKResources' => ['Sources/MindsSDK/resources/*/*.{png,json,xcassets}'],
+    'MindsSDKResources' => ['Sources/MindsSDK/resources/**/*.{png,json,xcassets}'],
     }
 
     spec.dependency 'Alamofire', '~> 5.5'
