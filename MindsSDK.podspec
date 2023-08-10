@@ -19,10 +19,11 @@ Pod::Spec.new do |spec|
     spec.platform     = :ios, '12.0'  # Minimum supported iOS version
   
     spec.source_files = 'Sources/**/*.swift'
+
     spec.resource_bundles = {
-      'MindsSDKResources' => ['Sources/MindsSDK/resources/*']  # Adjust the path to your resources
+    'MindsSDKResources' => ['Sources/MindsSDK/resources/*/*.{png,json,xcassets}'],
     }
-  
+
     spec.dependency 'Alamofire', '~> 5.5'
     spec.dependency 'lottie-ios', '~> 3.4.1'
     spec.dependency 'Sentry', '~> 8.7'
