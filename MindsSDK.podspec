@@ -12,11 +12,11 @@ Pod::Spec.new do |spec|
     spec.author             = { "Minds Digital" => "meajuda@mindsdigital.net" }
     spec.social_media_url   = "https://minds.digital/"
   
-    spec.ios.deployment_target = "12.1"
+    spec.ios.deployment_target = "11.0"
     spec.swift_version = "5.0"
     spec.source       = { :git => 'https://github.com/yourusername/minds-sdk-mobile-ios.git', :tag => spec.version.to_s }
 
-    spec.platform     = :ios, '12.1' 
+    spec.platform     = :ios, '11.0' 
   
     spec.source_files = 'Sources/**/*.swift'
 
@@ -24,8 +24,9 @@ Pod::Spec.new do |spec|
     'MindsSDKResources' => ['Sources/MindsSDK/resources/**/*.{png,json,xcassets}'],
     }
 
+    spec.static_framework = true
     spec.dependency 'Alamofire', '~> 5.5'
     spec.dependency 'lottie-ios', '~> 3.4.1'
     spec.dependency 'Sentry', '~> 8.7'
-    spec.vendored_frameworks = 'Sources/Frameworks/*.xcframework'  # Path to your xcframeworks
+    spec.vendored_frameworks = 'Sources/Frameworks/*.framework'  # Path to your xcframeworks
   end
