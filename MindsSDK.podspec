@@ -24,9 +24,11 @@ Pod::Spec.new do |spec|
     'MindsSDKResources' => ['Sources/MindsSDK/resources/**/*.{png,json,xcassets}'],
     }
 
+    spec.dependency 'ffmpeg-kit-ios-audio', '~> 5.1.LTS'
+
     spec.static_framework = true
     spec.dependency 'Alamofire', '~> 5.5'
     spec.dependency 'lottie-ios', '~> 3.4.1'
     spec.dependency 'Sentry', '~> 8.7'
-    spec.vendored_frameworks = 'Sources/Frameworks/*.framework'  # Path to your xcframeworks
+    #spec.vendored_frameworks = 'Sources/Frameworks/*.framework'  # Path to your xcframeworks
   end
