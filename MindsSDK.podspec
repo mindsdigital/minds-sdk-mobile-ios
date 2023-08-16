@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
                      DESC
   
     spec.homepage     = "https://github.com/mindsdigital/minds-sdk-mobile-ios"
-    spec.license      = { :type => 'MIT', :file => 'LICENSE' }
+    spec.license      = "MIT"
     spec.author             = { "Minds Digital" => "meajuda@mindsdigital.net" }
     spec.social_media_url   = "https://minds.digital/"
   
