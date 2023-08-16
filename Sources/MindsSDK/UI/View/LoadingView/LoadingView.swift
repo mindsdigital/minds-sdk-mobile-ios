@@ -11,21 +11,38 @@ import Lottie
 final class LoadingView: UIView {
     
     private lazy var lottieView: AnimationView = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        let animation = Animation.named(LottieAnimations.loadingLottieAnimation, bundle: Bundle.module)
-        let keypath = AnimationKeypath(keypath: "Shape Layer 1.Ellipse 1.Stroke 1.Color")
-        $0.animation = animation
-        $0.contentMode = .scaleAspectFit
-        $0.loopMode = .loop
-        if let (red, green, blue) = UIColor.hexToRGB(MindsSDKConfigs.shared.loadingLootieAnimationColor()) {
-            let colorProvider = ColorValueProvider(Color(r: (Double(red)/255), g: (Double(green)/255), b: (Double(blue)/255), a: 1))
-            $0.setValueProvider(colorProvider, keypath: keypath)
+        let animationView = AnimationView(frame: .zero)
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let animationName = LottieAnimations.loadingLottieAnimation
+
+        #if SWIFT_PACKAGE
+        let resourceBundle = Bundle.module
+        #else
+        let resourceBundle = MindsSDKBundle.resourceBundle
+        #endif
+        
+        if let animation = Animation.named(animationName, bundle: resourceBundle) {
+            animationView.animation = animation
+            animationView.contentMode = .scaleAspectFit
+            animationView.loopMode = .loop
+            
+            if let (red, green, blue) = UIColor.hexToRGB(MindsSDKConfigs.shared.loadingLootieAnimationColor()) {
+                let colorProvider = ColorValueProvider(Color(r: Double(red) / 255, g: Double(green) / 255, b: Double(blue) / 255, a: 1))
+                let keypath = AnimationKeypath(keypath: "Shape Layer 1.Ellipse 1.Stroke 1.Color")
+                animationView.setValueProvider(colorProvider, keypath: keypath)
+            } else {
+                debugPrint("Invalid hex string")
+            }
+            
+            animationView.play()
         } else {
-            debugPrint("Invalid hex string")
+            debugPrint("Failed to load animation: \(animationName)")
         }
-        $0.play()
-        return $0
-    }(AnimationView(frame: .zero))
+        
+        return animationView
+    }()
+
 
     init() {
         super.init(frame: .zero)

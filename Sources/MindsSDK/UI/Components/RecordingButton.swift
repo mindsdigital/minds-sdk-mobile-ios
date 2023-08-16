@@ -12,14 +12,21 @@ final class RecordingButton: UIButton {
     enum RecordingButtonSizes: CGFloat {
         case regular = 60
     }
+    
+    #if SWIFT_PACKAGE
+    let resourceBundle = Bundle.module
+    #else
+    let resourceBundle = MindsSDKBundle.resourceBundle
+    #endif
 
     private lazy var microphoneIconImageView: UIImageView = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.image = UIImage(named: "voice", in: Bundle.module, compatibleWith: nil)
-        $0.contentMode = .scaleToFill
-        return $0
-    }(UIImageView(image: nil))
-
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(named: "voice", in: resourceBundle, compatibleWith: nil)
+        imageView.contentMode = .scaleToFill
+        return imageView
+    }()
+    
     var onButtonTapped: (() -> Void)?
     var onLongPressStart: (() -> Void)?
     var onLongPressEnd: (() -> Void)?

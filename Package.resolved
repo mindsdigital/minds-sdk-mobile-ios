@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
         "state": {
           "branch": null,
-          "revision": "f82c23a8a7ef8dc1a49a8bfc6a96883e79121864",
-          "version": "5.5.0"
+          "revision": "bc268c28fb170f494de9e9927c371b8342979ece",
+          "version": "5.7.1"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
         "state": {
           "branch": null,
-          "revision": "b04b773957e3e359730590c2e7c16d8c3874ec50",
-          "version": "3.4.1"
+          "revision": "b4bd0604ded9574807f41b4004b57dd1226a30a4",
+          "version": "3.5.0"
         }
       },
       {
@@ -38,14 +38,23 @@
         }
       },
       {
-        "identity" : "Sentry",
-        "kind" : "remoteSourceControl",
-        "location" : "https://github.com/getsentry/sentry-cocoa",
-        "state" : {
-            "revision" : "24fa90aa4ef8f81c65eb5803e40875f685de0dcd",
-            "version" : "8.1.0"
+        "package": "Sentry",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
+        "state": {
+          "branch": null,
+          "revision": "d277532e1c8af813981ba01f591b15bbdd735615",
+          "version": "8.8.0"
         }
-    },
+      },
+      {
+        "package": "SwiftOGG",
+        "repositoryURL": "https://github.com/mindsdigital/swift-ogg",
+        "state": {
+          "branch": "main",
+          "revision": "e9a9e7601da662fd8b97d93781ff5c60b4becf88",
+          "version": null
+        }
+      }
     ]
   },
   "version": 1

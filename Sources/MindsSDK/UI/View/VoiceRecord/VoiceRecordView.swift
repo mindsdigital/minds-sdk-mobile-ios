@@ -56,23 +56,33 @@ final class VoiceRecordView: UIView {
         $0.minimumScaleFactor = 0.7
         return $0
     }(UILabel())
+    
+    #if SWIFT_PACKAGE
+    let resourceBundle = Bundle.module
+    #else
+    let resourceBundle = MindsSDKBundle.resourceBundle
+    #endif
 
     private lazy var lottieView: AnimationView = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        let animation = Animation.named(LottieAnimations.audioRecordingLottieAnimation, bundle: Bundle.module)
-        $0.animation = animation
-        $0.contentMode = .scaleAspectFit
-        $0.loopMode = .loop
+        let animationView = AnimationView(frame: .zero)
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        let animation = Animation.named(LottieAnimations.audioRecordingLottieAnimation, bundle: resourceBundle)
+        animationView.animation = animation
+        animationView.contentMode = .scaleAspectFit
+        animationView.loopMode = .loop
+        
         if let (red, green, blue) = UIColor.hexToRGB(MindsSDKConfigs.shared.voiceRecordingLootieAnimationColor()) {
-            let colorProvider = ColorValueProvider(Color(r: (Double(red)/255), g: (Double(green)/255), b: (Double(blue)/255), a: 1))
-            $0.setValueProvider(colorProvider, keypath: AnimationKeypath(keypath: "**.矩形 1.填充 1.Color"))
+            let colorProvider = ColorValueProvider(Color(r: Double(red)/255, g: Double(green)/255, b: Double(blue)/255, a: 1))
+            animationView.setValueProvider(colorProvider, keypath: AnimationKeypath(keypath: "**.矩形 1.填充 1.Color"))
         } else {
             debugPrint("Invalid hex string")
         }
-        $0.play()
-        $0.isHidden = true
-        return $0
-    }(AnimationView(frame: .zero))
+        
+        animationView.play()
+        animationView.isHidden = true
+        return animationView
+    }()
+
 
     private lazy var timerComponent: TimerComponent = {
         $0.translatesAutoresizingMaskIntoConstraints = false
