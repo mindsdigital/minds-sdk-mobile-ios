@@ -14,7 +14,7 @@ Pod::Spec.new do |spec|
   
     spec.ios.deployment_target = "11.0"
     spec.swift_version = "5.0"
-    spec.source       = { :git => 'https://github.com/yourusername/minds-sdk-mobile-ios.git', :tag => spec.version.to_s }
+    spec.source       = { :git => 'https://github.com/mindsdigital/minds-sdk-mobile-ios.git', :tag => spec.version.to_s }
 
     spec.platform     = :ios, '11.0' 
   
