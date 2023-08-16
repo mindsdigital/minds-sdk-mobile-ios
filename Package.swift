@@ -23,6 +23,7 @@ let package = Package(
         .target(
             name: "MindsSDK",
             dependencies: ["Alamofire", "SwiftOGG", "Lottie", "Sentry"],
+            exclude: ["Sources/Frameworks/*.framework"]
             resources: [
                 .process("resources")
             ]),
