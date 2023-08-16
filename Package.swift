@@ -23,7 +23,7 @@ let package = Package(
         .target(
             name: "MindsSDK",
             dependencies: ["Alamofire", "SwiftOGG", "Lottie", "Sentry"],
-            exclude: ["Sources/Frameworks/*.framework"],
+            exclude: ["Sources/Frameworks/ffmpegkit.framework", "Sources/Frameworks//libavcodec.framework"],
             resources: [
                 .process("resources")
             ]),
