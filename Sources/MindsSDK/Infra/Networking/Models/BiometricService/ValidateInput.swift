@@ -8,17 +8,17 @@
 import Foundation
 
 struct ValidateInputRequest: Codable {
-    let cpf: String
-    let fileExtension: String
+    let document: Document
     let checkForVerification: Bool
     let phoneNumber: String
+    let phoneCountryCode: Int?
     let rate: Int
 
     enum CodingKeys: String, CodingKey {
-        case cpf
-        case fileExtension = "extension"
+        case document
         case checkForVerification = "check_for_verification"
         case phoneNumber = "phone_number"
+        case phoneCountryCode = "phone_country_code"
         case rate
     }
 }

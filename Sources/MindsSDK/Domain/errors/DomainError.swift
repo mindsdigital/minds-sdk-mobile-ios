@@ -8,6 +8,7 @@
 import Foundation
 
 public enum DomainError: Error, Equatable {
+    case invalidDocument(String?)
     case invalidCPF(String?)
     case invalidPhoneNumber(String?)
     case invalidAudioFormat(String?)
@@ -21,6 +22,8 @@ public enum DomainError: Error, Equatable {
 
     init(_ serverResponse: String, message: String?) {
         switch serverResponse {
+        case "invalid_document":
+            self = DomainError.invalidDocument(message)
         case "invalid_cpf":
             self = DomainError.invalidCPF(message)
         case "invalid_phone_number":
@@ -40,7 +43,8 @@ public enum DomainError: Error, Equatable {
 
     public static func ==(lhs: DomainError, rhs: DomainError) -> Bool {
         switch (lhs, rhs) {
-        case (.invalidCPF, .invalidCPF),
+        case (.invalidDocument, .invalidDocument),
+            (.invalidCPF, .invalidCPF),
             (.invalidPhoneNumber, .invalidPhoneNumber),
             (.invalidAudioFormat, .invalidAudioFormat),
             (.customerNotFoundToPerformVerification, .customerNotFoundToPerformVerification),
