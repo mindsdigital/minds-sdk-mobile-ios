@@ -40,12 +40,20 @@ public class MindsSDK {
         SDKDataRepository.shared.showDetails = showDetails
     }
     
+    public func setCertification(_ certification: Bool) {
+        SDKDataRepository.shared.certification = certification
+    }
+    
+    public func setInsertOnQuarantine(_ insertOnQuarantine: Bool) {
+        SDKDataRepository.shared.insertOnQuarantine = insertOnQuarantine
+    }
+    
     public func setProcessType(_ processType: ProcessType) {
         SDKDataRepository.shared.processType = processType
     }
 
-    public func setCpf(_ cpf: String) {
-        SDKDataRepository.shared.cpf = cpf
+    public func setDocument(_ document: String) {
+        SDKDataRepository.shared.document = document
     }
 
     public func setExternalId(_ externalId: String?) {
@@ -54,6 +62,10 @@ public class MindsSDK {
 
     public func setPhoneNumber(_ phoneNumber: String) {
         SDKDataRepository.shared.phoneNumber = phoneNumber
+    }
+    
+    public func setPhoneCountryCode(_ phoneCountryCode: Int) {
+        SDKDataRepository.shared.phoneCountryCode = phoneCountryCode
     }
 
     public func setConnectionTimeout(_ connectionTimeout: Float) {
@@ -173,10 +185,10 @@ public class MindsSDK {
 
     private func validateDataInput(completion: @escaping (Result<Void, Error>) -> Void) {
         let request = ValidateInputRequest(
-            cpf: SDKDataRepository.shared.cpf,
-            fileExtension: "ogg",
+            document: Document(value: SDKDataRepository.shared.document),
             checkForVerification: SDKDataRepository.shared.processType == .authentication,
             phoneNumber: SDKDataRepository.shared.phoneNumber,
+            phoneCountryCode: SDKDataRepository.shared.phoneCountryCode,
             rate: Constants.defaultSampleRate
         )
 

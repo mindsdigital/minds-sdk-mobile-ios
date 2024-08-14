@@ -14,16 +14,18 @@ public struct BiometricResponse: Codable {
     public let cpf: String?
     public let externalID: String?
     public let createdAt: String?
+    public let utcCreatedAt: String?
     public let result: ResultAction?
     public let details: Details?
     
-    public init(success: Bool? = nil, error: ErrorResponse? = nil, id: Int64? = nil, cpf: String? = nil, externalID: String? = nil, createdAt: String? = nil, result: ResultAction? = nil, details: Details? = nil) {
+    public init(success: Bool? = nil, error: ErrorResponse? = nil, id: Int64? = nil, cpf: String? = nil, externalID: String? = nil, createdAt: String? = nil, utcCreatedAt: String? = nil, result: ResultAction? = nil, details: Details? = nil) {
         self.success = success
         self.error = error
         self.id = id
         self.cpf = cpf
         self.externalID = externalID
         self.createdAt = createdAt
+        self.utcCreatedAt = utcCreatedAt
         self.result = result
         self.details = details
     }
@@ -35,6 +37,7 @@ public struct BiometricResponse: Codable {
         case cpf
         case externalID = "external_id"
         case createdAt = "created_at"
+        case utcCreatedAt = "utc_created_at"
         case result
         case details
     }
@@ -47,6 +50,7 @@ public struct BiometricResponse: Codable {
         cpf = try container.decodeIfPresent(String?.self, forKey: .cpf) ?? nil
         externalID = try container.decodeIfPresent(String?.self, forKey: .externalID) ?? nil
         createdAt = try container.decodeIfPresent(String?.self, forKey: .createdAt) ?? nil
+        utcCreatedAt = try container.decodeIfPresent(String?.self, forKey: .utcCreatedAt) ?? nil
         result = try container.decodeIfPresent(ResultAction?.self, forKey: .result) ?? nil
         details = try container.decodeIfPresent(Details?.self, forKey: .details) ?? nil
     }
@@ -64,36 +68,63 @@ public struct ResultAction: Codable {
 
 public struct Details: Codable {
     
-    enum CodingKeys: String, CodingKey {
-        case flag
-        case voiceMatch = "voice_match"
-        case antispoofing
-    }
-    
     public let flag: Flag?
-    public let voiceMatch: VoiceMatch?
+    public let liveness: LivenessResponse?
     public let antispoofing: Antispoofing?
+    public let voiceMatch: VoiceMatch?
     
     public struct Flag: Codable {
-        public let id: Int64?
         public let type: String?
-        public let description: String?
         public let status: String?
     }
     
-    public struct VoiceMatch: Codable {
+    public class DetectionResult: Codable {
+        public let status: String?
         public let result: String?
         public let confidence: String?
+        public let score: Double?
+        public let threshold: Double?
+    }
+    
+    public class VoiceMatch: DetectionResult {}
+    
+    public struct LivenessResponse: Codable {
+        public let status: String?
+        public let replayAttack: ReplayAttack?
+        public let deepFake: DeepFake?
+        public let sentenceMatch: SentenceMatch?
+        
+        public class ReplayAttack: DetectionResult {
+            public let enabled: Bool = false
+        }
+        public class DeepFake: DetectionResult {
+            public let enabled: Bool = false
+        }
+        public class SentenceMatch: DetectionResult {
+            public let enabled: Bool = false
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case status
+            case replayAttack = "replay_attack"
+            case deepFake = "deepfake"
+            case sentenceMatch = "sentence_match"
+        }  
+    }
+    public struct Antispoofing: Codable {
+        public let result: String?
         public let status: String?
     }
     
-    public struct Antispoofing: Codable {
-        public var result: String?
-        public var status: String?
+    enum CodingKeys: String, CodingKey {
+        case flag
+        case liveness
+        case antispoofing
+        case voiceMatch = "voice_match"
     }
 }
 
 public struct ErrorResponse: Codable {
-    public var code: String
-    public var description: String
+    public let code: String
+    public let description: String
 }

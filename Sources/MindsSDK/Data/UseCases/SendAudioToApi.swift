@@ -26,12 +26,14 @@ struct SendAudioToApi {
 
             let request = AudioRequest(
                     audios: encodedString,
-                    cpf: sdkDataRepository.cpf,
+                    document: Document(value: sdkDataRepository.document),
                     externalId: sdkDataRepository.externalId,
                     externalCustomerID: sdkDataRepository.externalCustomerId,
                     extensionAudio: "ogg",
                     phoneNumber: sdkDataRepository.phoneNumber,
                     showDetails: sdkDataRepository.showDetails,
+                    certification: sdkDataRepository.certification,
+                    insertOnQuarantine: sdkDataRepository.insertOnQuarantine,
                     sourceName: "SDK_IOS",
                     liveness: Liveness(sentenceId: sdkDataRepository.liveness.id)
             )

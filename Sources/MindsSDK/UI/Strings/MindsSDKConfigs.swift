@@ -136,9 +136,9 @@ fileprivate struct DefaultMindsSDKConfigs {
         "VoiceRecordingTitleColor": "#252525",
         "VoiceRecordingSubtitleColor": "#5F5F5F",
         "VoiceRecordingMainTextColor": "#252525",
-        "LoadingLootieAnimationColor": "#FF03DAC5",
-        "VoiceRecordingLootieAnimationColor": "#FF03DAC5",
-        "VoiceRecordingButtonColor": "#00DDB8"
+        "LoadingLootieAnimationColor": "#0055FF",
+        "VoiceRecordingLootieAnimationColor": "#0055FF",
+        "VoiceRecordingButtonColor": "#0055FF"
     ]
 
 }
